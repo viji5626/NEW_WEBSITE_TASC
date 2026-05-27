@@ -20,7 +20,7 @@ const LINKS = [
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", organization: "", project_scope: "" });
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState<boolean | string>(false);
 
   // Allow other sections (e.g. AMC) to pre-fill the project scope and pull focus.
   useEffect(() => {
