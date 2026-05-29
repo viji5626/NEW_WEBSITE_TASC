@@ -1,8 +1,5 @@
 {
-  "name": "Remix: Remix2: TASC Automation",
+  "name": "Tenacious Automation Solutions & Consulting",
   "description": "Industrial Command Center: Engineering intelligent SCADA, PLC, and Industry 4.0 architectures and OT infrastructure.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
+  "requestFramePermissions": []
 }

@@ -17,13 +17,18 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
         >
           <TextReveal 
-            text="Architecting the Industrial Nervous System."
-            className="text-5xl md:text-7xl lg:text-[100px] font-display font-bold leading-[0.85] mb-6 uppercase max-w-6xl mx-auto tracking-tighter justify-center text-center [&>span:last-child]:text-tasc-cyan [&>span:nth-last-child(2)]:text-tasc-cyan pt-1 pb-3 overflow-visible"
+            text="Tenacious Automation"
+            className="text-5xl md:text-7xl lg:text-[100px] font-display font-bold leading-[0.85] mb-2 uppercase max-w-6xl mx-auto tracking-tighter justify-center text-center pt-1 overflow-visible"
             as="h1"
+          />
+          <TextReveal 
+            text="Solutions & Consulting"
+            className="text-3xl md:text-5xl lg:text-[60px] font-display font-bold leading-[0.85] mb-6 uppercase max-w-6xl mx-auto tracking-tighter justify-center text-center text-tasc-cyan pt-1 pb-3 overflow-visible"
+            as="h2"
           />
           
           <p className="text-lg md:text-xl text-soft-white/60 max-w-3xl mx-auto mb-10 font-light leading-relaxed">
-            Tenacious Automation Solutions & Consulting. We engineer high-availability SCADA, PLC, and IIoT architectures for the world's most demanding industries.
+            Architecting the Industrial Nervous System. We engineer high-availability SCADA, PLC, and IIoT architectures for the world's most demanding industries.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">

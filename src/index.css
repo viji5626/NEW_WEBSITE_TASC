@@ -10,10 +10,10 @@
 
 @layer base {
     :root {
-        --tasc-bg: #0d1117;
+        --tasc-bg: #070a0f;
         --tasc-border: #2b313a;
-        --tasc-text: #e6edf3;
-        --tasc-text-dim: rgba(230, 237, 243, 0.6);
+        --tasc-text: #ffffff;
+        --tasc-text-dim: rgba(255, 255, 255, 0.8);
         --tasc-cyan: #00c2ff;
         --tasc-glow: #1f8fff;
         --border: hsl(215, 14%, 20%);
@@ -21,15 +21,19 @@
 
     .light {
         --tasc-bg: #ffffff;
-        --tasc-border: #d1d5db;
+        --tasc-border: #9ca3af;
         --tasc-text: #000000;
-        --tasc-text-dim: #4b5563;
-        --tasc-cyan: #00a2d4;
+        --tasc-text-dim: #1f2937;
+        --tasc-cyan: #0088b3;
         --tasc-glow: #00a2d4;
     }
 
     .light .brand-logo { 
         filter: invert(1) hue-rotate(180deg); 
+    }
+
+    .light .invert-on-light {
+        filter: invert(1);
     }
 
     .light * {
@@ -39,21 +43,22 @@
     .light html,
     .light body {
         font-weight: 500;
-        background: linear-gradient(135deg, rgba(0, 162, 212, 0.25) 0%, rgba(255, 255, 255, 1) 100%) !important;
+        background: linear-gradient(135deg, rgba(0, 162, 212, 0.15) 0%, rgba(255, 255, 255, 1) 100%) !important;
     }
 
     .light .bg-tasc-bg {
-        background-color: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(8px);
+        background-color: #ffffff !important;
     }
 
-    .light text-tasc-text\/40,
-    .light .text-tasc-text\/40 { color: #6b7280 !important; } 
-    .light .text-tasc-text\/50 { color: #4b5563 !important; }
-    .light .text-tasc-text\/55 { color: #374151 !important; }
-    .light .text-tasc-text\/60 { color: #374151 !important; }
-    .light .text-tasc-text\/70 { color: #1f2937 !important; }
-    .light .text-tasc-text\/80 { color: #111827 !important; }
+    .light .text-tasc-text\/35 { color: #6b7280 !important; }
+    .light .text-tasc-text\/40 { color: #4b5563 !important; } 
+    .light .text-tasc-text\/50 { color: #374151 !important; }
+    .light .text-tasc-text\/55 { color: #1f2937 !important; }
+    .light .text-tasc-text\/60 { color: #1f2937 !important; }
+    .light .text-tasc-text\/65 { color: #111827 !important; }
+    .light .text-tasc-text\/70 { color: #111827 !important; }
+    .light .text-tasc-text\/80 { color: #000000 !important; }
+    .light .text-tasc-text\/85 { color: #000000 !important; }
 
     .light .trace-border:hover::before,
     .light .trace-border:focus-within::before {
@@ -109,9 +114,17 @@
     body {
         background: var(--tasc-bg);
         color: var(--tasc-text);
-        font-weight: 300;
+        font-weight: 400;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+    }
+    
+    .theme-transition,
+    .theme-transition *,
+    .theme-transition *:before,
+    .theme-transition *:after {
+        transition: all 500ms cubic-bezier(.4, 0, .2, 1) !important;
+        transition-delay: 0s !important;
     }
     body {
         margin: 0;
@@ -127,7 +140,7 @@
     h3,
     h4 {
         font-family: inherit;
-        font-weight: 500;
+        font-weight: 600;
         letter-spacing: -0.01em;
     }
 
@@ -270,6 +283,25 @@
 /* ---------- Tabular numerics for Orbitron readouts ---------- */
 .tabular {
     font-variant-numeric: tabular-nums;
+}
+
+@layer utilities {
+    .font-light { font-weight: 400 !important; }
+    .text-tasc-text\/35 { color: color-mix(in srgb, var(--tasc-text) 50%, transparent) !important; }
+    .text-tasc-text\/40 { color: color-mix(in srgb, var(--tasc-text) 60%, transparent) !important; }
+    .text-tasc-text\/50 { color: color-mix(in srgb, var(--tasc-text) 70%, transparent) !important; }
+    .text-tasc-text\/55 { color: color-mix(in srgb, var(--tasc-text) 75%, transparent) !important; }
+    .text-tasc-text\/60 { color: color-mix(in srgb, var(--tasc-text) 80%, transparent) !important; }
+    .text-tasc-text\/65 { color: color-mix(in srgb, var(--tasc-text) 85%, transparent) !important; }
+    .text-tasc-text\/70 { color: color-mix(in srgb, var(--tasc-text) 90%, transparent) !important; }
+    .text-tasc-text\/80 { color: color-mix(in srgb, var(--tasc-text) 95%, transparent) !important; }
+    .text-tasc-text\/85 { color: color-mix(in srgb, var(--tasc-text) 98%, transparent) !important; }
+
+    /* Bump tiny text sizes for legibility */
+    .text-\[8px\] { font-size: 10px !important; }
+    .text-\[9px\] { font-size: 11px !important; }
+    .text-\[10px\] { font-size: 12px !important; }
+    .text-\[11px\] { font-size: 13px !important; }
 }
 
 /* ---------- Utility colour classes ---------- */

@@ -9,6 +9,7 @@ interface ParticleFluidProps {
   mouseForce?: number;
   pointSize?: number;
   clusterDist?: boolean;
+  isLight?: boolean;
 }
 
 const ParticleFluid: React.FC<ParticleFluidProps> = ({
@@ -17,7 +18,8 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
   startY = 0,
   mouseForce = 2.0,
   pointSize = 45.0,
-  clusterDist = true
+  clusterDist = true,
+  isLight = false
 }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const { viewport } = useThree();
@@ -48,34 +50,43 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
     uMouse: { value: new THREE.Vector2(0, 0) },
     uMouseForce: { value: mouseForce },
     uPointSize: { value: pointSize },
+    uIsLight: { value: isLight ? 1.0 : 0.0 }
   }), [mouseForce, pointSize]);
 
   const [positions, scales] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const scl = new Float32Array(count);
+    
+    // Viewport dimensions at z=0 with fov=60 and z=12
+    const vHeight = 2.0 * 12.0 * Math.tan((60 * Math.PI / 180) / 2.0); // ~13.85
+    // Assuming aspect ratio max ~2.5 for generous width
+    const vWidth = vHeight * 2.5; // ~34.6
+
     for (let i = 0; i < count; i++) {
       if (clusterDist) {
         let r = 0;
         const u = Math.random();
-        if (u < 0.2) {
-          r = Math.random() * 8;
-        } else if (u < 0.6) {
-          r = Math.random() * 20;
+        // Constrain cluster to be mostly visible (within r=15)
+        if (u < 0.3) {
+          r = Math.random() * 4; // Tight core
+        } else if (u < 0.7) {
+          r = Math.random() * 10; // Mid
         } else {
-          r = Math.random() * 40;
+          r = Math.random() * 18; // Edges (visible on most monitors)
         }
         
         const theta = Math.random() * 2 * Math.PI;
         
-        pos[i * 3] = r * Math.cos(theta);
-        pos[i * 3 + 1] = r * Math.sin(theta) + startY + (Math.random() - 0.5) * spreadY;
+        // Stretch horizontally a bit for wide screens
+        pos[i * 3] = r * Math.cos(theta) * 1.5;
+        pos[i * 3 + 1] = r * Math.sin(theta) + startY + (Math.random() - 0.5) * (spreadY * 0.5);
       } else {
-        // Linear / rectangular spread for full page coverage
-        pos[i * 3] = (Math.random() - 0.5) * 140; // Wide enough for any aspect ratio horizontally
+        // Constrain linear spread to canvas bounds
+        pos[i * 3] = (Math.random() - 0.5) * (vWidth * 1.5); 
         pos[i * 3 + 1] = startY + (Math.random() - 0.5) * spreadY;
       }
       
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 12;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
       
       scl[i] = Math.pow(Math.random(), 3.0) * 1.5 + 0.2; 
     }
@@ -85,6 +96,15 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
   useFrame((state) => {
     if (pointsRef.current) {
       (pointsRef.current.material as THREE.ShaderMaterial).uniforms.uTime.value = state.clock.elapsedTime;
+      
+      // Smoothly interpolate the light mode uniform
+      const targetLight = isLight ? 1.0 : 0.0;
+      (pointsRef.current.material as THREE.ShaderMaterial).uniforms.uIsLight.value = THREE.MathUtils.lerp(
+        (pointsRef.current.material as THREE.ShaderMaterial).uniforms.uIsLight.value,
+        targetLight,
+        0.05
+      );
+      
       // Smoothly interpolate mouse position
       uniforms.uMouse.value.x = THREE.MathUtils.lerp(uniforms.uMouse.value.x, mousePos.x * viewport.width / 2, 0.05);
       
@@ -102,6 +122,7 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
     uniform vec2 uMouse;
     uniform float uMouseForce;
     uniform float uPointSize;
+    uniform float uIsLight;
     attribute float aScale;
     varying vec3 vColor;
     varying float vAlpha;
@@ -160,18 +181,27 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
          pos.z += force * uMouseForce * 3.0; 
       }
 
+      // Simple collision/boundary-clamping logic
+      pos.x = clamp(pos.x, -35.0, 35.0);
+      pos.y = clamp(pos.y, -400.0, 100.0);
+      
       vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
       gl_Position = projectionMatrix * mvPosition;
       
       // Scaling relative to viewport distance
       gl_PointSize = (uPointSize * aScale) * (1.0 / -mvPosition.z);
       
-      vColor = vec3(0.0, 0.76, 1.0); // #00C2FF cyan vibe
+      // Interpolate colors based on mode
+      vec3 darkCyan = vec3(0.0, 0.76, 1.0); // #00C2FF
+      vec3 lightCyan = vec3(0.0, 0.53, 0.70); // #0088B3
+      vColor = mix(darkCyan, lightCyan, uIsLight);
+      
       vAlpha = aScale;
     }
   `;
 
   const fragmentShader = `
+    uniform float uIsLight;
     varying vec3 vColor;
     varying float vAlpha;
     void main() {
@@ -179,8 +209,13 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
       float dist = length(gl_PointCoord - vec2(0.5));
       if (dist > 0.5) discard;
       float alpha = (0.5 - dist) * 2.0 * vAlpha;
-      // Make particles brighter by increasing max alpha
-      gl_FragColor = vec4(vColor, alpha * 2.5);
+      
+      // Black particles on white need more opacity to be visible than glowing cyan on black
+      // Actually, lowering alpha helps dense clumps look voluminous instead of flat black.
+      float finalAlpha = mix(alpha * 3.5, alpha * 2.0, uIsLight);
+      finalAlpha = min(1.0, finalAlpha);
+      
+      gl_FragColor = vec4(vColor, finalAlpha);
     }
   `;
 
@@ -203,7 +238,7 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
       <shaderMaterial
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={isLight ? THREE.NormalBlending : THREE.AdditiveBlending}
         uniforms={uniforms}
         vertexShader={vertexShader}
         fragmentShader={fragmentShader}
@@ -213,6 +248,38 @@ const ParticleFluid: React.FC<ParticleFluidProps> = ({
 };
 
 export const TechBackground = () => {
+  const [isLight, setIsLight] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Check light mode
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          setIsLight(document.documentElement.classList.contains('light'));
+        }
+      });
+    });
+
+    setIsLight(document.documentElement.classList.contains('light'));
+    observer.observe(document.documentElement, { attributes: true });
+    
+    // Check mobile
+    const mql = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mql.matches);
+    const handleMql = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handleMql);
+
+    return () => {
+      observer.disconnect();
+      mql.removeEventListener('change', handleMql);
+    };
+  }, []);
+
+  // Total 300k on desktop, 100k on mobile
+  const coreParticles = isMobile ? 30000 : 100000;
+  const spreadParticles = isMobile ? 70000 : 200000;
+
   return (
     <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
       {/* Deep dark gradient with minimal overlay */}
@@ -222,24 +289,26 @@ export const TechBackground = () => {
         className="absolute inset-0 opacity-80 tech-bg-overlay bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-tasc-bg/60 to-tasc-bg"
       />
       <Canvas camera={{ position: [0, 0, 12], fov: 60 }} gl={{ alpha: true, antialias: true }}>
-        <fog attach="fog" args={['#070A0F', 5, 25]} />
+        <fog attach="fog" args={[isLight ? '#FFFFFF' : '#070A0F', 5, 25]} />
         {/* Dense, highly interactive clump for the hero section */}
         <ParticleFluid 
-          count={18000} 
+          count={coreParticles} 
           spreadY={60} 
           startY={0} 
           mouseForce={2.0} 
-          pointSize={45.0} 
+          pointSize={18.0} 
           clusterDist={true} 
+          isLight={isLight}
         />
         {/* Sparse, less interactive particles spread downwards for the rest of the site */}
         <ParticleFluid 
-          count={25000} 
+          count={spreadParticles} 
           spreadY={800} 
           startY={-350} 
           mouseForce={1.8} 
-          pointSize={50.0} 
+          pointSize={20.0} 
           clusterDist={false} 
+          isLight={isLight}
         />
       </Canvas>
     </div>

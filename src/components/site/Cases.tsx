@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionHeader } from "./Capabilities";
 
@@ -118,6 +118,94 @@ const CASES = [
   },
 ];
 
+const CaseDetail = ({ c, active, total }: { c: any; active: number; total: number }) => (
+  <div
+    className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-tasc-border/40"
+    data-testid={`case-detail-${c.id}`}
+  >
+    {/* Image */}
+    <div className="lg:col-span-7 bg-tasc-bg relative">
+      <div className="relative aspect-[16/10] overflow-hidden">
+        <img
+          src={c.image}
+          alt={c.title}
+          className="absolute inset-0 w-full h-full object-cover"
+          draggable={false}
+        />
+        {/* Industrial overlay */}
+        <div className="absolute inset-0 bg-tasc-bg/45 mix-blend-multiply pointer-events-none" />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "linear-gradient(180deg, rgba(0,194,255,0.06) 0%, transparent 30%, transparent 70%, rgba(13,17,23,0.85) 100%)" }}
+        />
+        {/* HUD */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
+            <span>CASE · {c.code}</span>
+            <span className="text-tasc-cyan">● COMMISSIONED</span>
+          </div>
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
+            <span className="truncate uppercase">{c.client}</span>
+            <span className="text-tasc-cyan tabular">REF · {String(active + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
+          </div>
+          <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-tasc-cyan" />
+          <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-tasc-cyan" />
+          <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-tasc-cyan" />
+          <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-tasc-cyan" />
+        </div>
+      </div>
+    </div>
+
+    {/* Copy */}
+    <div className="lg:col-span-5 bg-tasc-bg p-8 lg:p-10">
+      <div className="font-[Orbitron] text-[10px] tracking-[0.3em] text-tasc-cyan">
+        {c.tag}
+      </div>
+      <h3 className="mt-3 font-[Montserrat] text-2xl md:text-3xl text-tasc-text font-medium leading-tight">
+        {c.title}
+      </h3>
+      <div className="mt-2 font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-text/50">
+        {c.client}
+      </div>
+      <p className="mt-5 text-tasc-text/65 text-sm leading-relaxed font-light">
+        {c.summary}
+      </p>
+
+      {/* Stack */}
+      <div className="mt-7">
+        <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3">
+          STACK
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {c.stack.map((s: string) => (
+            <span
+              key={s}
+              className="font-[Orbitron] text-[9px] tracking-[0.15em] text-tasc-text/75 border border-tasc-border px-2.5 py-1 hover:border-tasc-cyan hover:text-tasc-cyan transition-colors"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Outcomes */}
+      <div className="mt-7">
+        <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3">
+          OUTCOMES
+        </div>
+        <ul className="space-y-1.5">
+          {c.outcomes.map((o: string) => (
+            <li key={o} className="flex items-start gap-3 text-tasc-text/75 text-sm">
+              <span className="w-2 h-px bg-tasc-cyan mt-2.5 shrink-0" />
+              <span className="font-[Inter] font-light leading-relaxed">{o}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+);
+
 export default function Cases() {
   const [active, setActive] = useState(0);
   const c = CASES[active];
@@ -136,44 +224,62 @@ export default function Cases() {
         </p>
 
         {/* Selector tabs */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-px bg-tasc-border/60 border border-tasc-border">
+        <div className="mt-12 flex flex-col md:grid md:grid-cols-5 gap-px bg-tasc-border/60 border border-tasc-border">
           {CASES.map((cs, i) => {
             const on = i === active;
             return (
-              <button
-                key={cs.id}
-                data-testid={`case-tab-${cs.id}`}
-                onClick={() => setActive(i)}
-                onMouseEnter={() => setActive(i)}
-                className="text-left bg-tasc-bg p-4 md:p-5 relative transition-colors group"
-                style={{ background: on ? "rgba(31,143,255,0.06)" : "transparent" }}
-              >
-                <div
-                  className="absolute top-0 left-0 right-0 h-px"
-                  style={{ background: on ? 'var(--tasc-cyan)' : "transparent", boxShadow: on ? "0 0 12px #1F8FFF" : "none" }}
-                />
-                <div
-                  className="font-[Orbitron] text-[9px] tracking-[0.25em] mb-1"
-                  style={{ color: on ? 'var(--tasc-cyan)' : 'var(--tasc-border)' }}
+              <React.Fragment key={cs.id}>
+                <button
+                  data-testid={`case-tab-${cs.id}`}
+                  onClick={() => setActive(i)}
+                  onMouseEnter={() => setActive(i)}
+                  className="text-left bg-tasc-bg p-4 md:p-5 relative transition-colors group"
+                  style={{ background: on ? "rgba(31,143,255,0.06)" : "transparent" }}
                 >
-                  {cs.code}
+                  <div
+                    className="absolute top-0 left-0 right-0 h-px"
+                    style={{ background: on ? 'var(--tasc-cyan)' : "transparent", boxShadow: on ? "0 0 12px #1F8FFF" : "none" }}
+                  />
+                  <div
+                    className="font-[Orbitron] text-[9px] tracking-[0.25em] mb-1"
+                    style={{ color: on ? 'var(--tasc-cyan)' : 'var(--tasc-border)' }}
+                  >
+                    {cs.code}
+                  </div>
+                  <div
+                    className="font-[Orbitron] text-[9px] tracking-[0.25em] mb-2"
+                    style={{ color: on ? 'var(--tasc-text)' : 'var(--tasc-text-dim)' }}
+                  >
+                    {cs.tag}
+                  </div>
+                  <div className="font-[Montserrat] text-sm md:text-base text-tasc-text leading-snug">
+                    {cs.title.split(" — ")[0]}
+                  </div>
+                </button>
+                
+                {/* Mobile Detail View */}
+                <div className="md:hidden">
+                  <AnimatePresence>
+                    {on && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden bg-tasc-bg border-b border-tasc-border last:border-b-0"
+                      >
+                        <CaseDetail c={cs} active={i} total={CASES.length} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-                <div
-                  className="font-[Orbitron] text-[9px] tracking-[0.25em] mb-2"
-                  style={{ color: on ? 'var(--tasc-text)' : 'var(--tasc-text-dim)' }}
-                >
-                  {cs.tag}
-                </div>
-                <div className="font-[Montserrat] text-sm md:text-base text-tasc-text leading-snug">
-                  {cs.title.split(" — ")[0]}
-                </div>
-              </button>
+              </React.Fragment>
             );
           })}
         </div>
 
-        {/* Detail */}
-        <div className="mt-px border border-tasc-border bg-tasc-bg">
+        {/* Desktop Detail View */}
+        <div className="hidden md:block mt-px border border-tasc-border bg-tasc-bg">
           <AnimatePresence mode="wait">
             <motion.div
               key={c.id}
@@ -181,89 +287,8 @@ export default function Cases() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-tasc-border/40"
-              data-testid={`case-detail-${c.id}`}
             >
-              {/* Image */}
-              <div className="lg:col-span-7 bg-tasc-bg relative">
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
-                    src={c.image}
-                    alt={c.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    draggable={false}
-                  />
-                  {/* Industrial overlay */}
-                  <div className="absolute inset-0 bg-tasc-bg/45 mix-blend-multiply pointer-events-none" />
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ background: "linear-gradient(180deg, rgba(0,194,255,0.06) 0%, transparent 30%, transparent 70%, rgba(13,17,23,0.85) 100%)" }}
-                  />
-                  {/* HUD */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
-                      <span>CASE · {c.code}</span>
-                      <span className="text-tasc-cyan">● COMMISSIONED</span>
-                    </div>
-                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
-                      <span className="truncate uppercase">{c.client}</span>
-                      <span className="text-tasc-cyan tabular">REF · {String(active + 1).padStart(2, "0")}/{String(CASES.length).padStart(2, "0")}</span>
-                    </div>
-                    <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-tasc-cyan" />
-                    <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-tasc-cyan" />
-                    <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-tasc-cyan" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-tasc-cyan" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Copy */}
-              <div className="lg:col-span-5 bg-tasc-bg p-8 lg:p-10">
-                <div className="font-[Orbitron] text-[10px] tracking-[0.3em] text-tasc-cyan">
-                  {c.tag}
-                </div>
-                <h3 className="mt-3 font-[Montserrat] text-2xl md:text-3xl text-tasc-text font-medium leading-tight">
-                  {c.title}
-                </h3>
-                <div className="mt-2 font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-text/50">
-                  {c.client}
-                </div>
-                <p className="mt-5 text-tasc-text/65 text-sm leading-relaxed font-light">
-                  {c.summary}
-                </p>
-
-                {/* Stack */}
-                <div className="mt-7">
-                  <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3">
-                    STACK
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {c.stack.map((s) => (
-                      <span
-                        key={s}
-                        className="font-[Orbitron] text-[9px] tracking-[0.15em] text-tasc-text/75 border border-tasc-border px-2.5 py-1 hover:border-tasc-cyan hover:text-tasc-cyan transition-colors"
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Outcomes */}
-                <div className="mt-7">
-                  <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3">
-                    OUTCOMES
-                  </div>
-                  <ul className="space-y-1.5">
-                    {c.outcomes.map((o) => (
-                      <li key={o} className="flex items-start gap-3 text-tasc-text/75 text-sm">
-                        <span className="w-2 h-px bg-tasc-cyan mt-2.5 shrink-0" />
-                        <span className="font-[Inter] font-light leading-relaxed">{o}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+              <CaseDetail c={c} active={active} total={CASES.length} />
             </motion.div>
           </AnimatePresence>
         </div>

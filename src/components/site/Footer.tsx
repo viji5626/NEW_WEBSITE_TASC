@@ -43,9 +43,12 @@ export default function Footer() {
             <img
               src="/brand/tasc-logo-dark.png"
               alt="TASC — Tenacious Automation Solutions & Consulting"
-              className="h-16 md:h-20 w-auto object-contain mb-5 brand-logo"
+              className="h-10 md:h-12 w-auto object-contain mb-4 brand-logo"
               draggable={false}
             />
+            <div className="font-display text-lg md:text-xl font-bold text-tasc-text mb-5 leading-tight tracking-tight">
+              Tenacious Automation<br/><span className="text-tasc-cyan">Solutions & Consulting</span>
+            </div>
             <p className="text-tasc-text/55 text-sm font-light leading-relaxed max-w-md">
               Transforming Industrial Logix. Engineering intelligent, high-availability PLC,
               SCADA, EMS and IIoT architectures for mission-critical industrial operations.
