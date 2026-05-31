@@ -96,10 +96,10 @@ export default function Header() {
       data-testid="site-header"
       className={`fixed top-0 left-0 right-0 z-[100] backdrop-blur-md border-b border-tasc-border ${isLightMode ? 'bg-white/60' : 'bg-tasc-bg/85'}`}
     >
-      <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <div className="flex items-center justify-between h-16">
+      <div className="w-full max-w-[1920px] mx-auto px-4 md:px-6 lg:px-8 xl:px-12">
+        <div className="flex items-center justify-between h-16 gap-2">
           {/* Logo wordmark */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 xl:gap-4 shrink-0">
             <button
               data-testid="logo-button"
               onClick={() => {
@@ -112,7 +112,7 @@ export default function Header() {
               }}
               className="flex items-center group shrink-0"
               aria-label="TASC home"
-              style={{ minWidth: 120 }}
+              style={{ minWidth: 100 }}
             >
               <img
                 src="/brand/tasc-logo-dark.png"
@@ -124,19 +124,19 @@ export default function Header() {
                 draggable={false}
               />
             </button>
-            <div className="hidden xl:block font-display text-sm font-bold text-tasc-text leading-tight uppercase tracking-tight opacity-90 border-l border-tasc-border pl-4 whitespace-nowrap">
+            <div className="hidden lg:block font-display text-[9px] xl:text-xs font-bold text-tasc-text leading-[1.1] uppercase tracking-normal xl:tracking-tighter opacity-90 border-l border-tasc-border pl-2 xl:pl-3 whitespace-nowrap">
               Tenacious Automation<br/><span className="text-tasc-cyan">Solutions & Consulting</span>
             </div>
           </div>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center">
+          <nav className="hidden lg:flex flex-1 items-center justify-center lg:gap-0 xl:gap-1 2xl:gap-2">
             {NAV.map((n) => (
               <button
                 key={n.id}
                 data-testid={`nav-${n.label.toLowerCase()}`}
                 onClick={() => handleNavClick(n)}
-                className="px-1 xl:px-2 py-2 font-[Orbitron] text-[9px] xl:text-[10px] tracking-[0.15em] xl:tracking-[0.2em] text-tasc-text/70 hover:text-tasc-cyan transition-colors whitespace-nowrap"
+                className="px-1.5 xl:px-2 py-2 font-[Orbitron] text-[8px] lg:text-[9px] xl:text-[10px] tracking-[0.1em] xl:tracking-[0.15em] text-tasc-text/70 hover:text-tasc-cyan transition-colors whitespace-nowrap"
                 title={`${n.code} · ${n.label}`}
               >
                 {n.label}
@@ -144,10 +144,10 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 xl:gap-4 shrink-0">
             <button
               onClick={toggleTheme}
-              className="p-2 text-tasc-text/70 hover:text-tasc-cyan transition-colors border border-transparent hover:border-tasc-cyan rounded-none"
+              className="p-2 mr-1 xl:mr-0 text-tasc-text/70 hover:text-tasc-cyan transition-colors border border-transparent hover:border-tasc-cyan rounded-none flex items-center justify-center"
               aria-label="Toggle theme"
             >
               {isLightMode ? <Moon size={16} /> : <Sun size={16} />}
