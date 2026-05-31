@@ -212,9 +212,8 @@ const PlanCard: React.FC<{ plan: any; onRequest: any }> = ({ plan, onRequest }) 
       <button
         data-testid={`amc-cta-${plan.id}`}
         onClick={onRequest}
-        className="group relative mt-8 self-start font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:text-tasc-bg transition-colors"
+        className="group relative mt-8 self-start font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-white transition-all duration-300"
       >
-        <span className="absolute inset-0 bg-tasc-cyan translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]" />
         <span className="relative">{plan.cta}</span>
       </button>
     </div>

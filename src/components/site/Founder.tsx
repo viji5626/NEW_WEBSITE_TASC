@@ -145,9 +145,8 @@ export default function Founder() {
                   data-testid="founder-vcard-download"
                   href="/brand/vijay-shankar.vcf"
                   download="Vijay-Shankar-TASC.vcf"
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:text-tasc-bg transition-colors inline-flex items-center gap-3"
+                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3"
                 >
-                  <span className="absolute inset-0 bg-tasc-cyan translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]" />
                   <Download size={14} strokeWidth={1.5} className="relative" />
                   <span className="relative">[ ADD TO CONTACTS ]</span>
                 </a>

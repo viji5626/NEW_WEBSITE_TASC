@@ -162,9 +162,8 @@ export default function Contact() {
                       type="submit"
                       disabled={submitting}
                       data-testid="contact-submit"
-                      className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-7 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:text-tasc-bg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-7 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                     >
-                      <span className="absolute inset-0 bg-tasc-cyan translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]" />
                       <span className="relative">{submitting ? "[ TRANSMITTING… ]" : "[ TRANSMIT DATA ]"}</span>
                     </button>
                   </div>

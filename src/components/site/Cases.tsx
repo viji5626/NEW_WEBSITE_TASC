@@ -50,7 +50,7 @@ const CASES = [
     code: "//06B.03",
     tag: "PROCESS PLANT · BENEFICIATION",
     title: "Quartz Beneficiation Plant",
-    client: "Pacific Industries Ltd. — Taanj Quartz · Udaipur, Rajasthan",
+    client: "Geetanjali Industrial Minerals Pvt. Ltd.\n· Shishvi, Rajasthan",
     image: "/brand/cases/quartz-ben.jpg",
     summary:
       "Process automation for a quartz beneficiation line — crushing, scrubbing/washing, screening, optical colour sorting, VSI, micron collection and bagging — visualised on GENESIS64 with material-flow architecture, faceplate trends, recovery-rate totalizers and shift-wise tonnage reports.",
@@ -97,7 +97,7 @@ const CASES = [
     code: "//06B.05",
     tag: "MANUFACTURING · ENGINEERED STONE",
     title: "Quartz Slab Manufacturing Plant",
-    client: "Pacific Industries Ltd. — Engineered Stone & Grit",
+    client: "Taanj Quartz.— Engineered Stone & Grit\n· Udaipur, Rajasthan",
     image: "/brand/cases/quartz-slab.jpg",
     summary:
       "Full-line automation for engineered-stone slab manufacturing on a Mitsubishi Q06UDV CPU with 2 × LJ72GF15-T2 remote heads (384 DI/DO + 32 AI per panel). CC-Link IE Field backbone, Profibus for load cells, Modbus RTU for 41 VFDs and 3 × GS2107 control-desk HMIs. InduSoft SCADA 5000-tag visualization.",
@@ -144,9 +144,9 @@ const CaseDetail = ({ c, active, total }: { c: any; active: number; total: numbe
             <span>CASE · {c.code}</span>
             <span className="text-tasc-cyan">● COMMISSIONED</span>
           </div>
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
-            <span className="truncate uppercase">{c.client}</span>
-            <span className="text-tasc-cyan tabular">REF · {String(active + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
+          <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
+            <span className="uppercase whitespace-pre-line leading-[1.4] max-w-[75%]">{c.client}</span>
+            <span className="text-tasc-cyan tabular shrink-0">REF · {String(active + 1).padStart(2, "0")}/{String(total).padStart(2, "0")}</span>
           </div>
           <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-tasc-cyan" />
           <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-tasc-cyan" />
@@ -164,7 +164,7 @@ const CaseDetail = ({ c, active, total }: { c: any; active: number; total: numbe
       <h3 className="mt-3 font-[Montserrat] text-2xl md:text-3xl text-tasc-text font-medium leading-tight">
         {c.title}
       </h3>
-      <div className="mt-2 font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-text/50">
+      <div className="mt-2 font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-text/50 whitespace-pre-line leading-relaxed">
         {c.client}
       </div>
       <p className="mt-5 text-tasc-text/65 text-sm leading-relaxed font-light">

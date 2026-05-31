@@ -12,9 +12,10 @@ const NAV = [
   { code: "//06", label: "CASES", id: "case-studies" },
   { code: "//07", label: "METHOD", id: "how-we-build" },
   { code: "//08", label: "AMC", id: "amc-model" },
-  { code: "//09", label: "ABOUT", id: "tenacious-by-design" },
-  { code: "//10", label: "CONTACT", id: "terminal-interface" },
-  { code: "//11", label: "MICRO SERVICES", id: "micro-services" },
+  { code: "//09", label: "CONSULTING", id: "we-consult" },
+  { code: "//10", label: "ABOUT", id: "tenacious-by-design" },
+  { code: "//11", label: "CONTACT", id: "terminal-interface" },
+  { code: "//12", label: "MICRO SERVICES", id: "micro-services" },
 ];
 
 export default function Header() {
@@ -80,7 +81,7 @@ export default function Header() {
         } else {
           scrollToId(n.id);
         }
-      }, 100);
+      }, 300);
     } else {
       if (n.label === "HOME") {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -123,7 +124,7 @@ export default function Header() {
                 draggable={false}
               />
             </button>
-            <div className="hidden xl:block font-display text-sm font-bold text-tasc-text leading-tight uppercase tracking-tight opacity-90 border-l border-tasc-border pl-4">
+            <div className="hidden xl:block font-display text-sm font-bold text-tasc-text leading-tight uppercase tracking-tight opacity-90 border-l border-tasc-border pl-4 whitespace-nowrap">
               Tenacious Automation<br/><span className="text-tasc-cyan">Solutions & Consulting</span>
             </div>
           </div>

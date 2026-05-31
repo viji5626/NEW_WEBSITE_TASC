@@ -214,7 +214,7 @@ export default function MicroServices() {
              <a href="#terminal-interface" onClick={(e) => {
                  e.preventDefault();
                  window.location.href = "/#terminal-interface";
-             }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-tasc-bg font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-white transition-colors relative z-10">
+             }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-tasc-bg font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
                  [ INITIATE SECURE LINE ]
              </a>
          </div>

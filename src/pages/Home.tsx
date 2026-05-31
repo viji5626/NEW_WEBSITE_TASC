@@ -6,6 +6,7 @@ import Industries from "@/components/site/Industries";
 import Cases from "@/components/site/Cases";
 import Method from "@/components/site/Method";
 import Amc from "@/components/site/Amc";
+import ConsultingSection from "@/components/site/ConsultingSection";
 import Founder from "@/components/site/Founder";
 import Contact from "@/components/site/Contact";
 
@@ -20,6 +21,7 @@ export default function Home() {
       <Cases />
       <Method />
       <Amc />
+      <ConsultingSection />
       <Founder />
       <Contact />
     </main>

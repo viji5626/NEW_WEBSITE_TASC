@@ -40,10 +40,9 @@ const Hero = () => {
               <MagneticWrapper>
                 <button
                   onClick={scrollToContact}
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 border border-tasc-cyan bg-tasc-bg text-tasc-cyan overflow-hidden hover:text-tasc-bg transition-colors"
+                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 border border-tasc-cyan bg-tasc-bg text-tasc-cyan overflow-hidden hover:bg-tasc-cyan hover:text-white transition-all duration-300"
                   style={{ borderRadius: '0' }}
                 >
-                  <span className="absolute inset-0 bg-tasc-cyan translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]" />
                   <span className="relative z-10">[ INITIATE CONSULTATION ]</span>
                 </button>
               </MagneticWrapper>
@@ -57,10 +56,9 @@ const Hero = () => {
               <MagneticWrapper>
                 <button
                   onClick={scrollToVerticals}
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 text-tasc-text hover:text-tasc-cyan transition-colors flex items-center gap-3 overflow-hidden before:absolute before:inset-0 before:border before:border-tasc-border hover:before:border-tasc-cyan before:transition-colors"
+                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 text-tasc-text hover:text-white hover:bg-tasc-cyan/80 transition-all duration-300 flex items-center gap-3 overflow-hidden border border-tasc-border hover:border-tasc-cyan"
                   style={{ borderRadius: '0' }}
                 >
-                  <span className="absolute inset-0 w-full h-full bg-tasc-cyan/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-[cubic-bezier(.16,1,.3,1)]" />
                   <span className="relative z-10 flex items-center gap-3">
                     EXPLORE SOLUTIONS
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

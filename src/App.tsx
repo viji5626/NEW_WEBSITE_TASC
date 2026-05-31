@@ -10,6 +10,7 @@ import { TechBackground } from "@/components/site/TechBackground";
 import BootScreen from "@/components/site/BootScreen";
 import Home from "@/pages/Home";
 import MicroServices from "@/pages/MicroServices";
+import Consulting from "@/pages/Consulting";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -78,6 +79,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/micro-services" element={<MicroServices />} />
+          <Route path="/consulting" element={<Consulting />} />
         </Routes>
 
         <Footer />
