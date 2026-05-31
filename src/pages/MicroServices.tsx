@@ -160,7 +160,7 @@ export default function MicroServices() {
                       <img 
                         src={logo.url} 
                         alt={logo.name} 
-                        className={`w-3.5 h-3.5 opacity-80 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
+                        className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
                       />
                       <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
                     </div>
