@@ -19,10 +19,10 @@ const STACK = [
     id: "dcs",
     code: "//02B.2",
     icon: Server,
-    title: "DCS — Siemens PCS 7",
-    vendor: "Siemens · S7-400 / S7-400H controller family",
-    body: "Core competency in PCS 7 — Siemens' DCS environment built on S7-400 and S7-400H redundant controller pairs. Used for process-heavy plants like paper, power and substations where availability is non-negotiable.",
-    bullets: ["PCS 7 engineering", "S7-400 / S7-400H redundancy", "CFC / SFC charts", "OS / ES server pairs"],
+    title: "DCS & Hybrid System",
+    vendor: "Siemens PCS 7 · Mitsubishi Hybrid DCS",
+    body: "Core competency in Siemens PCS 7 (built on S7-400H redundant controllers) and Mitsubishi Hybrid DCS (iQ-R Redundant PLC & ICONICS Redundant SCADA). Used for process-heavy plants like paper, power, and substations where availability is non-negotiable.",
+    bullets: ["Siemens PCS 7 (S7-400H)", "CFC / SFC charts", "OS / ES server pairs", "Mitsubishi Hybrid DCS (iQ-R)", "ICONICS Redundant SCADA"],
     image: "/brand/siemens.png",
     imageFit: "contain",
     imageBg: "#F4F5F7",
@@ -32,9 +32,9 @@ const STACK = [
     code: "//02B.3",
     icon: Cpu,
     title: "PLC Engineering",
-    vendor: "Siemens · Mitsubishi",
-    body: "Day-to-day fluency in TIA Portal (S7-1500 / 1200 / 400) and Mitsubishi GX Works 2 & 3 (MELSEC iQ-R / iQ-F / FX5U). Compact machines through high-availability plant CPUs.",
-    bullets: ["TIA Portal (S7-1500/1200)", "GX Works 2 & 3 (MELSEC iQ-R/iQ-F)", "Safety blocks & libraries", "Versioned, auditable projects"],
+    vendor: "Mitsubishi · Siemens",
+    body: "Day-to-day fluency in Mitsubishi GX Works 2 & 3 (MELSEC iQ-R / iQ-F / FX5U) and TIA Portal (S7-1500 / 1200 / 400). Compact machines through high-availability plant CPUs.",
+    bullets: ["GX Works 2 & 3 (MELSEC iQ-R/iQ-F)", "TIA Portal (S7-1500/1200)", "Safety blocks & libraries", "Versioned, auditable projects"],
     image: "/brand/mitsubishi.jpg",
     imageFit: "contain",
     imageBg: "#F4F5F7",
@@ -45,8 +45,8 @@ const STACK = [
     icon: Plug,
     title: "Connectivity Layer",
     vendor: "Takebishi · PTC",
-    body: "Production-grade OPC gateways: DeviceXPlorer (Takebishi) for Mitsubishi/Omron/Yokogawa endpoints, Kepware (PTC) for broad multi-vendor bridging into historian and IT.",
-    bullets: ["DeviceXPlorer (Takebishi)", "Kepware (PTC) OPC server", "OPC DA / UA", "Tag tunnelling & redundancy"],
+    body: "Production-grade OPC gateways: DeviceXPlorer (Takebishi) for Mitsubishi/Omron/Yokogawa endpoints, KepserverEX for broad multi-vendor bridging into historian and IT.",
+    bullets: ["DeviceXPlorer (Takebishi)", "KepserverEX OPC server", "OPC DA / UA", "Tag tunnelling & redundancy"],
     image: "/brand/connectivity.png",
     imageFit: "cover",
     imageBg: 'var(--tasc-bg)',
@@ -170,6 +170,108 @@ export default function SoftwareExpertise() {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* New Brand Expertise Section */}
+        <div className="mt-24 pt-16 border-t border-tasc-border">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+            <div className="lg:col-span-6">
+              <div className="font-[Orbitron] text-[10px] tracking-[0.3em] text-tasc-cyan">
+                BRAND EXPERTISE
+              </div>
+              <h3 className="mt-4 font-[Montserrat] text-3xl md:text-4xl font-medium text-tasc-text leading-tight">
+                Engineering excellence across multiple technology ecosystems.
+              </h3>
+              <p className="mt-6 text-tasc-text/80 text-base md:text-lg font-light leading-relaxed">
+                We provide comprehensive integration services tailored to your preferred hardware
+                platforms. From conceptualizing control architectures to panel assembly and site
+                commissioning, our expertise spans across top-tier manufacturers. We adapt to
+                your facility's operational requirements seamlessly.
+              </p>
+            </div>
+            
+            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-4">
+              {[
+                "VFD (Variable Frequency Drive) panels",
+                "PLC programming & I/O integration",
+                "LT switchgear up to 6300 A",
+                "Multi-brand retrofits & spares",
+                "Drawing review & BoM in any standard",
+                "On-site commissioning support",
+              ].map((bullet) => (
+                <div key={bullet} className="flex items-start gap-3">
+                  <div className="mt-1 shrink-0 w-3.5 h-3.5 rounded-full border border-tasc-cyan flex items-center justify-center bg-tasc-cyan/10">
+                    <svg className="w-2 h-2 text-tasc-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                  <span className="text-tasc-text/80 text-sm font-light leading-snug">{bullet}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Brands Grid */}
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 gap-px bg-tasc-border/60 border border-tasc-border">
+            {[
+              { 
+                brand: "MITSUBISHI ELECTRIC", 
+                imagePath: "/brand/MEI.jpg",
+                stack: "MELSEC PLC · FR-Series VFD · Servo Systems",
+                tags: ["VFD", "PLC", "SWITCHGEAR", "HMI", "SCADA"]
+              },
+              { 
+                brand: "SIEMENS", 
+                imagePath: "/brand/siemens.jpg",
+                stack: "SIMATIC PLC · SINAMICS Drives · SIRIUS Switchgear",
+                tags: ["VFD", "PLC", "SWITCHGEAR", "HMI", "SCADA"]
+              },
+              { 
+                brand: "Schneider Electric", 
+                imagePath: "/brand/Schneider.jpg",
+                stack: "Modicon PLC · Altivar Drives · TeSys Switchgear",
+                tags: ["VFD", "PLC", "SWITCHGEAR"]
+              },
+              { 
+                brand: "ABB", 
+                imagePath: "/brand/ABB.jpg",
+                stack: "AC500 PLC · ACS Drives · Tmax Switchgear",
+                tags: ["VFD", "PLC", "SWITCHGEAR"]
+              },
+            ].map((b) => (
+              <div key={b.brand} className="bg-tasc-bg p-8 flex flex-col items-start border border-transparent hover:border-tasc-cyan transition-colors group">
+                <div className="h-16 flex items-center justify-start mb-6 w-full shrink-0">
+                  <div className="relative w-full max-w-[140px] h-full bg-white flex items-center justify-start p-2">
+                    <img
+                      src={b.imagePath}
+                      alt={`${b.brand} logo`}
+                      className="w-full h-full object-contain grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+                
+                <div className="font-[Orbitron] text-[9px] tracking-[0.2em] text-tasc-text/50 uppercase mb-3">
+                  STACK WE DELIVER
+                </div>
+                <div className="text-sm text-tasc-text font-medium flex-1 leading-snug">
+                  {b.stack}
+                </div>
+                
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {b.tags.map((tag) => (
+                    <div key={tag} className="px-2 py-1 bg-tasc-border/40 text-tasc-text/60 text-[9px] font-[Orbitron] tracking-wider rounded-sm">
+                      {tag}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 bg-tasc-bg border border-tasc-border p-6 shadow-sm">
+            <p className="text-tasc-text/80 text-[15px] font-light leading-relaxed">
+              <strong className="font-medium text-tasc-text">Vendor-Independent Architecture.</strong> We are committed to building the right solution for your specific operational constraints rather than pushing a singular proprietary ecosystem. Our engineers are proficient in interlocking disparate control environments, allowing us to combine specialized field devices from multiple vendors into one unified, high-availability architecture.
+            </p>
+          </div>
         </div>
       </div>
     </section>

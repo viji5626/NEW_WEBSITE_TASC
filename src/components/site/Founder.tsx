@@ -44,15 +44,15 @@ export default function Founder() {
                 }}
               />
               <div className="absolute inset-0 bp-grid-fine opacity-10 mix-blend-overlay pointer-events-none" />
-              <div className="absolute top-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
-                <span>FOUNDER · 07.A</span>
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-white/80">
+                <span>FOUNDER · 10.A</span>
                 <span className="text-tasc-cyan">● VERIFIED</span>
               </div>
               <div className="absolute bottom-3 left-3 right-3">
                 <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-cyan">
                   MR. VIJAY SHANKAR
                 </div>
-                <div className="font-[Orbitron] text-[8px] tracking-[0.25em] text-tasc-text/70 mt-1">
+                <div className="font-[Orbitron] text-[8px] tracking-[0.25em] text-white/70 mt-1">
                   FOUNDER · PRINCIPAL ENGINEER
                 </div>
               </div>
@@ -151,6 +151,87 @@ export default function Founder() {
                   <span className="relative">[ ADD TO CONTACTS ]</span>
                 </a>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Director section */}
+        <div className="mt-24 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          {/* Photo column */}
+          <div className="lg:col-span-5">
+            <div className="relative aspect-[4/5] bg-tasc-bg border border-tasc-border overflow-hidden">
+              <img
+                src="/brand/director-monika.jpg"
+                alt="Mrs. Monika Chauhan — Director, TASC Automation"
+                className="absolute inset-0 w-full h-full object-cover object-center grayscale-[20%] contrast-[1.05]"
+                draggable={false}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop`;
+                }}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(0,194,255,0.05) 0%, transparent 35%, transparent 65%, rgba(13,17,23,0.85) 100%)",
+                }}
+              />
+              <div className="absolute inset-0 bp-grid-fine opacity-10 mix-blend-overlay pointer-events-none" />
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-white/80">
+                <span>DIRECTOR · 10.B</span>
+                <span className="text-tasc-cyan">● VERIFIED</span>
+              </div>
+              <div className="absolute bottom-3 left-3 right-3">
+                <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-cyan">
+                  MRS. MONIKA CHAUHAN
+                </div>
+                <div className="font-[Orbitron] text-[8px] tracking-[0.25em] text-white/70 mt-1">
+                  DIRECTOR
+                </div>
+              </div>
+              <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-tasc-cyan" />
+              <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-tasc-cyan" />
+              <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-tasc-cyan" />
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-tasc-cyan" />
+            </div>
+          </div>
+
+          {/* Copy column */}
+          <div className="lg:col-span-7">
+            <div className="font-[Orbitron] text-[10px] tracking-[0.3em] text-tasc-cyan">
+              MRS. MONIKA CHAUHAN · DIRECTOR
+            </div>
+            <h3 className="mt-3 font-[Montserrat] text-3xl md:text-4xl font-medium text-tasc-text leading-tight">
+              Empowering people and driving strategic management.
+            </h3>
+
+            <p className="mt-6 text-tasc-text/80 text-base md:text-lg font-light leading-relaxed">
+              With extensive experience in Human Resources and strategic management,
+              the Director plays a pivotal role in shaping the organizational culture and human 
+              capital strategies at TASC Automation. Her focus rests on talent acquisition, 
+              employee development, and fostering an inclusive, high-performance workplace where 
+              cross-functional engineering teams can thrive and innovate.
+            </p>
+            <p className="mt-5 text-tasc-text/70 text-base md:text-lg font-light leading-relaxed">
+              Guided by a commitment to organizational excellence, she spearheads performance 
+              management and continuous learning initiatives. Her structured approach ensures that 
+              TASC recruits top-tier industrial automation talent while maintaining high employee 
+              engagement, aligning human resource objectives directly with the company's long-term 
+              business goals.
+            </p>
+
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-px bg-tasc-border/60 border border-tasc-border">
+              {[
+                ["Talent Acquisition", "Strategically sourcing and recruiting top-tier engineering professionals to drive industrial innovation."],
+                ["Organizational Development", "Fostering a collaborative culture and optimizing team structures for sustainable business growth."],
+                ["Performance Management", "Implementing structured evaluation frameworks to recognize achievements and mentor emerging leaders."],
+                ["Employee Engagement", "Championing workplace well-being, resolving HR matters, and building a highly motivated workforce."],
+              ].map(([t, b]) => (
+                <div key={t} className="bg-tasc-bg p-5">
+                  <h4 className="font-[Montserrat] text-base text-tasc-text font-medium">{t}</h4>
+                  <p className="mt-2 text-tasc-text/55 text-sm font-light leading-relaxed">{b}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
