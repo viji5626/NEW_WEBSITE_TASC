@@ -243,7 +243,7 @@ export default function SoftwareExpertise() {
                     <img
                       src={b.imagePath}
                       alt={`${b.brand} logo`}
-                      className="w-full h-full object-contain grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                      className="w-full h-full object-contain grayscale-0 opacity-100 md:grayscale md:opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                       draggable={false}
                     />
                   </div>
