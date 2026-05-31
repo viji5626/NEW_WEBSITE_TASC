@@ -276,9 +276,9 @@ export const TechBackground = () => {
     };
   }, []);
 
-  // Total 300k on desktop, 100k on mobile
-  const coreParticles = isMobile ? 30000 : 100000;
-  const spreadParticles = isMobile ? 70000 : 200000;
+  // Total 500k on desktop, 150k on mobile
+  const coreParticles = isMobile ? 50000 : 150000;
+  const spreadParticles = isMobile ? 100000 : 350000;
 
   return (
     <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 0 }}>
