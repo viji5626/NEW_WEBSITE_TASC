@@ -1,6 +1,7 @@
 import { CheckCircle, ShieldCheck, FileSearch, Network, GitPullRequest, Workflow, HardHat, FileText } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -67,6 +68,7 @@ const SERVICES = [
 ];
 
 export default function Consulting() {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-[100vh] py-32 px-6 md:px-10 lg:px-16 mx-auto max-w-[1440px] z-10 flex flex-col justify-center">
       <ScrollReveal>
@@ -177,8 +179,8 @@ export default function Consulting() {
              
              <a href="/#terminal-interface" onClick={(e) => {
                  e.preventDefault();
-                 window.location.href = "/#terminal-interface";
-             }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-tasc-bg font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
+                 navigate("/#terminal-interface");
+             }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-slate-900 font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
                  [ INITIATE A DISCOVERY SESSION ]
              </a>
          </div>

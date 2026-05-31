@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { scrollToId } from "@/lib/scrollTo";
+import { scrollToId, scrollToTop } from "@/lib/scrollTo";
 import { Sun, Moon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -77,14 +77,14 @@ export default function Header() {
       navigate('/');
       setTimeout(() => {
         if (n.label === "HOME") {
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          scrollToTop();
         } else {
           scrollToId(n.id);
         }
       }, 300);
     } else {
       if (n.label === "HOME") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        scrollToTop();
       } else {
         scrollToId(n.id);
       }
@@ -107,7 +107,7 @@ export default function Header() {
                   navigate('/');
                 }
                 setTimeout(() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  scrollToTop();
                 }, 50);
               }}
               className="flex items-center group shrink-0"

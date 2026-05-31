@@ -1,4 +1,5 @@
 import { scrollToId } from "@/lib/scrollTo";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const COLS = [
   {
@@ -25,6 +26,8 @@ const COLS = [
   {
     title: "FIRM",
     links: [
+      ["Consulting", "we-consult"],
+      ["Micro Services", "micro-services"],
       ["About", "tenacious-by-design"],
       ["Contact", "terminal-interface"],
     ],
@@ -32,6 +35,29 @@ const COLS = [
 ];
 
 export default function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLinkClick = (title: string, id: string) => {
+    if (id === "micro-services") {
+      navigate('/micro-services');
+      return;
+    }
+    if (id === "consulting") {
+      navigate('/consulting');
+      return;
+    }
+    
+    if (location.pathname !== "/") {
+      navigate('/');
+      setTimeout(() => {
+        scrollToId(id);
+      }, 300);
+    } else {
+      scrollToId(id);
+    }
+  };
+
   return (
     <footer
       data-testid="site-footer"
@@ -46,7 +72,7 @@ export default function Footer() {
               className="h-10 md:h-12 w-auto object-contain mb-4 brand-logo"
               draggable={false}
             />
-            <div className="font-display text-lg md:text-xl font-bold text-tasc-text mb-5 leading-tight tracking-tight">
+            <div className="font-display text-lg md:text-xl font-bold text-tasc-text mb-5 leading-tight tracking-tight whitespace-nowrap">
               Tenacious Automation<br/><span className="text-tasc-cyan">Solutions & Consulting</span>
             </div>
             <p className="text-tasc-text/55 text-sm font-light leading-relaxed max-w-md">
@@ -70,7 +96,7 @@ export default function Footer() {
                   <li key={t + id}>
                     <button
                       data-testid={`footer-link-${t.toLowerCase().replace(/\s|&/g, "-")}`}
-                      onClick={() => scrollToId(id)}
+                      onClick={() => handleLinkClick(t, id)}
                       className="text-tasc-text/70 hover:text-tasc-cyan text-sm transition-colors text-left"
                     >
                       {t}

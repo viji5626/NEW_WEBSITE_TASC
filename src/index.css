@@ -46,10 +46,6 @@
         background: linear-gradient(135deg, rgba(0, 162, 212, 0.15) 0%, rgba(255, 255, 255, 1) 100%) !important;
     }
 
-    .light .bg-tasc-bg {
-        background-color: #ffffff !important;
-    }
-
     .light .text-tasc-text\/35 { color: #6b7280 !important; }
     .light .text-tasc-text\/40 { color: #4b5563 !important; } 
     .light .text-tasc-text\/50 { color: #374151 !important; }

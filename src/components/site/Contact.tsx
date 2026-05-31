@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { SectionHeader } from "./Capabilities";
+import { scrollToId } from "@/lib/scrollTo";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -102,8 +103,7 @@ export default function Contact() {
   };
 
   const scrollTo = (id) => () => {
-    const el = document.getElementById(id);
-    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72, behavior: "smooth" });
+    scrollToId(id);
   };
 
   return (
@@ -113,7 +113,7 @@ export default function Contact() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 10" kicker="TERMINAL INTERFACE" title="Open a secure channel." />
+        <SectionHeader code="// 11" kicker="TERMINAL INTERFACE" title="Open a secure channel." />
 
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: form */}
@@ -162,7 +162,7 @@ export default function Contact() {
                       type="submit"
                       disabled={submitting}
                       data-testid="contact-submit"
-                      className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-7 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                      className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-7 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-slate-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                     >
                       <span className="relative">{submitting ? "[ TRANSMITTING… ]" : "[ TRANSMIT DATA ]"}</span>
                     </button>

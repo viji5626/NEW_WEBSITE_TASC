@@ -3,13 +3,14 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { MagneticWrapper } from '@/components/ui/MagneticWrapper';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { scrollToId } from '@/lib/scrollTo';
 
 const Hero = () => {
-  const scrollToContact = () => document.getElementById('terminal-interface')?.scrollIntoView({ behavior: 'smooth' });
-  const scrollToVerticals = () => document.getElementById('the-arsenal')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToContact = () => scrollToId('terminal-interface');
+  const scrollToVerticals = () => scrollToId('the-arsenal');
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center pt-32 pb-16 px-6 overflow-hidden">
+    <section id="command-center" className="relative min-h-[80vh] flex items-center justify-center pt-32 pb-16 px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto w-full text-center z-10 mt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -40,7 +41,7 @@ const Hero = () => {
               <MagneticWrapper>
                 <button
                   onClick={scrollToContact}
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 border border-tasc-cyan bg-tasc-bg text-tasc-cyan overflow-hidden hover:bg-tasc-cyan hover:text-white transition-all duration-300"
+                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 border border-tasc-cyan bg-tasc-bg text-tasc-cyan overflow-hidden hover:bg-tasc-cyan hover:text-slate-900 transition-all duration-300"
                   style={{ borderRadius: '0' }}
                 >
                   <span className="relative z-10">[ INITIATE CONSULTATION ]</span>
@@ -56,7 +57,7 @@ const Hero = () => {
               <MagneticWrapper>
                 <button
                   onClick={scrollToVerticals}
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 text-tasc-text hover:text-white hover:bg-tasc-cyan/80 transition-all duration-300 flex items-center gap-3 overflow-hidden border border-tasc-border hover:border-tasc-cyan"
+                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 text-tasc-text hover:text-slate-900 hover:bg-tasc-cyan/80 transition-all duration-300 flex items-center gap-3 overflow-hidden border border-tasc-border hover:border-tasc-cyan"
                   style={{ borderRadius: '0' }}
                 >
                   <span className="relative z-10 flex items-center gap-3">

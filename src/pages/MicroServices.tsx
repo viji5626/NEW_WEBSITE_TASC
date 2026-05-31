@@ -1,6 +1,7 @@
 import { Server, Globe, Mail, Zap, Database, Code, Bot, CheckCircle, Rocket, ShieldCheck, Cpu } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,7 +34,7 @@ const SERVICES = [
     description: "High-performance structural websites tailored to conversion. Elevate your brand with responsive designs.",
     logos: [
       { name: "HTML5", url: "https://cdn.simpleicons.org/html5/E34F26" },
-      { name: "CSS3", url: "https://cdn.simpleicons.org/css3/1572B6" },
+      { name: "CSS3", url: "https://cdn.simpleicons.org/css/1572B6" },
       { name: "JavaScript", url: "https://cdn.simpleicons.org/javascript/F7DF1E" },
       { name: "Tailwind CSS", url: "https://cdn.simpleicons.org/tailwindcss/06B6D4" },
       { name: "Bootstrap", url: "https://cdn.simpleicons.org/bootstrap/7952B3" },
@@ -82,8 +83,10 @@ const SERVICES = [
     title: "Agentic AI & AI Agents",
     description: "Intelligent autonomous agents powered by leading LLMs and integrated through robust orchestration pipelines.",
     logos: [
-      { name: "OpenAI", url: "https://cdn.simpleicons.org/openai/white" },
+      { name: "OpenAI", url: "/brand/openai-white.svg" },
       { name: "Ollama", url: "https://cdn.simpleicons.org/ollama/white" },
+      { name: "LM Studio", url: "https://cdn.simpleicons.org/lmstudio/white" },
+      { name: "Hermes", url: "/brand/hermes-white.svg" },
       { name: "PostgreSQL", url: "https://cdn.simpleicons.org/postgresql/4169E1" },
       { name: "LangChain", url: "https://cdn.simpleicons.org/langchain/white" },
       { name: "n8n", url: "https://cdn.simpleicons.org/n8n/EA4B71" },
@@ -103,6 +106,7 @@ const SERVICES = [
 ];
 
 export default function MicroServices() {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-[100vh] py-32 px-6 md:px-10 lg:px-16 mx-auto max-w-[1440px] z-10 flex flex-col justify-center">
       <ScrollReveal>
@@ -213,8 +217,8 @@ export default function MicroServices() {
              
              <a href="#terminal-interface" onClick={(e) => {
                  e.preventDefault();
-                 window.location.href = "/#terminal-interface";
-             }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-tasc-bg font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
+                 navigate("/#terminal-interface");
+             }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-slate-900 font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
                  [ INITIATE SECURE LINE ]
              </a>
          </div>

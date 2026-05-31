@@ -12,11 +12,22 @@ import Home from "@/pages/Home";
 import MicroServices from "@/pages/MicroServices";
 import Consulting from "@/pages/Consulting";
 
+import { scrollToId, scrollToTop } from "@/lib/scrollTo";
+
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (hash) {
+      setTimeout(() => {
+        const id = hash.replace('#', '');
+        scrollToId(id);
+      }, 300);
+    } else {
+      setTimeout(() => {
+        scrollToTop(true);
+      }, 50);
+    }
+  }, [pathname, hash]);
   return null;
 }
 
@@ -27,7 +38,7 @@ function App() {
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
-    window.scrollTo(0, 0);
+    scrollToTop(true);
 
     // Initialize Lenis
     const lenis = new Lenis({
@@ -39,6 +50,9 @@ function App() {
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
+
+    // Expose lenis globally for accurate smooth scrolling
+    (window as any).lenis = lenis;
 
     function raf(time: number) {
       lenis.raf(time);
@@ -56,7 +70,7 @@ function App() {
     <BrowserRouter>
       <BootScreen />
       <ScrollToTop />
-      <div className="App relative bg-tasc-bg min-h-screen text-tasc-text selection:bg-tasc-cyan selection:text-tasc-bg overflow-hidden" data-testid="tasc-app">
+      <div className="App relative bg-tasc-bg min-h-screen text-tasc-text selection:bg-tasc-cyan selection:text-slate-900 overflow-hidden" data-testid="tasc-app">
         <TechBackground />
         {/* Noise Overlay */}
         <div 

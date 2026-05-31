@@ -36,9 +36,8 @@ export default function ConsultingSection() {
             <button
               onClick={() => {
                 navigate('/consulting');
-                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 50);
               }}
-              className="mt-10 font-[Orbitron] text-xs tracking-[0.2em] px-8 py-4 bg-tasc-bg text-tasc-cyan border border-tasc-cyan hover:bg-tasc-cyan hover:text-tasc-bg transition-colors uppercase"
+              className="mt-10 font-[Orbitron] text-xs tracking-[0.2em] px-8 py-4 bg-tasc-bg text-tasc-cyan border border-tasc-cyan hover:bg-tasc-cyan hover:text-slate-900 transition-colors uppercase"
             >
               Explore Consulting Services
             </button>

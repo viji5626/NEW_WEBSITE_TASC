@@ -24,7 +24,7 @@ export default function Founder() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 09" kicker="ABOUT" title="Tenacious by design." />
+        <SectionHeader code="// 10" kicker="ABOUT" title="Tenacious by design." />
 
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Photo column */}
@@ -145,7 +145,7 @@ export default function Founder() {
                   data-testid="founder-vcard-download"
                   href="/brand/vijay-shankar.vcf"
                   download="Vijay-Shankar-TASC.vcf"
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-white transition-all duration-300 inline-flex items-center gap-3"
+                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-slate-900 transition-all duration-300 inline-flex items-center gap-3"
                 >
                   <Download size={14} strokeWidth={1.5} className="relative" />
                   <span className="relative">[ ADD TO CONTACTS ]</span>
@@ -178,7 +178,7 @@ export default function Founder() {
               type="button"
               data-testid="founder-qr-close"
               onClick={() => setQrOpen(false)}
-              className="absolute -top-3 -right-3 w-9 h-9 bg-tasc-bg border border-tasc-cyan text-tasc-cyan flex items-center justify-center hover:bg-tasc-cyan hover:text-tasc-bg transition-colors"
+              className="absolute -top-3 -right-3 w-9 h-9 bg-tasc-bg border border-tasc-cyan text-tasc-cyan flex items-center justify-center hover:bg-tasc-cyan hover:text-slate-900 transition-colors"
               aria-label="Close"
             >
               <X size={18} strokeWidth={1.5} />
