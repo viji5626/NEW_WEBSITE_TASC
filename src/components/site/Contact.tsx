@@ -200,7 +200,7 @@ export default function Contact() {
               {[
                 ["DESK", "info@tascautomation.com"],
                 ["SUPPORT", "Mon–Sat · 09:00–19:00 IST"],
-                ["GRID", "12.97° N · 77.59° E"],
+                ["GRID", "30.371901° N · 78.078037° E"],
               ].map(([k, v]) => (
                 <div key={k} className="flex items-baseline justify-between gap-3 border-b border-tasc-border pb-2 last:border-b-0">
                   <span className="font-[Orbitron] text-[9px] tracking-[0.25em] text-tasc-border">{k}</span>
