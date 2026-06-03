@@ -44,7 +44,7 @@ export function ChatBot() {
 
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error(data?.error || "Failed to get response");
+        throw new Error(data?.error || `Server Error ${response.status} - check network tab for details`);
       }
 
       setMessages((prev) => [...prev, { role: "bot", content: data.reply }]);
@@ -54,11 +54,9 @@ export function ChatBot() {
       
       if (error && error.message) {
         if (error.message.includes("API key not configured")) {
-           errorMessage = "API key is not configured in this environment. Please ensure the GEMINI_API_KEY is added in **Settings > Secrets**.";
-        } else if (error.message !== "Failed to get response") {
-           errorMessage = `API Error: ${error.message}`;
+           errorMessage = "API key is not configured in this environment. Please ensure the GEMINI_API_KEY is added in **Settings > Environment Variables**.";
         } else {
-           errorMessage = `Connection Error: Check console for details. Contact info@tascautomation.com`;
+           errorMessage = `Connection Error: ${error.message}. Please check your deployment logs or network tab.`;
         }
       }
 
