@@ -1,18 +1,20 @@
 import { GoogleGenAI } from "@google/genai";
 
-export default async (req: Request) => {
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405 });
+export const handler = async (event: any, context: any) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   try {
-    const { message } = await req.json();
+    const body = event.body ? JSON.parse(event.body) : {};
+    const { message } = body;
+    
     if (!message) {
-      return new Response(JSON.stringify({ error: "Message is required" }), { status: 400 });
+      return { statusCode: 400, body: JSON.stringify({ error: "Message is required" }) };
     }
 
     if (!process.env.GEMINI_API_KEY) {
-      return new Response(JSON.stringify({ error: "API key not configured" }), { status: 500 });
+      return { statusCode: 500, body: JSON.stringify({ error: "API key not configured" }) };
     }
 
     const ai = new GoogleGenAI({
@@ -34,8 +36,7 @@ Core Details about TASC:
 - Support: We offer comprehensive AMCs with tiered SLAs.
 - Leadership: Founder & Principal Engineer is Mr. Vijay Shankar (11+ years experience). Director is Mrs. Monika Chauhan.
 - AI & Edge: We deploy secure Edge AI gateways and localized LLMs.
-- Case Studies: Energy Management & Digitalization (Daikin Neemrana), 132 KV Switchyard, Quartz/Iron Ore Beneficiation.
-`;
+- Case Studies: Energy Management & Digitalization (Daikin Neemrana), 132 KV Switchyard, Quartz/Iron Ore Beneficiation.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -45,16 +46,17 @@ Core Details about TASC:
       },
     });
 
-    return new Response(JSON.stringify({ reply: response.text }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reply: response.text })
+    };
   } catch (error: any) {
     console.error("Gemini API Error:", error);
-    return new Response(JSON.stringify({ error: error?.message || "Failed to generate reply from AI" }), { status: 500 });
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: error?.message || "Failed to generate reply from AI" })
+    };
   }
-};
-
-export const config = {
-  path: "/.netlify/functions/chat" // Just in case, this is actually auto-resolved by file name but good to know
 };
