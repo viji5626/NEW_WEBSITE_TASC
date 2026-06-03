@@ -36,23 +36,15 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
-      let response = await fetch("/api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
       });
 
-      if (response.status === 404 || response.status === 405) {
-        response = await fetch("/.netlify/functions/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text }),
-        });
-      }
-
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error(data?.error || `Server Error ${response.status} - check network tab for details`);
+        throw new Error(data?.error || "Failed to get response");
       }
 
       setMessages((prev) => [...prev, { role: "bot", content: data.reply }]);
@@ -62,9 +54,11 @@ export function ChatBot() {
       
       if (error && error.message) {
         if (error.message.includes("API key not configured")) {
-           errorMessage = "API key is not configured in this environment. Please ensure the GEMINI_API_KEY is added in **Settings > Environment Variables**.";
+           errorMessage = "API key is not configured in this environment. Please ensure the GEMINI_API_KEY is added in your environment variables.";
+        } else if (error.message !== "Failed to get response") {
+           errorMessage = `API Error: ${error.message}`;
         } else {
-           errorMessage = `Connection Error: ${error.message}. Please check your deployment logs or network tab.`;
+           errorMessage = `Connection Error: Check console for details. Contact info@tascautomation.com`;
         }
       }
 

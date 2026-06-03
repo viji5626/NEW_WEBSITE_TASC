@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { MagneticWrapper } from '@/components/ui/MagneticWrapper';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { scrollToId } from '@/lib/scrollTo';
-import React, { Suspense } from 'react';
 
 const HeroBackground3D = React.lazy(() => 
   import('@/components/ui/HeroBackground3D').then(m => ({ default: m.HeroBackground3D }))
