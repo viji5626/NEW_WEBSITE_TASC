@@ -15,7 +15,6 @@ const Consulting = lazy(() => import("@/pages/Consulting"));
 const FAQ = lazy(() => import("@/pages/FAQ"));
 
 import { scrollToId, scrollToTop } from "@/lib/scrollTo";
-import { ChatBot } from "@/components/ui/ChatBot";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 function ScrollToTop() {
@@ -27,8 +26,22 @@ function ScrollToTop() {
         scrollToId(id);
       }, 300);
     } else {
+      // Force scroll immediately
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      if ((window as any).lenis) {
+         (window as any).lenis.scrollTo(0, { immediate: true });
+      }
+      
+      // And again after a tiny delay for safety when React renders
       setTimeout(() => {
-        scrollToTop(true);
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        if ((window as any).lenis) {
+           (window as any).lenis.scrollTo(0, { immediate: true });
+        }
       }, 50);
     }
   }, [pathname, hash]);
@@ -115,7 +128,6 @@ function App() {
         </Suspense>
 
         <Footer />
-        <ChatBot />
 
         <Toaster
           theme="dark"

@@ -103,12 +103,14 @@ const VERTICALS = [
 
 export default function Industries() {
   const [active, setActive] = useState(0);
-  const sidebarRef = useRef(null);
+  const [userInteracted, setUserInteracted] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!userInteracted) return;
     const el = sidebarRef.current?.querySelector(`[data-idx="${active}"]`);
-    if (el) el.scrollIntoView({ block: "nearest", behavior: "auto" });
-  }, [active]);
+    if (el) el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [active, userInteracted]);
 
   const v = VERTICALS[active];
 
@@ -143,9 +145,9 @@ export default function Industries() {
                   <li key={vert.id} data-idx={i}>
                     <button
                       data-testid={`industry-${vert.id}`}
-                      onMouseEnter={() => setActive(i)}
-                      onFocus={() => setActive(i)}
-                      onClick={() => setActive(i)}
+                      onMouseEnter={() => { setActive(i); setUserInteracted(true); }}
+                      onFocus={() => { setActive(i); setUserInteracted(true); }}
+                      onClick={() => { setActive(i); setUserInteracted(true); }}
                       className="w-full text-left px-4 py-3 flex items-center gap-3 border-b border-tasc-border group transition-colors"
                       style={{
                         background: isOn ? "rgba(31,143,255,0.06)" : "transparent",
