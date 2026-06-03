@@ -42,20 +42,27 @@ export function ChatBot() {
         body: JSON.stringify({ message: text }),
       });
 
+      const data = await response.json().catch(() => null);
       if (!response.ok) {
-        throw new Error("Failed to get response");
+        throw new Error(data?.error || "Failed to get response");
       }
 
-      const data = await response.json();
       setMessages((prev) => [...prev, { role: "bot", content: data.reply }]);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Chat error:", error);
+      let errorMessage = "I'm sorry, I'm having trouble connecting right now. Please try again later or contact info@tascautomation.com.";
+      
+      if (error && error.message) {
+        if (error.message.includes("API key not configured")) {
+           errorMessage = "API key is not configured in this environment. Please ensure the GEMINI_API_KEY is added in **Settings > Secrets**.";
+        }
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           role: "bot",
-          content:
-            "I'm sorry, I'm having trouble connecting right now. Please try again later or contact info@tascautomation.com.",
+          content: errorMessage,
         },
       ]);
     } finally {

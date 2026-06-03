@@ -143,7 +143,7 @@ Core Details about TASC:
       const finalSystemInstruction = systemInstruction + `\n\n### WEBSITE DATA (Retrieved RAG Context, use this as ground truth for all answers):\n\n` + ragContext;
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.5-flash",
         contents: message,
         config: {
           systemInstruction: finalSystemInstruction,

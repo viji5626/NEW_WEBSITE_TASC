@@ -26,6 +26,14 @@ export default function Header() {
   const location = useLocation();
 
   useEffect(() => {
+    const handleThemeChange = () => {
+      if (document.documentElement.classList.contains('light') || localStorage.theme === 'light') {
+        setIsLightMode(true);
+      } else {
+        setIsLightMode(false);
+      }
+    };
+
     // Check initial preference
     if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
       document.documentElement.classList.add('light');
@@ -33,6 +41,9 @@ export default function Header() {
     } else {
       document.documentElement.classList.remove('light');
     }
+
+    window.addEventListener('theme-changed', handleThemeChange);
+    return () => window.removeEventListener('theme-changed', handleThemeChange);
   }, []);
 
   const toggleTheme = () => {
