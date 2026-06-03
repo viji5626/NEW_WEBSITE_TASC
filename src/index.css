@@ -356,3 +356,59 @@
     background: #00c2ff;
     box-shadow: 0 0 8px rgba(0, 194, 255, 0.5);
 }
+
+/* ---------- Print Stylesheet ---------- */
+@media print {
+    /* Hide non-essential UI elements in print */
+    nav, header, footer, .scan-line, .cursor-blink, .flow-path, .fixed, .sticky, 
+    button[aria-label="Open Chatbot"], button[aria-label="Close Chatbot"] {
+        display: none !important;
+    }
+    
+    /* Ensure colors print cleanly */
+    html, body, main, section {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    * {
+        background-color: transparent !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        border-color: #bbbbbb !important;
+        animation: none !important;
+        transition: none !important;
+        filter: none !important;
+        backdrop-filter: none !important;
+    }
+    
+    /* Reveal normally hidden print/overflow elements */
+    .overflow-hidden {
+        overflow: visible !important;
+    }
+    
+    /* Adjust page layout for paper */
+    @page {
+        margin: 1.5cm;
+        size: auto;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #333 !important;
+        word-break: break-all;
+    }
+    
+    /* Prevent page breaks inside important containers */
+    section, div[class*="border"], ul, ol, img, svg {
+        page-break-inside: avoid;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+    }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Cpu, Activity, Network, Zap, Cloud, Layers } from "lucide-react";
+import { Cpu, Activity, Network, Zap, Cloud, Layers, Package, Power, Server } from "lucide-react";
 import { TextReveal } from "@/components/ui/TextReveal";
 
 const CARDS = [
@@ -46,6 +46,27 @@ const CARDS = [
     title: "Interoperability & Architecture",
     body: "Vendor-neutral L0–L4 ISA-95 design for greenfield builds and brownfield modernization across multi-OEM stacks.",
   },
+  {
+    id: "plc-sales",
+    code: "//02.7",
+    icon: Package,
+    title: "PLC Hardware Sales",
+    body: "Turnkey supply of programmable controllers from Siemens, Mitsubishi, and leading OEMs. Scalable from compact brick PLCs to redundant high-availability plant controllers.",
+  },
+  {
+    id: "vfd-sales",
+    code: "//02.8",
+    icon: Power,
+    title: "VFD Sales",
+    body: "Complete portfolio of Variable Frequency Drives for discrete manufacturing and process control. We provide drive sizing, parameterization logic, and on-site integration support.",
+  },
+  {
+    id: "web-hosting",
+    code: "//02.9",
+    icon: Server,
+    title: "Web Hosting Services",
+    body: "Industrial-grade website development, domain procurement, and robust web hosting solutions. We ensure your corporate digital identities remain secure and fast.",
+  },
 ];
 
 export default function Capabilities() {
@@ -70,6 +91,7 @@ export default function Capabilities() {
 
 const CapabilityCard: React.FC<{ card: any; index: any }> = ({ card, index }) => {
   const Icon = card.icon;
+  const [expanded, setExpanded] = React.useState(false);
   return (
     <motion.div
       data-testid={`capability-card-${card.id}`}
@@ -77,26 +99,37 @@ const CapabilityCard: React.FC<{ card: any; index: any }> = ({ card, index }) =>
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="relative bg-tasc-bg p-8 md:p-10 trace-border group cursor-default"
+      className="relative bg-tasc-bg p-8 md:p-10 trace-border group cursor-pointer transition-colors hover:border-tasc-cyan/30 flex flex-col h-full"
+      tabIndex={0}
+      role="button"
+      aria-expanded={expanded}
+      aria-labelledby={`capability-title-${card.id}`}
+      aria-describedby={`capability-desc-${card.id}`}
+      onClick={() => setExpanded(!expanded)}
     >
-      <div className="flex items-start justify-between mb-8">
-        <div className="w-12 h-12 border border-tasc-border flex items-center justify-center group-hover:border-tasc-cyan transition-colors">
-          <Icon size={22} strokeWidth={1.25} className="text-tasc-text/80 group-hover:text-tasc-cyan transition-colors" />
+      <div className="flex items-start justify-between mb-8" aria-hidden="true">
+        <div className="w-12 h-12 border border-tasc-border flex items-center justify-center group-hover:border-tasc-cyan transition-colors shrink-0">
+          <Icon size={22} strokeWidth={1.25} className="text-tasc-text/80 group-hover:text-tasc-cyan transition-colors" aria-hidden="true" />
         </div>
-        <div className="font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-border group-hover:text-tasc-cyan transition-colors">
+        <div className="font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-border group-hover:text-tasc-cyan transition-colors hidden md:block">
           [ + ]
+        </div>
+        <div className={`font-[Orbitron] text-[10px] tracking-[0.25em] transition-colors md:hidden ${expanded ? 'text-tasc-cyan' : 'text-tasc-border'}`}>
+          {expanded ? '[ - ]' : '[ + ]'}
         </div>
       </div>
 
-      <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3">
+      <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3" aria-hidden="true">
         {card.code}
       </div>
-      <h3 className="font-[Montserrat] text-xl md:text-2xl font-medium text-tasc-text mb-4 leading-tight">
+      <h3 id={`capability-title-${card.id}`} className="font-[Montserrat] text-xl md:text-2xl font-medium text-tasc-text mb-4 leading-tight">
         {card.title}
       </h3>
-      <p className="text-tasc-text/55 text-sm md:text-[15px] leading-relaxed font-light">
-        {card.body}
-      </p>
+      <div className={`overflow-hidden transition-all duration-300 ease-in-out md:group-hover:opacity-100 md:group-hover:max-h-[500px] ${expanded ? 'max-h-[500px] opacity-100 mt-auto' : 'max-h-0 opacity-0 md:max-h-0 md:opacity-0'}`}>
+        <p id={`capability-desc-${card.id}`} className="text-tasc-text/55 text-sm md:text-[15px] leading-relaxed font-light pt-4 border-t border-tasc-border/50">
+          {card.body}
+        </p>
+      </div>
     </motion.div>
   );
 }

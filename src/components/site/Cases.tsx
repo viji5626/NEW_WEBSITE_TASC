@@ -138,6 +138,13 @@ const CaseDetail = ({ c, active, total }: { c: any; active: number; total: numbe
           className="absolute inset-0 pointer-events-none"
           style={{ background: "linear-gradient(180deg, rgba(0,194,255,0.06) 0%, transparent 30%, transparent 70%, rgba(13,17,23,0.85) 100%)" }}
         />
+        
+        {/* Diagonal Watermark */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden select-none">
+          <span className="font-[Orbitron] font-bold text-3xl sm:text-4xl lg:text-5xl rotate-[-35deg] tracking-[0.15em] text-tasc-cyan opacity-[0.08] uppercase border-y border-tasc-cyan/20 px-8 py-3 text-center whitespace-nowrap">
+            TASC Automation
+          </span>
+        </div>
         {/* HUD */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/80">
@@ -218,10 +225,19 @@ export default function Cases() {
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
         <SectionHeader code="// 06" kicker="FIELD RECORD" title="Case studies — real plants, real PLCs." />
-        <p className="mt-6 max-w-2xl text-tasc-text/55 text-base font-light leading-relaxed">
-          Five projects across digitalization, substation automation, beneficiation and engineered
-          stone — each delivered with documentation, panel workmanship and live-plant cut-overs.
-        </p>
+        <div className="mt-6 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <p className="max-w-2xl text-tasc-text/55 text-base font-light leading-relaxed">
+            We have featured 5 projects out of our diverse expertise across various sectors. Each delivered with documentation, panel workmanship and live-plant cut-overs.
+          </p>
+          <button
+            onClick={() => {
+              document.getElementById('terminal-interface')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="group relative shrink-0 font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-3 border border-tasc-border text-tasc-text/80 overflow-hidden hover:border-tasc-cyan hover:text-tasc-cyan transition-colors self-start md:self-auto"
+          >
+            [ MORE CASE STUDIES ]
+          </button>
+        </div>
 
         {/* Selector tabs */}
         <div className="mt-12 flex flex-col md:grid md:grid-cols-5 gap-px bg-tasc-border/60 border border-tasc-border">

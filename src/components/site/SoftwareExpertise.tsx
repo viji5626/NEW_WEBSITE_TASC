@@ -110,16 +110,21 @@ export default function SoftwareExpertise() {
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
                 className="relative bg-tasc-bg trace-border group flex flex-col"
+                tabIndex={0}
+                role="article"
+                aria-labelledby={`stack-title-${s.id}`}
+                aria-describedby={`stack-desc-${s.id}`}
               >
                 {/* Hero image (if provided) */}
                 {s.image && (
                   <div
                     className="relative w-full overflow-hidden border-b border-tasc-border"
                     style={{ background: s.imageBg, aspectRatio: "16 / 9" }}
+                    aria-hidden="true"
                   >
                     <img
                       src={s.image}
-                      alt={s.title}
+                      alt={`${s.title} platform architecture overview`}
                       className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-[1.04]"
                       style={{ objectFit: (s.imageFit as 'cover' | 'contain' | 'fill' | 'none' | 'scale-down') || "cover" }}
                       draggable={false}
@@ -144,28 +149,50 @@ export default function SoftwareExpertise() {
                 )}
 
                 <div className="p-8 md:p-9 flex-1 flex flex-col">
-                  <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-start justify-between mb-6" aria-hidden="true">
                     <div className="w-12 h-12 border border-tasc-border flex items-center justify-center group-hover:border-tasc-cyan transition-colors">
-                      <Icon size={22} strokeWidth={1.25} className="text-tasc-text/80 group-hover:text-tasc-cyan transition-colors" />
+                      <Icon size={22} strokeWidth={1.25} className="text-tasc-text/80 group-hover:text-tasc-cyan transition-colors" aria-hidden="true" />
                     </div>
                     <div className="font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-border group-hover:text-tasc-cyan transition-colors">
                       [ + ]
                     </div>
                   </div>
                   {!s.image && (
-                    <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-2">{s.code}</div>
+                    <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-2" aria-hidden="true">{s.code}</div>
                   )}
-                  <h3 className="font-[Montserrat] text-xl font-medium text-tasc-text leading-tight">{s.title}</h3>
+                  <h3 id={`stack-title-${s.id}`} className="font-[Montserrat] text-xl font-medium text-tasc-text leading-tight">{s.title}</h3>
                   <div className="mt-1 font-[Orbitron] text-[9px] tracking-[0.2em] text-tasc-cyan/80">{s.vendor}</div>
-                  <p className="mt-4 text-tasc-text/55 text-sm leading-relaxed font-light">{s.body}</p>
-                  <ul className="mt-5 space-y-1.5">
-                    {s.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-3 text-tasc-text/75 text-xs">
-                        <span className="w-2 h-px bg-tasc-cyan" />
-                        <span className="font-[Inter] font-light">{b}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  
+                  <div className="md:opacity-0 md:max-h-0 md:group-hover:opacity-100 md:group-hover:max-h-[500px] overflow-hidden transition-all duration-300 ease-in-out hidden md:block">
+                    <p id={`stack-desc-${s.id}-desktop`} className="mt-4 text-tasc-text/55 text-sm leading-relaxed font-light pt-2 border-t border-tasc-border/50">{s.body}</p>
+                    <ul className="mt-5 space-y-1.5" aria-label={`Features of ${s.title}`}>
+                      {s.bullets.map((b) => (
+                        <li key={b} className="flex items-center gap-3 text-tasc-text/75 text-xs">
+                          <span className="w-2 h-px bg-tasc-cyan" />
+                          <span className="font-[Inter] font-light">{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <details className="md:hidden mt-4 group/details">
+                    <summary className="font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-cyan cursor-pointer list-none flex items-center gap-2">
+                       <span className="text-tasc-border group-open/details:hidden">[ + ]</span>
+                       <span className="text-tasc-cyan hidden group-open/details:inline">[ - ]</span>
+                       <span>VIEW DETAILS</span>
+                    </summary>
+                    <div className="pt-4 mt-4 border-t border-tasc-border/50">
+                      <p id={`stack-desc-${s.id}-mobile`} className="text-tasc-text/55 text-sm leading-relaxed font-light">{s.body}</p>
+                      <ul className="mt-5 space-y-1.5" aria-label={`Features of ${s.title}`}>
+                        {s.bullets.map((b) => (
+                          <li key={b} className="flex items-center gap-3 text-tasc-text/75 text-xs">
+                            <span className="w-2 h-px bg-tasc-cyan" />
+                            <span className="font-[Inter] font-light">{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </details>
                 </div>
               </motion.div>
             );
@@ -237,26 +264,32 @@ export default function SoftwareExpertise() {
                 tags: ["VFD", "PLC", "SWITCHGEAR"]
               },
             ].map((b) => (
-              <div key={b.brand} className="bg-tasc-bg p-8 flex flex-col items-start border border-transparent hover:border-tasc-cyan transition-colors group">
-                <div className="h-16 flex items-center justify-start mb-6 w-full shrink-0">
+              <div 
+                key={b.brand} 
+                className="bg-tasc-bg p-8 flex flex-col items-start border border-transparent hover:border-tasc-cyan transition-colors group"
+                tabIndex={0}
+                role="article"
+                aria-labelledby={`brand-title-${b.brand.replace(/\s+/g, '-')}`}
+              >
+                <div className="h-16 flex items-center justify-start mb-6 w-full shrink-0" aria-hidden="true">
                   <div className="relative w-full max-w-[140px] h-full bg-white flex items-center justify-start p-2">
                     <img
                       src={b.imagePath}
-                      alt={`${b.brand} logo`}
+                      alt={`${b.brand} industrial automation and control hardware logo`}
                       className="w-full h-full object-contain grayscale-0 opacity-100 md:grayscale md:opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
                       draggable={false}
                     />
                   </div>
                 </div>
                 
-                <div className="font-[Orbitron] text-[9px] tracking-[0.2em] text-tasc-text/50 uppercase mb-3">
-                  STACK WE DELIVER
+                <div className="font-[Orbitron] text-[9px] tracking-[0.2em] text-tasc-text/50 uppercase mb-3" id={`brand-title-${b.brand.replace(/\s+/g, '-')}`}>
+                  <span className="sr-only">{b.brand} - </span>STACK WE DELIVER
                 </div>
                 <div className="text-sm text-tasc-text font-medium flex-1 leading-snug">
                   {b.stack}
                 </div>
                 
-                <div className="mt-8 flex flex-wrap gap-2">
+                <div className="mt-8 flex flex-wrap gap-2" aria-label={`Technologies delivered for ${b.brand}`}>
                   {b.tags.map((tag) => (
                     <div key={tag} className="px-2 py-1 bg-tasc-border/40 text-tasc-text/60 text-[9px] font-[Orbitron] tracking-wider rounded-sm">
                       {tag}

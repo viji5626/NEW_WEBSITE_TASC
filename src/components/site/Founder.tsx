@@ -82,7 +82,7 @@ export default function Founder() {
             </p>
             <p className="mt-5 text-tasc-text/70 text-base md:text-lg font-light leading-relaxed">
               Driven by a strong vision for innovation and reliability, the founder established
-              TASC to deliver scalable turnkey automation and digitalization solutions tailored
+              TASC (Tenacious Automation Solutions & Consulting) to deliver scalable turnkey automation and digitalization solutions tailored
               to modern industrial challenges. With deep technical expertise in process industries,
               manufacturing, utilities and infrastructure, the company focuses on building
               high-performance systems that improve productivity, efficiency, reliability and
@@ -208,14 +208,14 @@ export default function Founder() {
             <p className="mt-6 text-tasc-text/80 text-base md:text-lg font-light leading-relaxed">
               With extensive experience in Human Resources and strategic management,
               the Director plays a pivotal role in shaping the organizational culture and human 
-              capital strategies at TASC Automation. Her focus rests on talent acquisition, 
+              capital strategies at TASC (Tenacious Automation Solutions & Consulting). Her focus rests on talent acquisition, 
               employee development, and fostering an inclusive, high-performance workplace where 
               cross-functional engineering teams can thrive and innovate.
             </p>
             <p className="mt-5 text-tasc-text/70 text-base md:text-lg font-light leading-relaxed">
               Guided by a commitment to organizational excellence, she spearheads performance 
               management and continuous learning initiatives. Her structured approach ensures that 
-              TASC recruits top-tier industrial automation talent while maintaining high employee 
+              TASC (Tenacious Automation Solutions & Consulting) recruits top-tier industrial automation talent while maintaining high employee 
               engagement, aligning human resource objectives directly with the company's long-term 
               business goals.
             </p>

@@ -28,6 +28,7 @@ const COLS = [
     links: [
       ["Consulting", "we-consult"],
       ["Micro Services", "micro-services"],
+      ["Technical FAQ", "faq"],
       ["About", "tenacious-by-design"],
       ["Contact", "terminal-interface"],
     ],
@@ -45,6 +46,10 @@ export default function Footer() {
     }
     if (id === "consulting") {
       navigate('/consulting');
+      return;
+    }
+    if (id === "faq") {
+      navigate('/faq');
       return;
     }
     

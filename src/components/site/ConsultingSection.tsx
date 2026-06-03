@@ -45,8 +45,8 @@ export default function ConsultingSection() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-px border border-tasc-border bg-tasc-border/60">
             {SERVICES.map((service, i) => (
-              <div key={i} className="bg-tasc-bg p-6 flex flex-col justify-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-tasc-cyan shadow-[0_0_8px_var(--tasc-cyan)] mb-4" />
+              <div key={i} className="bg-tasc-bg p-6 flex flex-col justify-center" tabIndex={0} role="listitem" aria-label={`Consulting service: ${service}`}>
+                <div className="w-1.5 h-1.5 rounded-full bg-tasc-cyan shadow-[0_0_8px_var(--tasc-cyan)] mb-4" aria-hidden="true" />
                 <span className="font-[Montserrat] text-tasc-text leading-tight font-medium text-sm">
                   {service}
                 </span>

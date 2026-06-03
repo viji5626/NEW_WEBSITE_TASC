@@ -139,33 +139,68 @@ export default function MicroServices() {
             variants={itemVariants}
             style={{ transformOrigin: "bottom center", willChange: "transform, opacity" }}
             className="p-8 border border-tasc-border bg-tasc-bg hover:border-tasc-cyan/50 transition-all duration-300 group h-full flex flex-col relative overflow-hidden"
+            tabIndex={0}
+            role="article"
+            aria-labelledby={`service-title-${idx}`}
+            aria-describedby={`service-desc-${idx}`}
           >
               {/* Subtle hover background glow */}
               <div className="absolute inset-0 bg-tasc-cyan/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               
               <div className="relative z-10 flex flex-col h-full">
-                {service.icon}
+                <div aria-hidden="true" className="contents">
+                  {service.icon}
+                </div>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-medium pr-4">{service.title}</h3>
+                  <h3 id={`service-title-${idx}`} className="text-xl font-medium pr-4">{service.title}</h3>
                 </div>
                 
-                <p className="text-tasc-text/60 leading-relaxed mb-8 flex-grow text-sm">
-                  {service.description}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-tasc-border/50 mt-auto">
-                  <span className="text-[10px] font-[Orbitron] text-tasc-text/40 tracking-widest uppercase w-full block mb-2">Tech Stack</span>
-                  {service.logos.map(logo => (
-                    <div key={logo.name} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-tasc-border/50 bg-tasc-bg/50" title={logo.name}>
-                      <img 
-                        src={logo.url} 
-                        alt={logo.name} 
-                        className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
-                      />
-                      <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
-                    </div>
-                  ))}
+                <div className="md:opacity-0 md:max-h-0 md:group-hover:opacity-100 md:group-hover:max-h-[500px] overflow-hidden transition-all duration-300 ease-in-out hidden md:flex md:flex-col md:flex-grow">
+                  <p id={`service-desc-${idx}-desktop`} className="text-tasc-text/60 leading-relaxed mb-8 flex-grow text-sm">
+                    {service.description}
+                  </p>
+  
+                  <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-tasc-border/50 mt-auto" aria-label={`Tech stack for ${service.title}`}>
+                    <span className="text-[10px] font-[Orbitron] text-tasc-text/40 tracking-widest uppercase w-full block mb-2" aria-hidden="true">Tech Stack</span>
+                    {service.logos.map(logo => (
+                      <div key={logo.name} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-tasc-border/50 bg-tasc-bg/50" title={logo.name}>
+                        <img 
+                          src={logo.url} 
+                          alt={`${logo.name} logo representation`} 
+                          className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
+                        />
+                        <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
+                <details className="md:hidden group/details">
+                  <summary className="font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-cyan cursor-pointer list-none flex items-center gap-2 mb-4">
+                     <span className="text-tasc-border group-open/details:hidden">[ + ]</span>
+                     <span className="text-tasc-cyan hidden group-open/details:inline">[ - ]</span>
+                     <span>EXPAND</span>
+                  </summary>
+                  <div className="pt-4 border-t border-tasc-border/50 flex flex-col">
+                    <p id={`service-desc-${idx}-mobile`} className="text-tasc-text/60 leading-relaxed mb-8 flex-grow text-sm">
+                      {service.description}
+                    </p>
+    
+                    <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-tasc-border/50 mt-auto" aria-label={`Tech stack for ${service.title}`}>
+                      <span className="text-[10px] font-[Orbitron] text-tasc-text/40 tracking-widest uppercase w-full block mb-2" aria-hidden="true">Tech Stack</span>
+                      {service.logos.map(logo => (
+                        <div key={logo.name} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-tasc-border/50 bg-tasc-bg/50" title={logo.name}>
+                          <img 
+                            src={logo.url} 
+                            alt={`${logo.name} logo representation`} 
+                            className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
+                          />
+                          <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
               </div>
           </motion.div>
         ))}

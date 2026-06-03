@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import "@/App.css";
 import { Toaster } from "sonner";
@@ -8,11 +8,15 @@ import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 import { TechBackground } from "@/components/site/TechBackground";
 import BootScreen from "@/components/site/BootScreen";
-import Home from "@/pages/Home";
-import MicroServices from "@/pages/MicroServices";
-import Consulting from "@/pages/Consulting";
+
+const Home = lazy(() => import("@/pages/Home"));
+const MicroServices = lazy(() => import("@/pages/MicroServices"));
+const Consulting = lazy(() => import("@/pages/Consulting"));
+const FAQ = lazy(() => import("@/pages/FAQ"));
 
 import { scrollToId, scrollToTop } from "@/lib/scrollTo";
+import { ChatBot } from "@/components/ui/ChatBot";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -89,14 +93,29 @@ function App() {
         <div aria-hidden className="scan-line pointer-events-none z-10" />
 
         <Header />
+        
+        <Breadcrumbs />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/micro-services" element={<MicroServices />} />
-          <Route path="/consulting" element={<Consulting />} />
-        </Routes>
+        <Suspense fallback={
+          <div className="min-h-[80vh] flex items-center justify-center relative z-20">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 border-2 border-tasc-border border-t-tasc-cyan rounded-full animate-spin" />
+              <div className="font-[Orbitron] text-tasc-cyan/80 tracking-widest text-[10px] uppercase animate-pulse">
+                Loading Module...
+              </div>
+            </div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/micro-services" element={<MicroServices />} />
+            <Route path="/consulting" element={<Consulting />} />
+            <Route path="/faq" element={<FAQ />} />
+          </Routes>
+        </Suspense>
 
         <Footer />
+        <ChatBot />
 
         <Toaster
           theme="dark"
