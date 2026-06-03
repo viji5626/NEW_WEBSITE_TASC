@@ -64,19 +64,28 @@ export default function Contact() {
     const ticketId = `TASC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
     try {
-      const formData = new FormData();
-      formData.append("access_key", "cc7c2810-6da6-4d9b-b2cc-f3ebc28759d0");
-      formData.append("subject", `TASC - Form - ${form.organization || form.name}`);
-      formData.append("name", form.name);
-      formData.append("email", form.email);
-      formData.append("organization", form.organization || "N/A");
-      formData.append("project_scope", form.project_scope);
-      formData.append("ticket_id", ticketId);
+      const payload = {
+        name: form.name,
+        email: form.email,
+        organization: form.organization || "N/A",
+        project_scope: form.project_scope,
+        subject: `TASC - Form - ${form.organization || form.name}`,
+        ticket_id: ticketId
+      };
 
-      const response = await fetch("https://api.web3forms.com/submit", {
+      let response = await fetch("/api/contact/email", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
+
+      if (response.status === 404 || response.status === 405) {
+        response = await fetch("/.netlify/functions/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
 
       const data = await response.json();
 
