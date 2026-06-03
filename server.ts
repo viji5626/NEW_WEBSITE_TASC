@@ -151,9 +151,9 @@ Core Details about TASC:
       });
 
       res.status(200).json({ reply: response.text });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Gemini API Error:", error);
-      res.status(500).json({ error: "Failed to generate reply" });
+      res.status(500).json({ error: error?.message || "Failed to generate reply from AI" });
     }
   });
 

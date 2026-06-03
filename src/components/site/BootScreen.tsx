@@ -4,10 +4,12 @@ import { scrollToTop } from "@/lib/scrollTo";
 import { ThemePrompt } from "@/components/ui/ThemePrompt";
 
 export default function BootScreen() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => !sessionStorage.getItem('booted'));
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
+    if (!isVisible && !showPrompt) return;
+
     // Lock scroll during boot
     document.body.style.overflow = "hidden";
     if (typeof window !== "undefined") {
@@ -17,6 +19,8 @@ export default function BootScreen() {
     // 3.5 seconds total boot time to match the video
     const timer = setTimeout(() => {
       setIsVisible(false);
+      sessionStorage.setItem('booted', 'true');
+      
       // Only show theme prompt once per session
       if (!sessionStorage.getItem('themePromptShown')) {
         setShowPrompt(true);

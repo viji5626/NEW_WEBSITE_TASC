@@ -55,6 +55,10 @@ export function ChatBot() {
       if (error && error.message) {
         if (error.message.includes("API key not configured")) {
            errorMessage = "API key is not configured in this environment. Please ensure the GEMINI_API_KEY is added in **Settings > Secrets**.";
+        } else if (error.message !== "Failed to get response") {
+           errorMessage = `API Error: ${error.message}`;
+        } else {
+           errorMessage = `Connection Error: Check console for details. Contact info@tascautomation.com`;
         }
       }
 
