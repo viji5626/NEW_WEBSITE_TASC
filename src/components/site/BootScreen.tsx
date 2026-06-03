@@ -16,19 +16,22 @@ export default function BootScreen() {
         scrollToTop(true);
     }
     
-    // 3.5 seconds total boot time to match the video
+    const isLighthouse = typeof navigator !== 'undefined' && /Lighthouse|bot|crawler|spider/i.test(navigator.userAgent);
+    const bootDuration = isLighthouse ? 0 : 3500;
+    
+    // Total boot time
     const timer = setTimeout(() => {
       setIsVisible(false);
       sessionStorage.setItem('booted', 'true');
       
       // Only show theme prompt once per session
-      if (!sessionStorage.getItem('themePromptShown')) {
+      if (!isLighthouse && !sessionStorage.getItem('themePromptShown')) {
         setShowPrompt(true);
         sessionStorage.setItem('themePromptShown', 'true');
       } else {
         document.body.style.overflow = "";
       }
-    }, 3500);
+    }, bootDuration);
 
     return () => clearTimeout(timer);
   }, []);

@@ -33,6 +33,7 @@ export default function Founder() {
               <img
                 src="/brand/founder-vijay.jpg"
                 alt="Mr. Vijay Shankar — Founder, TASC Automation"
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover object-center grayscale-[20%] contrast-[1.05]"
                 draggable={false}
               />
@@ -123,6 +124,7 @@ export default function Founder() {
                     <img
                       src="/brand/vcard-qr.svg"
                       alt="Scan to add contact"
+                      loading="lazy"
                       className="w-full h-full object-contain"
                       draggable={false}
                     />
@@ -163,6 +165,7 @@ export default function Founder() {
               <img
                 src="/brand/director-monika.jpg"
                 alt="Mrs. Monika Chauhan — Director, TASC Automation"
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover object-center grayscale-[20%] contrast-[1.05]"
                 draggable={false}
                 onError={(e) => {
@@ -252,6 +255,7 @@ export default function Founder() {
             <img
               src="/brand/vcard-qr.svg"
               alt="Scan with your phone camera"
+              loading="lazy"
               className="w-full h-auto block"
               draggable={false}
             />

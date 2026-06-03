@@ -129,6 +129,7 @@ const CaseDetail = ({ c, active, total }: { c: any; active: number; total: numbe
         <img
           src={c.image}
           alt={c.title}
+          loading="lazy"
           className="absolute inset-0 w-full h-full object-cover"
           draggable={false}
         />

@@ -4,7 +4,11 @@ import { ArrowRight } from 'lucide-react';
 import { MagneticWrapper } from '@/components/ui/MagneticWrapper';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { scrollToId } from '@/lib/scrollTo';
-import { HeroBackground3D } from '@/components/ui/HeroBackground3D';
+import React, { Suspense } from 'react';
+
+const HeroBackground3D = React.lazy(() => 
+  import('@/components/ui/HeroBackground3D').then(m => ({ default: m.HeroBackground3D }))
+);
 
 const Hero = () => {
   const scrollToContact = () => scrollToId('terminal-interface');
@@ -12,7 +16,9 @@ const Hero = () => {
 
   return (
     <section id="command-center" className="relative min-h-[70vh] flex flex-col items-center justify-center pt-24 pb-16 px-6 overflow-hidden">
-      <HeroBackground3D />
+      <Suspense fallback={null}>
+        <HeroBackground3D />
+      </Suspense>
       <div className="max-w-7xl mx-auto w-full text-center z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

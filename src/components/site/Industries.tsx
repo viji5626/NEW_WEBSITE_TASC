@@ -199,6 +199,7 @@ export default function Industries() {
                       key={v.photo}
                       src={v.photo}
                       alt={v.name}
+                      loading="lazy"
                       initial={{ opacity: 0, scale: 1.06 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
@@ -250,7 +251,7 @@ export default function Industries() {
               </summary>
               <div className="p-5 pt-0 space-y-4">
                 <div className="relative aspect-video border border-tasc-border overflow-hidden">
-                  <img src={vert.photo} alt={vert.name} className="absolute inset-0 w-full h-full object-cover" />
+                  <img src={vert.photo} alt={vert.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-tasc-bg/45 mix-blend-multiply" />
                 </div>
                 <p className="text-tasc-text/60 text-sm font-light leading-relaxed">{vert.body}</p>

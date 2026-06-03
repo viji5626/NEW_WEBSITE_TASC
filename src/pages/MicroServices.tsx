@@ -77,7 +77,7 @@ const SERVICES = [
       { name: "AI Orchestration", url: "/brand/ai-orchestration.svg" },
       { name: "Vercel", url: "https://cdn.simpleicons.org/vercel/white" },
     ],
-    icon: <img src="/brand/ai-orchestration.svg" alt="AI Orchestration" className="w-8 h-8 mb-4 object-contain" />
+    icon: <img src="/brand/ai-orchestration.svg" alt="AI Orchestration" loading="lazy" className="w-8 h-8 mb-4 object-contain" />
   },
   {
     title: "Agentic AI & AI Agents",
@@ -167,6 +167,7 @@ export default function MicroServices() {
                         <img 
                           src={logo.url} 
                           alt={`${logo.name} logo representation`} 
+                          loading="lazy"
                           className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
                         />
                         <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
@@ -193,6 +194,7 @@ export default function MicroServices() {
                           <img 
                             src={logo.url} 
                             alt={`${logo.name} logo representation`} 
+                            loading="lazy"
                             className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
                           />
                           <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
