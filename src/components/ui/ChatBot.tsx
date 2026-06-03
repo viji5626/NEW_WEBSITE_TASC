@@ -36,11 +36,19 @@ export function ChatBot() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/chat", {
+      let response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
       });
+
+      if (response.status === 404 || response.status === 405) {
+        response = await fetch("/.netlify/functions/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text }),
+        });
+      }
 
       const data = await response.json().catch(() => null);
       if (!response.ok) {
