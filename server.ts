@@ -91,13 +91,11 @@ ${contextText}`;
       const chatMessages = [sysMessage, ...messages];
 
       const completion = await (client.chat.completions.create as any)({
-        model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+        model: "meta/llama-3.1-70b-instruct",
         messages: chatMessages,
         temperature: 0.6,
         top_p: 0.95,
         max_tokens: 1024,
-        // @ts-ignore
-        extra_body: { chat_template_kwargs: { enable_thinking: true }, reasoning_budget: 1024 },
         stream: true
       });
 
