@@ -25,7 +25,11 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
       // user state will automatically update via onAuthStateChanged
     } catch (err: any) {
       console.error(err);
-      setError("Failed to sign in. Please try again.");
+      if (err.code === 'auth/unauthorized-domain') {
+        setError("Domain not authorized in Firebase. Please add this domain in the Firebase Console -> Authentication -> Settings -> Authorized domains.");
+      } else {
+        setError("Failed to sign in. Please try again or check console for details.");
+      }
     } finally {
       setLoading(false);
     }
