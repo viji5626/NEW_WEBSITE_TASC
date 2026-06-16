@@ -43,7 +43,7 @@ export default function FAQ() {
         <div className="mb-16 md:mb-20 mt-16 text-center">
           <h2 className="font-[Orbitron] tracking-widest text-tasc-cyan text-sm uppercase mb-6 flex items-center justify-center gap-4">
             <span className="w-8 h-px bg-tasc-cyan" />
-            0X.01 // Technical Inquiries
+            12.01 // Technical Inquiries
             <span className="w-8 h-px bg-tasc-cyan" />
           </h2>
           <h1 className="text-4xl md:text-5xl font-medium tracking-tight mb-8 leading-tight">

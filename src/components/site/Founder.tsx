@@ -24,7 +24,7 @@ export default function Founder() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 10" kicker="ABOUT" title="Tenacious by design." />
+        <SectionHeader code="// 09" kicker="ABOUT" title="Tenacious by design." />
 
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           {/* Photo column */}

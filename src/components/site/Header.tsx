@@ -1,29 +1,38 @@
 import { useEffect, useState } from "react";
 import { scrollToId, scrollToTop } from "@/lib/scrollTo";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, LogOut, User as UserIcon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { auth, logout } from '@/lib/firebase';
+import { User } from 'firebase/auth';
 
 const NAV = [
   { code: "//01", label: "HOME", id: "command-center" },
   { code: "//02", label: "CAPABILITIES", id: "the-arsenal" },
   { code: "//03", label: "STACK", id: "technical-stack" },
-  { code: "//04", label: "INTEROPERABILITY", id: "data-flow-pipeline" },
-  { code: "//05", label: "INDUSTRIES", id: "rugged-reliability" },
-  { code: "//06", label: "CASES", id: "case-studies" },
-  { code: "//07", label: "METHOD", id: "how-we-build" },
-  { code: "//08", label: "AMC", id: "amc-model" },
-  { code: "//09", label: "CONSULTING", id: "we-consult" },
-  { code: "//10", label: "ABOUT", id: "tenacious-by-design" },
-  { code: "//11", label: "CONTACT", id: "terminal-interface" },
-  { code: "//12", label: "MICRO SERVICES", id: "micro-services" },
+  { code: "//04", label: "INDUSTRIES", id: "rugged-reliability" },
+  { code: "//05", label: "CASES", id: "case-studies" },
+  { code: "//06", label: "METHOD", id: "how-we-build" },
+  { code: "//07", label: "AMC", id: "amc-model" },
+  { code: "//08", label: "CONSULTING", id: "we-consult" },
+  { code: "//09", label: "ABOUT", id: "tenacious-by-design" },
+  { code: "//10", label: "CONTACT", id: "terminal-interface" },
+  { code: "//11", label: "MICRO SERVICES", id: "micro-services" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState("");
   const [isLightMode, setIsLightMode] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+       setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleThemeChange = () => {
@@ -156,6 +165,24 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2 xl:gap-4 shrink-0">
+            {user && (
+              <div className="flex items-center gap-2 mr-0 xl:mr-2 border-r border-tasc-border/50 pr-2 xl:pr-4">
+                 <div className="w-6 h-6 rounded-full overflow-hidden bg-tasc-border flex items-center justify-center border border-tasc-cyan/30 shrink-0">
+                    {user.photoURL ? (
+                      <img src={user.photoURL} alt={user.displayName || "User"} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    ) : (
+                      <UserIcon size={14} className="text-tasc-cyan" />
+                    )}
+                 </div>
+                 <span className="font-[Orbitron] text-[9px] xl:text-[10px] tracking-wider text-tasc-text/80 hidden sm:block whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] xl:max-w-[120px]">
+                   HELLO, {user.displayName ? user.displayName.split(' ')[0].toUpperCase() : "USER"}
+                 </span>
+                 <button onClick={() => logout()} title="Sign Out" className="p-1.5 text-tasc-text/50 hover:text-red-400 transition-colors shrink-0">
+                   <LogOut size={14} />
+                 </button>
+              </div>
+            )}
+
             <button
               onClick={toggleTheme}
               className="p-2 mr-1 xl:mr-0 text-tasc-text/70 hover:text-tasc-cyan transition-colors border border-transparent hover:border-tasc-cyan rounded-none flex items-center justify-center"

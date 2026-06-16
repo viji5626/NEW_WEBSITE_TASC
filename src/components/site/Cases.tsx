@@ -5,7 +5,7 @@ import { SectionHeader } from "./Capabilities";
 const CASES = [
   {
     id: "ems",
-    code: "//06B.01",
+    code: "//05.01",
     tag: "DIGITALIZATION · EMS",
     title: "Energy Management & Digitalization — Daikin Neemrana",
     client: "Daikin · Neemrana, Rajasthan",
@@ -22,7 +22,7 @@ const CASES = [
   },
   {
     id: "sas",
-    code: "//06B.02",
+    code: "//05.02",
     tag: "SUBSTATION · SAS",
     title: "132 KV Switchyard Automation System",
     client: "Hero MotoCorp · Haridwar",
@@ -47,7 +47,7 @@ const CASES = [
   },
   {
     id: "quartz-ben",
-    code: "//06B.03",
+    code: "//05.03",
     tag: "PROCESS PLANT · BENEFICIATION",
     title: "Quartz Beneficiation Plant",
     client: "Geetanjali Industrial Minerals Pvt. Ltd.\n· Shishvi, Rajasthan",
@@ -70,7 +70,7 @@ const CASES = [
   },
   {
     id: "iron-ore",
-    code: "//06B.04",
+    code: "//05.04",
     tag: "PROCESS PLANT · BENEFICIATION",
     title: "Iron Ore Beneficiation Plant",
     client: "Pacific Iron Manufacturing Ltd. · MP",
@@ -94,7 +94,7 @@ const CASES = [
   },
   {
     id: "quartz-slab",
-    code: "//06B.05",
+    code: "//05.05",
     tag: "MANUFACTURING · ENGINEERED STONE",
     title: "Quartz Slab Manufacturing Plant",
     client: "Taanj Quartz.— Engineered Stone & Grit\n· Udaipur, Rajasthan",
@@ -225,14 +225,18 @@ export default function Cases() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 06" kicker="FIELD RECORD" title="Case studies — real plants, real PLCs." />
+        <SectionHeader code="// 05" kicker="FIELD RECORD" title="Case studies — real plants, real PLCs." />
         <div className="mt-6 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
           <p className="max-w-2xl text-tasc-text/55 text-base font-light leading-relaxed">
             We have featured 5 projects out of our diverse expertise across various sectors. Each delivered with documentation, panel workmanship and live-plant cut-overs.
           </p>
           <button
             onClick={() => {
-              document.getElementById('terminal-interface')?.scrollIntoView({ behavior: 'smooth' });
+              window.dispatchEvent(
+                new CustomEvent("tasc:open-contact-modal", {
+                  detail: { headline: "Request More Case Studies" }
+                })
+              );
             }}
             className="group relative shrink-0 font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-3 border border-tasc-border text-tasc-text/80 overflow-hidden hover:border-tasc-cyan hover:text-tasc-cyan transition-colors self-start md:self-auto"
           >

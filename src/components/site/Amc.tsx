@@ -34,7 +34,7 @@ const SCOPES = [
 const PLANS = [
   {
     id: "non-comp",
-    code: "//06C.A",
+    code: "//07.A",
     name: "Non-Comprehensive",
     blurb: "Pay-per-incident with guaranteed response. You hold spares; we hold the engineering.",
     bestFor: "Plants with strong in-house electrical / instrumentation teams who need TASC only for engineering escalations.",
@@ -55,7 +55,7 @@ const PLANS = [
   },
   {
     id: "comp",
-    code: "//06C.B",
+    code: "//07.B",
     name: "Comprehensive (All-Inclusive)",
     blurb: "Predictable annual outlay — engineering, response, spares, optimization, all-inclusive.",
     bestFor: "Mission-critical lines — substations, beneficiation, ZLD, automotive assembly — where downtime is expensive and predictable cost matters.",
@@ -82,13 +82,14 @@ export default function Amc() {
   const p = PLANS[tab];
 
   const requestAMC = (planName) => {
-    // Pre-fill scope on the contact form via a custom event the Contact section can consume.
     window.dispatchEvent(
-      new CustomEvent("tasc:prefill-contact", {
-        detail: { scope: `AMC enquiry — ${planName} plan.\n\nPlant / asset coverage:\n- \n\nApprox. tag count / I/O size:\n- \n\nIncumbent OEM stack:\n- ` },
+      new CustomEvent("tasc:open-contact-modal", {
+        detail: { 
+          headline: `AMC Enquiry: ${planName}`,
+          scope: `AMC enquiry — ${planName} plan.\n\nPlant / asset coverage:\n- \n\nApprox. tag count / I/O size:\n- \n\nIncumbent OEM stack:\n- `
+        },
       })
     );
-    scrollToId("terminal-interface");
   };
 
   return (
@@ -98,7 +99,7 @@ export default function Amc() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 08" kicker="LIFECYCLE SUPPORT" title="AMC model — keep the plant running." />
+        <SectionHeader code="// 07" kicker="LIFECYCLE SUPPORT" title="AMC model — keep the plant running." />
         <p className="mt-6 max-w-2xl text-tasc-text/55 text-base font-light leading-relaxed">
           Two contract shapes for industrial OT support — built around the realities of process
           plants, standalone machines, plant utility control systems, and the health of your PLC,

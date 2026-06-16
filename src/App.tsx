@@ -1,13 +1,15 @@
-import { useEffect, Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { Suspense, lazy, useEffect } from "react";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import "@/App.css";
-import { Toaster } from "sonner";
 import Lenis from "lenis";
+import { Toaster } from "sonner";
 
-import Header from "@/components/site/Header";
-import Footer from "@/components/site/Footer";
-import { TechBackground } from "@/components/site/TechBackground";
 import BootScreen from "@/components/site/BootScreen";
+import Footer from "@/components/site/Footer";
+import Header from "@/components/site/Header";
+import { TechBackground } from "@/components/site/TechBackground";
+import ContactModal from "@/components/site/ContactModal";
+import Chatbot from "@/components/site/Chatbot";
 
 const Home = lazy(() => import("@/pages/Home"));
 const MicroServices = lazy(() => import("@/pages/MicroServices"));
@@ -106,6 +108,8 @@ function App() {
         <div aria-hidden className="scan-line pointer-events-none z-10" />
 
         <Header />
+        <ContactModal />
+        <Chatbot />
         
         <Breadcrumbs />
 

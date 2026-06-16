@@ -1,7 +1,6 @@
 import Hero from "@/components/site/Hero";
 import Capabilities from "@/components/site/Capabilities";
 import SoftwareExpertise from "@/components/site/SoftwareExpertise";
-import Interoperability from "@/components/site/Interoperability";
 import Industries from "@/components/site/Industries";
 import Cases from "@/components/site/Cases";
 import Method from "@/components/site/Method";
@@ -16,7 +15,6 @@ export default function Home() {
       <Hero />
       <Capabilities />
       <SoftwareExpertise />
-      <Interoperability />
       <Industries />
       <Cases />
       <Method />

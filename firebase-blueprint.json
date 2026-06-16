@@ -1,0 +1,31 @@
+{
+  "entities": {
+    "ProfileDownload": {
+      "title": "ProfileDownload",
+      "description": "Log of user downloading the profile",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "downloadedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["email", "uid"]
+    }
+  },
+  "firestore": {
+    "profile_downloads/{downloadId}": {
+      "schema": "ProfileDownload",
+      "description": "Store all profile downloads"
+    }
+  }
+}

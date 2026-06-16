@@ -75,7 +75,7 @@ export default function Consulting() {
         <div className="mb-16 md:mb-24 mt-16 max-w-3xl">
           <h2 className="font-[Orbitron] tracking-widest text-tasc-cyan text-sm uppercase mb-6 flex items-center gap-4">
             <span className="w-8 h-px bg-tasc-cyan" />
-            0X.01 // Engineering Strategy
+            08.01 // Engineering Strategy
           </h2>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-8">
             Industrial Consulting & <br />
@@ -118,8 +118,8 @@ export default function Consulting() {
                   <h3 id={`consulting-title-${idx}`} className="text-xl font-medium pr-4">{service.title}</h3>
                 </div>
                 
-                <div className="md:opacity-0 md:max-h-0 md:group-hover:opacity-100 md:group-hover:max-h-[500px] overflow-hidden transition-all duration-300 ease-in-out hidden md:flex md:flex-col md:flex-grow">
-                  <p id={`consulting-desc-${idx}-desktop`} className="text-tasc-text/60 leading-relaxed mb-6 flex-grow text-sm">
+                <div className="flex flex-col flex-grow mt-4">
+                  <p id={`consulting-desc-${idx}`} className="text-tasc-text/60 leading-relaxed mb-6 flex-grow text-sm">
                     {service.description}
                   </p>
   
@@ -130,26 +130,6 @@ export default function Consulting() {
                     </p>
                   </div>
                 </div>
-
-                <details className="md:hidden group/details">
-                  <summary className="font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-cyan cursor-pointer list-none flex items-center gap-2 mb-4">
-                     <span className="text-tasc-border group-open/details:hidden">[ + ]</span>
-                     <span className="text-tasc-cyan hidden group-open/details:inline">[ - ]</span>
-                     <span>EXPAND</span>
-                  </summary>
-                  <div className="pt-4 border-t border-tasc-border/50 flex flex-col">
-                    <p id={`consulting-desc-${idx}-mobile`} className="text-tasc-text/60 leading-relaxed mb-6 flex-grow text-sm">
-                      {service.description}
-                    </p>
-    
-                    <div className="pt-6 border-t border-tasc-border/50 mt-auto">
-                      <span className="text-[10px] font-[Orbitron] text-tasc-text/40 tracking-widest uppercase w-full block mb-2" aria-hidden="true">Key Outcome</span>
-                      <p className="text-sm font-medium text-tasc-cyan/90 leading-tight">
-                        <span className="sr-only">Key Outcome: </span>{service.outcome}
-                      </p>
-                    </div>
-                  </div>
-                </details>
               </div>
           </motion.div>
         ))}
@@ -205,11 +185,15 @@ export default function Consulting() {
                  <p className="text-tasc-text/70">Secure your operational strategy with a confidential discovery session.</p>
              </div>
              
-             <a href="/#terminal-interface" onClick={(e) => {
+             <a href="#discovery" onClick={(e) => {
                  e.preventDefault();
-                 navigate("/#terminal-interface");
+                 window.dispatchEvent(
+                   new CustomEvent("tasc:open-contact-modal", {
+                     detail: { headline: "Tell us your Query for Consultation" }
+                   })
+                 );
              }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-slate-900 font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
-                 [ INITIATE A DISCOVERY SESSION ]
+                 [ TELL US YOUR QUERY FOR CONSULTATION ]
              </a>
          </div>
       </ScrollReveal>

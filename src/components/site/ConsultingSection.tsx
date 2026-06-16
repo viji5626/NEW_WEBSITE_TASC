@@ -19,7 +19,7 @@ export default function ConsultingSection() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 09" kicker="WE CONSULT" title="Expert industrial consulting for greenfield and brownfield projects." />
+        <SectionHeader code="// 08" kicker="WE CONSULT" title="Expert industrial consulting for greenfield and brownfield projects." />
 
         <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
           <div>

@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Image Persistence Solutions
 
-# Run and deploy your AI Studio app
+The `public/brand` directory contains image binaries that might get corrupted or omitted during some git export pipelines or depending on how you export the project.
+To fix this, we have provided an image backup script suite built into the repo.
 
-This contains everything you need to run your app locally.
+## Restoring Broken / Missing Images
 
-View your app in AI Studio: https://ai.studio/apps/e6cc62b8-c64f-4c1d-bffc-1bf1ec1aa6a7
+If your images are broken after cloning or moving the codebase, simply run the following command directly from the project root:
 
-## Run Locally
+```sh
+npm run restore-images
+```
 
-**Prerequisites:**  Node.js
+This acts as an automatic back-up mechanism. It reads from `brand-binaries.json` which is a 18MB Base-64 encoded JSON dictionary storing your pristine image binaries, and writes them back into the `public/brand/` folder correctly. 
 
+## Packing Images (Making a new backup)
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+If you add new photos to the `public/brand` folder and would like to update your image backup cache so that you don't lose the new binary images, simply run:
+
+```sh
+npm run pack-images
+```
+
+This will rescan `public/brand` and encode all binaries back into `brand-binaries.json`. Keep `brand-binaries.json` committed to your Git repository or included in your ZIP to ensure your images follow you everywhere without risk of corruption.

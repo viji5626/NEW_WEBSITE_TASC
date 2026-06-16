@@ -16,7 +16,6 @@ const COLS = [
     title: "PIPELINE",
     links: [
       ["Technical Stack", "technical-stack"],
-      ["Interoperability", "data-flow-pipeline"],
       ["Industries", "rugged-reliability"],
       ["Case Studies", "case-studies"],
       ["Method", "how-we-build"],

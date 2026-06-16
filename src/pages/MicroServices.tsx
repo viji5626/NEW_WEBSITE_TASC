@@ -113,7 +113,7 @@ export default function MicroServices() {
         <div className="mb-16 md:mb-24 mt-16 max-w-3xl">
           <h2 className="font-[Orbitron] tracking-widest text-tasc-cyan text-sm uppercase mb-6 flex items-center gap-4">
             <span className="w-8 h-px bg-tasc-cyan" />
-            0X.00 // Micro Services & Rapid Deployment
+            11.00 // Micro Services & Rapid Deployment
           </h2>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-8">
             Our UltraQuick Micro Services – <br />
@@ -155,8 +155,8 @@ export default function MicroServices() {
                   <h3 id={`service-title-${idx}`} className="text-xl font-medium pr-4">{service.title}</h3>
                 </div>
                 
-                <div className="md:opacity-0 md:max-h-0 md:group-hover:opacity-100 md:group-hover:max-h-[500px] overflow-hidden transition-all duration-300 ease-in-out hidden md:flex md:flex-col md:flex-grow">
-                  <p id={`service-desc-${idx}-desktop`} className="text-tasc-text/60 leading-relaxed mb-8 flex-grow text-sm">
+                <div className="flex flex-col flex-grow mt-4">
+                  <p id={`service-desc-${idx}`} className="text-tasc-text/60 leading-relaxed mb-8 flex-grow text-sm">
                     {service.description}
                   </p>
   
@@ -175,34 +175,6 @@ export default function MicroServices() {
                     ))}
                   </div>
                 </div>
-
-                <details className="md:hidden group/details">
-                  <summary className="font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-cyan cursor-pointer list-none flex items-center gap-2 mb-4">
-                     <span className="text-tasc-border group-open/details:hidden">[ + ]</span>
-                     <span className="text-tasc-cyan hidden group-open/details:inline">[ - ]</span>
-                     <span>EXPAND</span>
-                  </summary>
-                  <div className="pt-4 border-t border-tasc-border/50 flex flex-col">
-                    <p id={`service-desc-${idx}-mobile`} className="text-tasc-text/60 leading-relaxed mb-8 flex-grow text-sm">
-                      {service.description}
-                    </p>
-    
-                    <div className="flex flex-wrap items-center gap-2 pt-6 border-t border-tasc-border/50 mt-auto" aria-label={`Tech stack for ${service.title}`}>
-                      <span className="text-[10px] font-[Orbitron] text-tasc-text/40 tracking-widest uppercase w-full block mb-2" aria-hidden="true">Tech Stack</span>
-                      {service.logos.map(logo => (
-                        <div key={logo.name} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-tasc-border/50 bg-tasc-bg/50" title={logo.name}>
-                          <img 
-                            src={logo.url} 
-                            alt={`${logo.name} logo representation`} 
-                            loading="lazy"
-                            className={`w-3.5 h-3.5 opacity-100 md:opacity-80 group-hover:opacity-100 transition-opacity grayscale-0 md:grayscale group-hover:grayscale-0 filter ${logo.url.includes('white') ? 'invert-on-light' : ''}`}
-                          />
-                          <span className="text-[10px] text-tasc-text/70 whitespace-nowrap">{logo.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </details>
               </div>
           </motion.div>
         ))}
@@ -252,11 +224,15 @@ export default function MicroServices() {
                  <p className="text-tasc-text/70">Our rapid turnaround is ideal for highly urgent and highly sensitive projects. Speak to an engineer to authorize your request.</p>
              </div>
              
-             <a href="#terminal-interface" onClick={(e) => {
+             <a href="#secure-line" onClick={(e) => {
                  e.preventDefault();
-                 navigate("/#terminal-interface");
+                 window.dispatchEvent(
+                   new CustomEvent("tasc:open-contact-modal", {
+                     detail: { headline: "Request a quote for micro services" }
+                   })
+                 );
              }} className="whitespace-nowrap px-8 py-3 bg-tasc-cyan text-slate-900 font-[Orbitron] text-[10px] tracking-[0.2em] hover:bg-tasc-text hover:text-tasc-bg transition-colors relative z-10">
-                 [ INITIATE SECURE LINE ]
+                 [ REQUEST A QUOTE FOR MICRO SERVICES ]
              </a>
          </div>
       </ScrollReveal>

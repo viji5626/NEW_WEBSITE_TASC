@@ -5,7 +5,7 @@ import { SectionHeader } from "./Capabilities";
 const STACK = [
   {
     id: "scada",
-    code: "//02B.1",
+    code: "//03.01",
     icon: Monitor,
     title: "SCADA — GENESIS64",
     vendor: "ICONICS (by MEIDS, formerly Microsoft)",
@@ -17,7 +17,7 @@ const STACK = [
   },
   {
     id: "dcs",
-    code: "//02B.2",
+    code: "//03.02",
     icon: Server,
     title: "DCS & Hybrid System",
     vendor: "Siemens PCS 7 · Mitsubishi Hybrid DCS",
@@ -29,7 +29,7 @@ const STACK = [
   },
   {
     id: "plc",
-    code: "//02B.3",
+    code: "//03.03",
     icon: Cpu,
     title: "PLC Engineering",
     vendor: "Mitsubishi · Siemens",
@@ -41,7 +41,7 @@ const STACK = [
   },
   {
     id: "conn",
-    code: "//02B.4",
+    code: "//03.04",
     icon: Plug,
     title: "Connectivity Layer",
     vendor: "Takebishi · PTC",
@@ -53,7 +53,7 @@ const STACK = [
   },
   {
     id: "protocols",
-    code: "//02B.5",
+    code: "//03.05",
     icon: Network,
     title: "Industrial Protocols",
     vendor: "Standards-based — vendor-neutral",
@@ -72,7 +72,7 @@ const STACK = [
   },
   {
     id: "data",
-    code: "//02B.6",
+    code: "//03.06",
     icon: Database,
     title: "Data, MES & Integration",
     vendor: "Historian · SQL · MES",
@@ -154,9 +154,7 @@ export default function SoftwareExpertise() {
                     <div className="w-12 h-12 border border-tasc-border flex items-center justify-center group-hover:border-tasc-cyan transition-colors">
                       <Icon size={22} strokeWidth={1.25} className="text-tasc-text/80 group-hover:text-tasc-cyan transition-colors" aria-hidden="true" />
                     </div>
-                    <div className="font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-border group-hover:text-tasc-cyan transition-colors hidden md:block">
-                      [ + ]
-                    </div>
+                    {/* Removed [ + ] toggle */}
                   </div>
                   {!s.image && (
                     <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-2" aria-hidden="true">{s.code}</div>
@@ -164,8 +162,8 @@ export default function SoftwareExpertise() {
                   <h3 id={`stack-title-${s.id}`} className="font-[Montserrat] text-xl font-medium text-tasc-text leading-tight">{s.title}</h3>
                   <div className="mt-1 font-[Orbitron] text-[9px] tracking-[0.2em] text-tasc-cyan/80">{s.vendor}</div>
                   
-                  <div className="md:opacity-0 md:max-h-0 md:group-hover:opacity-100 md:group-hover:max-h-[500px] overflow-hidden transition-all duration-300 ease-in-out hidden md:block">
-                    <p id={`stack-desc-${s.id}-desktop`} className="mt-4 text-tasc-text/55 text-sm leading-relaxed font-light pt-2 border-t border-tasc-border/50">{s.body}</p>
+                  <div className="mt-4 pt-4 border-t border-tasc-border/50">
+                    <p id={`stack-desc-${s.id}`} className="text-tasc-text/55 text-sm leading-relaxed font-light">{s.body}</p>
                     <ul className="mt-5 space-y-1.5" aria-label={`Features of ${s.title}`}>
                       {s.bullets.map((b) => (
                         <li key={b} className="flex items-center gap-3 text-tasc-text/75 text-xs">
@@ -175,25 +173,6 @@ export default function SoftwareExpertise() {
                       ))}
                     </ul>
                   </div>
-                  
-                  <details className="md:hidden mt-4 group/details">
-                    <summary className="font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-cyan cursor-pointer list-none flex items-center gap-2">
-                       <span className="text-tasc-border group-open/details:hidden">[ + ]</span>
-                       <span className="text-tasc-cyan hidden group-open/details:inline">[ - ]</span>
-                       <span>VIEW DETAILS</span>
-                    </summary>
-                    <div className="pt-4 mt-4 border-t border-tasc-border/50">
-                      <p id={`stack-desc-${s.id}-mobile`} className="text-tasc-text/55 text-sm leading-relaxed font-light">{s.body}</p>
-                      <ul className="mt-5 space-y-1.5" aria-label={`Features of ${s.title}`}>
-                        {s.bullets.map((b) => (
-                          <li key={b} className="flex items-center gap-3 text-tasc-text/75 text-xs">
-                            <span className="w-2 h-px bg-tasc-cyan" />
-                            <span className="font-[Inter] font-light">{b}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </details>
                 </div>
               </motion.div>
             );

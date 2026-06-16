@@ -10,7 +10,6 @@ const WEB3FORMS_KEY = process.env.REACT_APP_WEB3FORMS_ACCESS_KEY;
 
 const LINKS = [
   ["Capabilities", "the-arsenal"],
-  ["Interoperability", "data-flow-pipeline"],
   ["Industries", "rugged-reliability"],
   ["Case Studies", "case-studies"],
   ["Method", "how-we-build"],
@@ -113,7 +112,7 @@ export default function Contact() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 11" kicker="TERMINAL INTERFACE" title="Open a secure channel." />
+        <SectionHeader code="// 10" kicker="TERMINAL INTERFACE" title="Open a secure channel." />
 
         <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* Left: form */}

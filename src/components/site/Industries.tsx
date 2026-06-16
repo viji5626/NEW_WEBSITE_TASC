@@ -5,7 +5,7 @@ import { SectionHeader } from "./Capabilities";
 const VERTICALS = [
   {
     id: "mining",
-    code: "//06.01",
+    code: "//04.01",
     name: "Mining & Beneficiation",
     body: "Iron and quartz beneficiation plants — crushing, screening, grinding, classification, magnetic separation and dewatering — coordinated through MELSEC iQ-R or S7-1500 architectures with load-sharing and sequence interlocks.",
     items: ["Beneficiation sequence control", "Crusher / screen / mill interlocks", "Magnetic separator coordination", "Dewatering & thickener logic"],
@@ -13,7 +13,7 @@ const VERTICALS = [
   },
   {
     id: "substation",
-    code: "//06.02",
+    code: "//04.02",
     name: "Substation & SAS",
     body: "IEC 61850-based Switchyard Automation Systems with bay controllers, IEDs and station HMIs. Remote breaker control, safe momentary paralleling and SCADA integration to dispatch.",
     items: ["IEC 61850 SAS architecture", "Bay controllers + IEDs", "Remote breaker / isolator control", "Safe momentary paralleling logic"],
@@ -21,7 +21,7 @@ const VERTICALS = [
   },
   {
     id: "auto",
-    code: "//06.03",
+    code: "//04.03",
     name: "Automotive & Assembly",
     body: "Shop-floor automation across dedicated machines, milling, turning and SPM stations — through to full assembly-line automation with traceability and fail-safe monitoring.",
     items: [
@@ -37,7 +37,7 @@ const VERTICALS = [
   },
   {
     id: "water",
-    code: "//06.04",
+    code: "//04.04",
     name: "Water & Environmental",
     body: "Comprehensive automation for ETP, STP, WTP, MEE and ZLD plants. Blower optimization, pump lead/lag, dosing logic, evaporator/crystallizer interlocks and long-term compliance reporting.",
     items: ["ETP / STP / WTP control", "MEE & ZLD evaporator interlocks", "Blower & pump optimization", "Compliance & audit trail"],
@@ -45,7 +45,7 @@ const VERTICALS = [
   },
   {
     id: "conveyor",
-    code: "//06.05",
+    code: "//04.05",
     name: "Conveyor & Wide-Belt Automation",
     body: "Conveyor, wide-belt and industrial conveyor automation for automotive and whitegoods lines — traffic management, FIFO, even-gap maintenance and throughput control.",
     items: ["Traffic management", "First-In-First-Out (FIFO) logic", "Even-gap maintenance", "Throughput control"],
@@ -53,7 +53,7 @@ const VERTICALS = [
   },
   {
     id: "bms",
-    code: "//06.06",
+    code: "//04.06",
     name: "BMS & CMS",
     body: "Integrated Building Management and Central Monitoring — HVAC, lighting, access, fire and lifts under one supervisory layer; water, air and energy monitored across campuses with actionable alerts.",
     items: ["BMS — HVAC / lighting / access", "Fire & life-safety integration", "CMS — water / air / energy", "Cross-site benchmarking"],
@@ -61,7 +61,7 @@ const VERTICALS = [
   },
   {
     id: "material",
-    code: "//06.07",
+    code: "//04.07",
     name: "Material Handling",
     body: "Ash, coal and fuel handling systems with redundant PLCs, redundant networks and robust interlocks to ensure uninterrupted conveying for power and process plants.",
     items: ["Ash handling (dry / wet)", "Coal handling plant", "Fuel handling & storage", "S7-400H redundant pairs"],
@@ -69,7 +69,7 @@ const VERTICALS = [
   },
   {
     id: "hvac",
-    code: "//06.08",
+    code: "//04.08",
     name: "HVAC & Climate",
     body: "Chiller plants, AHU/FCU networks and precision atmospheric control for hatcheries and mission-critical rooms — tight temperature, humidity, CO₂ and pressure setpoints with redundant sensing.",
     items: ["Chiller plant manager", "AHU / FCU sequencing", "Precision T / RH / CO₂ control", "Hatchery & critical-room climate"],
@@ -77,7 +77,7 @@ const VERTICALS = [
   },
   {
     id: "paper",
-    code: "//06.09",
+    code: "//04.09",
     name: "Pulp & Paper",
     body: "Kraft paper mill process synchronization — pulping, stock prep, machine drives and finishing — designed for continuous operation and minimal break events.",
     items: ["Stock prep automation", "Sectional drive coordination", "Steam & condensate logic", "Quality / moisture loops"],
@@ -85,7 +85,7 @@ const VERTICALS = [
   },
   {
     id: "panel",
-    code: "//06.10",
+    code: "//04.10",
     name: "Panel Engineering",
     body: "Custom MCC, PCC and PLC panel manufacturing along with full VFD lineup solutions. Wiring discipline, thermal management and serviceability built in.",
     items: ["MCC / PCC / PLC panels", "VFD lineup integration", "Thermal & cable management", "Factory acceptance testing"],
@@ -93,7 +93,7 @@ const VERTICALS = [
   },
   {
     id: "sustain",
-    code: "//06.11",
+    code: "//04.11",
     name: "Sustainability Ops",
     body: "Carbon footprint tracking, energy KPI dashboards and condition-based maintenance built on top of the historian and EMS layer.",
     items: ["Scope 1/2/3 telemetry", "Energy intensity KPIs", "Condition-based maintenance", "Audit-grade reporting"],
@@ -121,7 +121,7 @@ export default function Industries() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 05" kicker="RUGGED RELIABILITY" title="Industries we run with." />
+        <SectionHeader code="// 04" kicker="RUGGED RELIABILITY" title="Industries we run with." />
         <p className="mt-6 max-w-2xl text-tasc-text/55 text-base font-light leading-relaxed">
           Eleven verticals where TASC has hands inside the panels — from beneficiation plants
           to assembly lines, substations to ZLD evaporators.
@@ -243,14 +243,13 @@ export default function Industries() {
         {/* Mobile stacked details with photo */}
         <div className="mt-10 md:hidden space-y-px bg-tasc-border/60 border border-tasc-border">
           {VERTICALS.map((vert) => (
-            <details key={vert.id} className="bg-tasc-bg" data-testid={`industry-mobile-${vert.id}`}>
-              <summary className="cursor-pointer list-none p-5 flex items-center justify-between">
+            <div key={vert.id} className="bg-tasc-bg" data-testid={`industry-mobile-${vert.id}`}>
+              <div className="p-5 flex items-center justify-between">
                 <div>
                   <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40">{vert.code}</div>
                   <div className="font-[Montserrat] text-base mt-1 text-tasc-text">{vert.name}</div>
                 </div>
-                <span className="font-[Orbitron] text-tasc-cyan text-xs">[ + ]</span>
-              </summary>
+              </div>
               <div className="p-5 pt-0 space-y-4">
                 <div className="relative aspect-video border border-tasc-border overflow-hidden">
                   <img src={vert.photo} alt={vert.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
@@ -266,7 +265,7 @@ export default function Industries() {
                   ))}
                 </ul>
               </div>
-            </details>
+            </div>
           ))}
         </div>
       </div>

@@ -36,7 +36,7 @@ export default function Method() {
       className="relative py-24 md:py-32 border-t border-tasc-border"
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
-        <SectionHeader code="// 07" kicker="HOW WE BUILD" title="Engineering, by method." />
+        <SectionHeader code="// 06" kicker="HOW WE BUILD" title="Engineering, by method." />
 
         {/* Gantt-style timeline (desktop only — too narrow on phones) */}
         <div className="mt-16 border border-tasc-border bg-tasc-bg hidden md:block" data-testid="method-gantt">
