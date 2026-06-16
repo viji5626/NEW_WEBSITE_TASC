@@ -11,7 +11,7 @@ If your images are broken after cloning or moving the codebase, simply run the f
 npm run restore-images
 ```
 
-This acts as an automatic back-up mechanism. It reads from the `image-backups/` folder which stores multiple smaller Base-64 encoded JSON chunks containing your pristine image binaries, and writes them back into the `public/brand/` folder correctly. 
+This acts as an automatic back-up mechanism. It reads from `brand-binaries.json` which is a 18MB Base-64 encoded JSON dictionary storing your pristine image binaries, and writes them back into the `public/brand/` folder correctly. 
 
 ## Packing Images (Making a new backup)
 
@@ -21,4 +21,4 @@ If you add new photos to the `public/brand` folder and would like to update your
 npm run pack-images
 ```
 
-This will rescan `public/brand` and encode all binaries back into chunked JSON files inside `image-backups/`. Keep the `image-backups/` directory committed to your Git repository or included in your ZIP to ensure your images follow you everywhere without risk of corruption.
+This will rescan `public/brand` and encode all binaries back into `brand-binaries.json`. Keep `brand-binaries.json` committed to your Git repository or included in your ZIP to ensure your images follow you everywhere without risk of corruption.
