@@ -1,10 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, signOut } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import aiStudioConfig from '../../firebase-applet-config.json';
 
 // TASC Automation Production Firebase Config (from user screenshot)
 const prodConfig = {
-  apiKey: "AIzaSyCFxxWI4oNPJnaJ-_vIRiaJAfGC-N-iHYI",
+  apiKey: "AIzaSyCfXXwI4oNPJnaJ-_vIRiaJAfGC-N-iHYI",
   authDomain: "tascautomation.firebaseapp.com",
   projectId: "tascautomation",
   storageBucket: "tascautomation.firebasestorage.app",
@@ -14,7 +15,9 @@ const prodConfig = {
   firestoreDatabaseId: "(default)"
 };
 
-const firebaseConfig = prodConfig;
+// Use prodConfig in production build (Netlify), else use AI studio config
+const isProd = import.meta.env.PROD;
+const firebaseConfig = isProd ? prodConfig : aiStudioConfig;
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);

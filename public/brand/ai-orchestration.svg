@@ -1,0 +1,14 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gemini-gradient" x1="0.5" y1="2.5" x2="20" y2="21.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#CF586E"/>
+      <stop offset="25%" stop-color="#805ADA"/>
+      <stop offset="50%" stop-color="#3995DB"/>
+      <stop offset="100%" stop-color="#F17E31"/>
+    </linearGradient>
+  </defs>
+  <!-- Large star -->
+  <path d="M10.5 1.5C10.5 6.5 14.5 10.5 19.5 10.5C14.5 10.5 10.5 14.5 10.5 19.5C10.5 14.5 6.5 10.5 1.5 10.5C6.5 10.5 10.5 6.5 10.5 1.5Z" fill="url(#gemini-gradient)"/>
+  <!-- Small star -->
+  <path d="M18 13.5C18 16 20 18 22.5 18C20 18 18 20 18 22.5C18 20 16 18 13.5 18C16 18 18 16 18 13.5Z" fill="url(#gemini-gradient)"/>
+</svg>

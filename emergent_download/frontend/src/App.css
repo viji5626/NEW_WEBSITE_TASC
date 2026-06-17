@@ -1,0 +1,6 @@
+/* TASC industrial command center - global app shell */
+.App {
+    min-height: 100vh;
+    background: var(--tasc-bg);
+    color: var(--tasc-text);
+}

@@ -1,0 +1,136 @@
+{
+  "project_name": "TASC Automation - Industrial Command Center",
+  "theme": "DARK",
+  "archetype": "Swiss & High-Contrast (Industrial SCADA Variant)",
+  "color_palette": {
+    "background": "#0D1117",
+    "borders": "#2B313A",
+    "text_primary": "#E6EDF3",
+    "text_secondary": "rgba(230, 237, 243, 0.6)",
+    "accent_cyan": "#00C2FF",
+    "accent_glow": "rgba(31, 143, 255, 0.15)",
+    "rules": [
+      "Deep Industrial Black #0D1117 is the only background fill.",
+      "Steel Gray #2B313A is strictly for 1px lines, grid backgrounds, and borders.",
+      "Graph Cyan #00C2FF is a SIGNAL. Never use it as a base fill, only for active states, data lines, hover traces, and focus states.",
+      "Accent Glow Blue #1F8FFF is ONLY used as a faint 10-15% opacity blur behind cyan elements.",
+      "NO gradients on white, NO purple/violet, NO teal/green. Stick exclusively to the palette."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "headings": "'Montserrat', sans-serif",
+      "labels": "'Orbitron', sans-serif",
+      "body": "'Inter', sans-serif"
+    },
+    "hierarchy": {
+      "h1": { "family": "Montserrat", "weight": "600", "size": "text-5xl md:text-6xl lg:text-7xl", "tracking": "tracking-tight", "line_height": "leading-none" },
+      "h2": { "family": "Montserrat", "weight": "500", "size": "text-3xl md:text-4xl", "tracking": "tracking-tight", "line_height": "leading-tight" },
+      "h3": { "family": "Montserrat", "weight": "500", "size": "text-xl md:text-2xl", "tracking": "tracking-normal", "line_height": "leading-snug" },
+      "kicker": { "family": "Orbitron", "weight": "400", "size": "text-xs md:text-sm", "tracking": "tracking-[0.2em]", "transform": "uppercase", "color": "#00C2FF" },
+      "live_data": { "family": "Orbitron", "weight": "400", "size": "text-lg md:text-xl", "tracking": "tracking-wider", "transform": "uppercase" },
+      "body": { "family": "Inter", "weight": "300", "size": "text-base md:text-lg", "tracking": "tracking-normal", "line_height": "leading-relaxed" }
+    }
+  },
+  "layout_and_spacing": {
+    "grid": "12-column grid system. Matte black background with fixed 5% blueprint grid overlay.",
+    "container_padding": "px-6 md:px-12 lg:px-24",
+    "section_spacing": "py-24 md:py-32 lg:py-40",
+    "card_padding": "p-6 md:p-8",
+    "borders": "1px solid #2B313A. Edges must be sharp (rounded-none or rounded-sm/2px). No soft radiuses."
+  },
+  "components": {
+    "header": {
+      "style": "Sticky, z-50, backdrop-blur-md bg-[#0D1117]/80, border-b border-[#2B313A].",
+      "logo": "Text-based wordmark 'TASC' (Montserrat Semibold) with tagline 'TENACIOUS AUTOMATION SYSTEMS & CONTROLS' (Orbitron text-[10px] tracking-widest).",
+      "nav_links": "Anchor links (//01..//08), Orbitron text-xs tracking-widest. Hover state: text-[#00C2FF]."
+    },
+    "buttons": {
+      "primary": "Border-only (1px #2B313A), background transparent. Text Soft White. On hover/focus: border-[#00C2FF], subtle glow shadow, text-[#00C2FF]. Brackets around text e.g., '[ INITIATE ]'.",
+      "data_testid": "Must include data-testid='cta-button-XXX'"
+    },
+    "cards": {
+      "base": "bg-transparent, border border-[#2B313A], rounded-[2px], p-8, relative overflow-hidden.",
+      "hover": "Cyan border trace via CSS/framer-motion, top-right Orbitron '[ + ]' indicator appears or glows."
+    },
+    "inputs": {
+      "style": "bg-[#0D1117] border-b border-[#2B313A] rounded-none px-0 py-4 text-[#E6EDF3] placeholder:text-[#2B313A]. Outline-none.",
+      "focus": "border-b-[#00C2FF] bg-[#1F8FFF]/5, ring-1 ring-[#00C2FF]/20.",
+      "data_testid": "Must include data-testid='contact-input-XXX'"
+    }
+  },
+  "sections": {
+    "01_hero": {
+      "id": "command-center",
+      "layout": "Min-h-screen flex flex-col justify-center relative overflow-hidden.",
+      "visuals": {
+        "background": "Blueprint grid with a cyan scanning line sweeping top to bottom every 10s (CSS linear-gradient + animation).",
+        "graphic": "Abstract isometric SVG network map (PLCs, servers, substation). Path strokes in #2B313A. Cyan dots/pulses animating along paths using stroke-dashoffset or motion.circle."
+      },
+      "content": "Kicker: '[ SYSTEM ONLINE / SECURE CONNECTION ]' with blinking cursor. H1: 'Architecting the Industrial Nervous System.'. 2 CTAs."
+    },
+    "02_core_capabilities": {
+      "id": "the-arsenal",
+      "layout": "3x2 Grid (grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6).",
+      "icons": "Use lucide-react with strokeWidth={1}. Size 32px. Automation (Server/Cpu), SCADA (Monitor/Activity), Networking (Network/Wifi), EMS (Zap/Leaf), IIoT (Cloud/Radio), Architecture (Layers/Workflow).",
+      "interactions": "Hover causes card border to illuminate cyan, and an Orbitron '[ + ]' text to light up in the top right."
+    },
+    "03_interoperability": {
+      "id": "data-flow-pipeline",
+      "layout": "Vertical pipeline down the center. 5 distinct nodes.",
+      "visuals": "Thick vertical central line (#2B313A). As user scrolls (GSAP ScrollTrigger), the line fills with #00C2FF segment by segment.",
+      "nodes": "Left/Right alternating. When scroll reaches a node, it lights up cyan, and small Orbitron metrics (TAGS: 12,480, UPTIME: 99.98%) fade in."
+    },
+    "04_dashboard_showcase": {
+      "id": "proof-of-visibility",
+      "layout": "Full-width layered SCADA mockups. Fake 3D perspective using CSS transform: rotateX(20deg) rotateZ(-10deg) scale(0.9) or similar.",
+      "visuals": "Constructed with HTML/CSS. Utility bar chart, alarm list, trend line chart, KPI tiles (OEE, PF).",
+      "interactions": "Scroll parallax (layers move at different speeds). Orbitron numbers tick dynamically (use React useEffect interval to randomly fluctuate numbers like real telemetry)."
+    },
+    "05_industries": {
+      "id": "rugged-reliability",
+      "layout": "Minimalist horizontal accordion (flex-row, flex-1 transition-all duration-500).",
+      "items": "Oil & Gas, Water, Manufacturing, Power, Food & Beverage, Infrastructure.",
+      "visuals": "NO PHOTOS. Abstract custom-drawn SVG line-art per industry (e.g., Oil Rig silhouette, factory roofline, transmission tower). Stroke #2B313A, 1.5px.",
+      "interactions": "On hover/click: accordion panel expands, SVG stroke lights up #00C2FF, subtle #1F8FFF/10 background glow."
+    },
+    "06_engineering_method": {
+      "id": "how-we-build",
+      "layout": "4-step horizontal process (Assess, Architect, Deploy, Monitor).",
+      "visuals": "Styled like a compressed Gantt chart or blueprint timeline. Horizontal line connecting them.",
+      "interactions": "Horizontal wipe/slide reveal on scroll entry."
+    },
+    "07_founder_mindset": {
+      "id": "tenacious-by-design",
+      "layout": "Grid cols-1 lg:grid-cols-12 gap-12. Left: abstract engineering SVG (calipers, circuit node, schematic geometry). Right: Body copy.",
+      "tone": "Calm, authoritative, long-term support focus."
+    },
+    "08_contact": {
+      "id": "terminal-interface",
+      "layout": "Grid cols-1 lg:grid-cols-2. Split screen.",
+      "left_panel": "Terminal-style form. Inputs: bottom-border only. Button: '[ TRANSMIT DATA ]'. Focus: cyan bounding box.",
+      "right_panel": "Slim column of quick section links and operational data (e.g., Lat/Long, Support hours)."
+    }
+  },
+  "motion_and_interactions": {
+    "engine": "Framer Motion or GSAP. Preferred: GSAP ScrollTrigger for scroll-linked data lines and clip-path reveals.",
+    "easing": "power2.out, expo.out, or linear (for continuous scanning/data pulses). NO BOUNCING. NO ELASTICITY. Must feel mechanical and precise.",
+    "durations": "Data pulses: 2s-3s linear. Section reveals: 0.8s power2.out. Hover states: 0.2s ease."
+  },
+  "anti_ai_rules": {
+    "1": "DO NOT use generic blob shapes or soft shadows. The aesthetic is SCADA terminal/OT dashboard—sharp, grid-based, engineering.",
+    "2": "DO NOT use photos from unspash/pexels. All visuals must be CSS or SVG line-art.",
+    "3": "DO NOT center text unless it's a specific UI button or metric. Left-align headings and body to match technical documentation/terminal readout styles.",
+    "4": "DO NOT use Inter or generic sans for headings. Montserrat for headings, Orbitron for kickers/numbers. This is fixed."
+  },
+  "instructions_to_main_agent": [
+    "Install `lucide-react` for basic icons (use strokeWidth={1.5} max).",
+    "Install `framer-motion` or `gsap` for animations. Ensure precise control without bounce.",
+    "For the hero background, use CSS: `background-image: linear-gradient(#2B313A 1px, transparent 1px), linear-gradient(90deg, #2B313A 1px, transparent 1px); background-size: 40px 40px;` with very low opacity.",
+    "Build the dashboard perspective section using raw Tailwind transforms: `transform perspective-1000 rotateX(15deg) rotateY(-10deg)`.",
+    "Use raw inline `<svg>` elements for the Industries section. Draw simple paths (e.g., `<path d='M10 50 L30 10 L50 50...'/>`). Do NOT use image tags.",
+    "Add `data-testid` to all navigation links, the contact form inputs, and the submit button.",
+    "Do NOT build multiple pages or react-router. Build a single `App.js` or `index.js` with anchor scrolling.",
+    "Adhere STRICTLY to the 5 colors provided in the palette. No deviations."
+  ]
+}
