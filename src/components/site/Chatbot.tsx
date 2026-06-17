@@ -57,7 +57,11 @@ export default function Chatbot() {
         body: JSON.stringify({ messages: [...messages, { role: "user", content: userMsg }] })
       });
 
-      if (!response.ok) throw new Error("Network error");
+      if (!response.ok) {
+        let errBody = "";
+        try { errBody = await response.text(); } catch(e) {}
+        throw new Error(`Network error: ${response.status} ${errBody}`);
+      }
       if (!response.body) throw new Error("No body");
 
       const reader = response.body.getReader();

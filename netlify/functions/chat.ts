@@ -1,7 +1,8 @@
 import { OpenAI } from "openai";
-import knowledgeData from "../../website-knowledge.json" assert { type: "json" };
+import type { Config, Context } from "@netlify/functions";
+import knowledgeData from "../../website-knowledge.json";
 
-export default async (req: Request) => {
+export default async (req: Request, context: Context) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
@@ -71,9 +72,13 @@ ${contextText}`;
     });
   } catch (error) {
     console.error("Chat API Error:", error);
-    return new Response(JSON.stringify({ error: "Failed to process chat" }), {
+    return new Response(JSON.stringify({ error: "Failed to process chat", details: error instanceof Error ? error.message : String(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" }
     });
   }
+};
+
+export const config: Config = {
+  path: "/api/chat"
 };

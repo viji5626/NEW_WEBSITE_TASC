@@ -1,4 +1,6 @@
-export default async (req: Request) => {
+import type { Config, Context } from "@netlify/functions";
+
+export default async (req: Request, context: Context) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
   }
@@ -51,4 +53,8 @@ export default async (req: Request) => {
       headers: { "Content-Type": "application/json" }
     });
   }
+};
+
+export const config: Config = {
+  path: "/api/contact/email"
 };
