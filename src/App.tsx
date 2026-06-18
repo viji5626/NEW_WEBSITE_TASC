@@ -52,7 +52,7 @@ function ScrollToTop() {
 
 function App() {
   useEffect(() => {
-    document.title = "TASC Automation // Industrial Command Center";
+    document.title = "Tenacious Automation Solutions & Consulting (TASC Automation)";
     // Force scroll to top on mount/refresh
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";

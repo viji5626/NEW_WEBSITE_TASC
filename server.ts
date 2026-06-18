@@ -237,15 +237,17 @@ ${contextText}`;
   // Explicitly serve public files as a fallback
   app.use(express.static(path.join(process.cwd(), "public")));
 
+  const distPath = path.join(process.cwd(), "dist");
+  const isProd = fs.existsSync(path.join(distPath, "index.html"));
+
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProd) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
