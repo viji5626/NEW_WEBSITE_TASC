@@ -763,7 +763,7 @@ export default function Cases() {
         <SectionHeader code="// 05" kicker="FIELD RECORD" title="Case studies — real plants, real PLCs." />
         <div >
           <p >
-            We have featured 5 projects out of our diverse expertise across various sectors. Each delivered with documentation, panel workmanship and live-plant cut-overs.
+            We have featured 5 cornerstone projects from our founder’s extensive track record of delivering 20+ industrial automation systems. Each represents battle-tested expertise in full-scale deployment, detailed documentation, panel workmanship, and live-plant cut-overs.
           </p>
           <button
             onClick={() => {
@@ -1796,7 +1796,7 @@ export default function Founder() {
               Empowering people and driving strategic management.
             </h3>
             <p >
-              With extensive experience in Human Resources and strategic management,
+              With strong qualifications in Human Resources and strategic management,
               the Director plays a pivotal role in shaping the organizational culture and human 
               capital strategies at TASC (Tenacious Automation Solutions & Consulting). Her focus rests on talent acquisition, 
               employee development, and fostering an inclusive, high-performance workplace where 

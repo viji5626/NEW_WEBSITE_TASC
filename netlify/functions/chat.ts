@@ -26,9 +26,7 @@ function isAuthorizedQuestion(text: string): boolean {
   );
 }
 
-function getAuthorizedResponse(): string {
-  return "For this query, please contact TASC automation team. [TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]";
-}
+
 
 function isEstdQuestion(text: string): boolean {
   if (isAuthorizedQuestion(text)) {
@@ -64,6 +62,10 @@ function isEstdQuestion(text: string): boolean {
   );
 }
 
+function getAuthorizedResponse(): string {
+  return "Nowhere we have mentioned that we are authorized to any of the make. However we have expertise in brand and we worked with it.";
+}
+
 function getImprovisedEstdResponse(): string {
   return "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]";
 }
@@ -76,6 +78,13 @@ export default async (req: Request, context: Context) => {
   try {
     const { messages } = await req.json();
     const userMsg = messages[messages.length - 1]?.content || "";
+
+    // Intercept any questions about authorization
+    if (isAuthorizedQuestion(userMsg)) {
+      return new Response(getAuthorizedResponse(), {
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
 
     // Intercept any questions about company age or establishment date
     if (isEstdQuestion(userMsg)) {
@@ -101,6 +110,9 @@ export default async (req: Request, context: Context) => {
 CRITICAL POLICY ON ESTABLISHMENT (ESTD) & AGE:
 If a user asks about when the company was established (Estd.), how old the company is, or how long it has been operating, you MUST NOT mention any specific years or state that the company has been operating for 11 years. Instead, always direct them to contact our team for this Estd. information, and emphasize that our founder has decade+ experience in the industrial automation field. You must format the response exactly like this and append the contact button at the end:
 "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
+
+CRITICAL POLICY ON CASE STUDIES:
+If a user asks about the case studies, cornerstone projects, or track record (including the 20+ industrial automation systems), you MUST clarify that these were executed by the founder (Mr. Vijay Shankar) as part of his extensive personal track record, and were NOT executed by TASC Automation as a company. You must clearly attribute the case studies and execution history to the founder's decorated industrial services track record.
 
 CRITICAL POLICY ON BRAND AUTHORIZATION & PARTNERSHIPS:
 If a user asks about brand certification, official representation, brand partners, brand approvals, or whether TASC is an authorized partner or representative of any specific brand/make (such as Siemens, Mitsubishi, etc.), you MUST answer neutrally and authentically: clarify that TASC is NOT an officially authorized partner, dealer, or certified representative of any specific brand/make, but TASC has extensive specialized engineering expertise and has worked with these brands extensively in the industrial automation field. Do NOT include any contact buttons or TALK_TO_TASC referral tags for these brand questions.

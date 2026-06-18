@@ -142,8 +142,8 @@ const CaseDetail = ({ c, active, total }: { c: any; active: number; total: numbe
         
         {/* Diagonal Watermark */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10 overflow-hidden select-none">
-          <span className="font-[Orbitron] font-bold text-3xl sm:text-4xl lg:text-5xl rotate-[-35deg] tracking-[0.15em] text-tasc-cyan opacity-[0.08] uppercase border-y border-tasc-cyan/20 px-8 py-3 text-center whitespace-nowrap">
-            TASC Automation
+          <span className="font-[Orbitron] font-bold text-2xl sm:text-3xl lg:text-4xl rotate-[-35deg] tracking-[0.15em] text-tasc-cyan opacity-[0.08] uppercase border-y border-tasc-cyan/20 px-8 py-3 text-center whitespace-nowrap">
+            FOUNDER'S TRACK RECORD
           </span>
         </div>
         {/* HUD */}
@@ -228,7 +228,7 @@ export default function Cases() {
         <SectionHeader code="// 05" kicker="FIELD RECORD" title="Case studies — real plants, real PLCs." />
         <div className="mt-6 w-full flex flex-col md:flex-row md:items-end justify-between gap-6">
           <p className="max-w-2xl text-tasc-text/55 text-base font-light leading-relaxed">
-            We have featured 5 projects out of our diverse expertise across various sectors. Each delivered with documentation, panel workmanship and live-plant cut-overs.
+            We have featured 5 cornerstone projects from our founder’s extensive track record of delivering 20+ industrial automation systems. Each represents battle-tested expertise in full-scale deployment, detailed documentation, panel workmanship, and live-plant cut-overs.
           </p>
           <button
             onClick={() => {

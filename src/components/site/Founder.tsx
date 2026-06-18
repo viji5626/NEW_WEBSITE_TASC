@@ -209,7 +209,7 @@ export default function Founder() {
             </h3>
 
             <p className="mt-6 text-tasc-text/80 text-base md:text-lg font-light leading-relaxed">
-              With extensive experience in Human Resources and strategic management,
+              With strong qualifications in Human Resources and strategic management,
               the Director plays a pivotal role in shaping the organizational culture and human 
               capital strategies at TASC (Tenacious Automation Solutions & Consulting). Her focus rests on talent acquisition, 
               employee development, and fostering an inclusive, high-performance workplace where 
