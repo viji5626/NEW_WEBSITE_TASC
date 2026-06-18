@@ -28,8 +28,10 @@ function isEstdQuestion(text: string): boolean {
     norm.includes("years in business") ||
     norm.includes("years old") ||
     norm.includes("age of") ||
+    norm.includes("how many years") ||
+    norm.includes("active since") ||
     (norm.includes("since") && (norm.includes("when") || norm.includes("year"))) ||
-    ((norm.includes("what year") || norm.includes("which year") || norm.includes("when was") || norm.includes("when did")) && (norm.includes("start") || norm.includes("found") || norm.includes("launch") || norm.includes("begin") || norm.includes("setup") || norm.includes("create") || norm.includes("born") || norm.includes("company") || norm.includes("tasc") || norm.includes("firm") || norm.includes("business") || norm.includes("you")))
+    ((norm.includes("what year") || norm.includes("which year") || norm.includes("when was") || norm.includes("when did")) && (norm.includes("start") || norm.includes("found") || norm.includes("launch") || norm.includes("begin") || norm.includes("setup") || norm.includes("create") || norm.includes("born") || norm.includes("company") || norm.includes("tasc") || norm.includes("firm") || norm.includes("business") || norm.includes("you") || norm.includes("organisation") || norm.includes("organization")))
   );
 }
 
