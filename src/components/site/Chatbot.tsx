@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Bot, User, Sparkles, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import { auth } from "@/lib/firebase";
+import { User as FirebaseAuthUser } from "firebase/auth";
 
 interface Message {
   role: "user" | "assistant";
@@ -9,6 +11,15 @@ interface Message {
 }
 
 export default function Chatbot() {
+  const [user, setUser] = useState<FirebaseAuthUser | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
@@ -80,7 +91,10 @@ export default function Chatbot() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMsg }] })
+        body: JSON.stringify({ 
+          messages: [...messages, { role: "user", content: userMsg }],
+          userName: user?.displayName || ""
+        })
       });
 
       if (!response.ok) {

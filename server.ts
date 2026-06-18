@@ -57,6 +57,7 @@ async function startServer() {
   app.post("/api/chat", async (req, res) => {
     try {
       const messages = req.body.messages || [];
+      const userName = req.body.userName;
       const apiKey = process.env.NVIDIA_API_KEY || "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";
       
       const { OpenAI } = await import("openai");
@@ -77,7 +78,12 @@ async function startServer() {
         console.error("Context reading error:", err);
       }
 
-      const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.
+      let userGreetingInstruction = "";
+      if (userName && userName.trim()) {
+        userGreetingInstruction = `\n[IMPORTANT USER DETAIL]: The current logged-in user is named "${userName}". Address, greet, or refer to them by this name (e.g., "Hello, ${userName}!", or "Thank you, ${userName}.") when appropriate.`;
+      }
+
+      const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.${userGreetingInstruction}
 If the user asks an irrelevant question (outside automation, tech stack, TASC services, or missing from context) or explicitly asks to speak to humans/contact support, you MUST reply with a helpful apologetic or leading message, followed directly by exactly this markdown tag formatting: [TALK_TO_TASC: <Dedicated Heading> | <Contextual Pre-filled Scope>]
 where <Dedicated Heading> is a short (2-5 words) appropriate headline summarizing their intent (e.g., "Consultation Request", "Speak to Engineering", "Custom Service Inquiry").
 and <Contextual Pre-filled Scope> is a default generated message suggesting their intent based on their latest message (e.g., "I am interested in learning more about your AMC offerings...").

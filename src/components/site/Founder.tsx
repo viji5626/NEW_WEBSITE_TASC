@@ -70,24 +70,14 @@ export default function Founder() {
               MR. VIJAY SHANKAR · FOUNDER
             </div>
             <h3 className="mt-3 font-[Montserrat] text-3xl md:text-4xl font-medium text-tasc-text leading-tight">
-              A decade-plus of industrial automation expertise.
+              Modern enterprise backed by 11+ years of field experience.
             </h3>
 
             <p className="mt-6 text-tasc-text/80 text-base md:text-lg font-light leading-relaxed">
-              With 11+ years of experience in industrial automation and digital transformation,
-              the founder has led the execution of advanced Process Automation, SCADA, DCS and
-              Factory Automation solutions across multiple industrial domains. The expertise spans
-              PLCs, HMIs, VFDs, Industrial IoT and Industry 4.0 integration — enabling
-              organizations to achieve real-time monitoring, intelligent control and data-driven
-              operational excellence.
+              TASC (Tenacious Automation Solutions & Consulting) is a recently established automation and digitalization enterprise. It is driven and guided by a principal mind with over 11+ years of hands-on field experience in industrial automation, digital transformation, and plant-floor operations. 
             </p>
             <p className="mt-5 text-tasc-text/70 text-base md:text-lg font-light leading-relaxed">
-              Driven by a strong vision for innovation and reliability, the founder established
-              TASC (Tenacious Automation Solutions & Consulting) to deliver scalable turnkey automation and digitalization solutions tailored
-              to modern industrial challenges. With deep technical expertise in process industries,
-              manufacturing, utilities and infrastructure, the company focuses on building
-              high-performance systems that improve productivity, efficiency, reliability and
-              long-term operational sustainability.
+              The founder, Mr. Vijay Shankar, established the company to merge agile modern technologies with his deep, decade-plus background in process automation, redundant SCADA/DCS systems, and OT networking. Backed by a team with demanding industrial expertise, TASC delivers robust turnkey engineering, PLC supply, energy management, and web services built to keep plants running and completely future-proofed.
             </p>
 
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-px bg-tasc-border/60 border border-tasc-border">
