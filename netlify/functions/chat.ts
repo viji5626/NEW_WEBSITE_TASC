@@ -40,38 +40,6 @@ function getImprovisedEstdResponse(): string {
   return variations[Math.floor(Math.random() * variations.length)];
 }
 
-function isAuthorizedQuestion(text: string): boolean {
-  const norm = text.toLowerCase().trim();
-  return (
-    norm.includes("authori") || // authorize, authorized, authorization, authorise, authorised, authorisation, etc.
-    norm.includes("authri") || // authrized, authrize, etc.
-    norm.includes("authr") || // authrise, etc.
-    norm.includes("auther") || // autherised, autherized
-    norm.includes("partner of") ||
-    norm.includes("official partner") ||
-    norm.includes("certified partner") ||
-    norm.includes("authorized partner") ||
-    norm.includes("brand partner") ||
-    norm.includes("siemens partner") ||
-    norm.includes("mitsubishi partner") ||
-    norm.includes("brand approval") ||
-    norm.includes("brand certification") ||
-    norm.includes("brand certificate") ||
-    norm.includes("oem license") ||
-    norm.includes("oem certificate") ||
-    norm.includes("oem partner") ||
-    norm.includes("oem authorization")
-  );
-}
-
-function getAuthorizedResponse(): string {
-  const variations = [
-    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]",
-    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Partnership Enquiry | Please contact us regarding certified brand alignments or OEM partner authorizations.]"
-  ];
-  return variations[Math.floor(Math.random() * variations.length)];
-}
-
 export default async (req: Request, context: Context) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
@@ -84,15 +52,6 @@ export default async (req: Request, context: Context) => {
     // Intercept any questions about company age or establishment date
     if (isEstdQuestion(userMsg)) {
       return new Response(getImprovisedEstdResponse(), {
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-        },
-      });
-    }
-
-    // Intercept any questions about brand authorization or partnerships
-    if (isAuthorizedQuestion(userMsg)) {
-      return new Response(getAuthorizedResponse(), {
         headers: {
           "Content-Type": "text/plain; charset=utf-8",
         },
