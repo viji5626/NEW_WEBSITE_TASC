@@ -1,6 +1,6 @@
 {
   "name": "Tenacious Automation Solutions & Consulting",
-  "description": "Tenacious Automation Solutions & Consulting (TASC Automation): Engineering intelligent SCADA, PLC, and Industry 4.0 architectures and OT infrastructure.",
+  "description": "Tenacious Automation Solutions & Consulting: Engineering intelligent SCADA, PLC, and Industry 4.0 architectures and OT infrastructure.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
