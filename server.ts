@@ -7,6 +7,51 @@ import fs from "fs";
 
 dotenv.config();
 
+function isEstdQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  const cleaned = norm.replace(/[?.,!\/\\#@$%\^&\*;:{}=\-_`~()]/g, " ");
+
+  // Match common queries regarding company age, establishment, founding date or launch year
+  const keywords = ["estd", "establish", "founded", "founding", "since when", "how old"];
+  for (const kw of keywords) {
+    if (cleaned.includes(kw)) {
+      if (kw === "how old" || kw === "since when") {
+        if (cleaned.includes("company") || cleaned.includes("tasc") || cleaned.includes("firm") || cleaned.includes("business") || cleaned.includes("agency") || cleaned.includes("organization") || cleaned.includes("industrial") || cleaned.includes("automation") || cleaned.includes("you")) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    }
+  }
+
+  if (cleaned.includes("how long") && (cleaned.includes("company") || cleaned.includes("tasc") || cleaned.includes("firm") || cleaned.includes("business") || cleaned.includes("operating") || cleaned.includes("operational") || cleaned.includes("running") || cleaned.includes("around"))) {
+    return true;
+  }
+
+  if (cleaned.includes("starting year") || cleaned.includes("start year") || cleaned.includes("founding year") || cleaned.includes("creation year")) {
+    return true;
+  }
+
+  if ((cleaned.includes("when") || cleaned.includes("what year")) && (cleaned.includes("started") || cleaned.includes("founded") || cleaned.includes("register") || cleaned.includes("launch") || cleaned.includes("begin") || cleaned.includes("commence"))) {
+    if (cleaned.includes("company") || cleaned.includes("tasc") || cleaned.includes("firm") || cleaned.includes("business") || cleaned.includes("you")) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getImprovisedEstdResponse(): string {
+  const variations = [
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | I would like to inquire about TASC's official establishment date and history.]",
+    "Please contact to our team for this Estd. information. However, our Founder brings decade+ experience in the industrial automation field.\n\n[TALK_TO_TASC: Company History | I am interested in knowing more about TASC's establishment date and background.]",
+    "To learn specific Estd. information, you can contact to our team. Remember that our Founder has decade+ experience in the industrial automation field.\n\n[TALK_TO_TASC: Corporate History Inquiry | I am writing to request details regarding TASC Automation's founding history and establishment date.]",
+    "You can discuss with our team regarding the official Estd. information. However key Founder is equipped with decade+ experience in managing industrial automation field operations.\n\n[TALK_TO_TASC: Estd. Inquiry | I would like to inquire about TASC's establishment date and years of operations.]"
+  ];
+  return variations[Math.floor(Math.random() * variations.length)];
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -57,7 +102,19 @@ async function startServer() {
   app.post("/api/chat", async (req, res) => {
     try {
       const messages = req.body.messages || [];
-      const userName = req.body.userName;
+      const user_name = req.body.user_name || "";
+      const user_email = req.body.user_email || "";
+      const userMsg = messages[messages.length - 1]?.content || "";
+
+      // Intercept any questions about company age or establishment date
+      if (isEstdQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getImprovisedEstdResponse());
+        res.end();
+        return;
+      }
+
       const apiKey = process.env.NVIDIA_API_KEY || "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";
       
       const { OpenAI } = await import("openai");
@@ -78,19 +135,16 @@ async function startServer() {
         console.error("Context reading error:", err);
       }
 
-      let userGreetingInstruction = "";
-      if (userName && userName.trim()) {
-        userGreetingInstruction = `\n[IMPORTANT USER DETAIL]: The current logged-in user is named "${userName}". Address, greet, or refer to them by this name (e.g., "Hello, ${userName}!", or "Thank you, ${userName}.") when appropriate.`;
+      let userContextPart = "";
+      if (user_name) {
+        userContextPart = `\n\nCURRENT LOGGED-IN USER SESSION:\nThe active website visitor is currently authenticated as "${user_name}"${user_email ? ` (Email: ${user_email})` : ""}. Acknowledge, welcome, and reply to this user by their first name or display name whenever appropriate. Make the experience personal, professional, and friendly!\n\n`;
       }
 
-      const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.${userGreetingInstruction}
+      const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.${userContextPart}
 
-[COMPANY ESTABLISHMENT & EXPERTISE PROFILE]:
-If asked about how old TASC (Tenacious Automation Solutions & Consulting) is or when it was established, ALWAYS answer in a way that instills high customer confidence:
-1. Clearly state that TASC is a recently established modern automation and digitalization enterprise.
-2. Emphasize that the company is founded, driven, and guided by its principal mind, Mr. Vijay Shankar, who brings over 11+ years of deep, hands-on, field-proven experience in industrial automation, digital transformation, and plant-floor operations.
-3. Highlight that TASC is backed by a highly capable team with demanding industrial expertise.
-4. Frame it proudly as a recently established agile enterprise leveraging a decade-plus of stellar domain expertise – rather than saying "it is relatively new and an exact founding year isn't provided."
+CRITICAL POLICY ON ESTABLISHMENT (ESTD) & AGE:
+If a user asks about when the company was established (Estd.), how old the company is, or how long it has been operating, you MUST NOT mention any specific years or state that the company has been operating for 11 years. Instead, always direct them to contact our team for this Estd. information, and emphasize that our founder has decade+ experience in the industrial automation field. You must format the response exactly like this and append the contact button at the end:
+"You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
 
 If the user asks an irrelevant question (outside automation, tech stack, TASC services, or missing from context) or explicitly asks to speak to humans/contact support, you MUST reply with a helpful apologetic or leading message, followed directly by exactly this markdown tag formatting: [TALK_TO_TASC: <Dedicated Heading> | <Contextual Pre-filled Scope>]
 where <Dedicated Heading> is a short (2-5 words) appropriate headline summarizing their intent (e.g., "Consultation Request", "Speak to Engineering", "Custom Service Inquiry").

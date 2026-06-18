@@ -3,7 +3,7 @@ import { MessageSquare, X, Send, Bot, User, Sparkles, Trash2 } from "lucide-reac
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import { auth } from "@/lib/firebase";
-import { User as FirebaseAuthUser } from "firebase/auth";
+import { User as FirebaseUser } from "firebase/auth";
 
 interface Message {
   role: "user" | "assistant";
@@ -11,16 +11,8 @@ interface Message {
 }
 
 export default function Chatbot() {
-  const [user, setUser] = useState<FirebaseAuthUser | null>(null);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
   const [isOpen, setIsOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
       const saved = localStorage.getItem("tenacious_chat_messages");
@@ -40,6 +32,25 @@ export default function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Sync auth state and dynamically welcome logged-in user
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+      if (user) {
+        setMessages(prev => {
+          if (prev.length === 1 && prev[0].role === "assistant" && prev[0].content.includes("Hello! I am the TENACIOUS AI Assistant")) {
+            const displayName = user.displayName || user.email?.split("@")[0] || "there";
+            return [
+              { role: "assistant", content: `Hello, ${displayName}! I am the TENACIOUS AI Assistant. Ask me anything about our automation services, consulting, or technologies.` }
+            ];
+          }
+          return prev;
+        });
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     try {
@@ -91,9 +102,10 @@ export default function Chatbot() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           messages: [...messages, { role: "user", content: userMsg }],
-          userName: user?.displayName || ""
+          user_name: currentUser?.displayName || currentUser?.email?.split("@")[0] || "",
+          user_email: currentUser?.email || ""
         })
       });
 
