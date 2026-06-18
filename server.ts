@@ -8,7 +8,7 @@ import fs from "fs";
 dotenv.config();
 
 async function startServer() {
-const app = express();
+  const app = express();
   const PORT = 3000;
 
   app.use(express.json());
