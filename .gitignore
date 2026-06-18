@@ -6,3 +6,8 @@ coverage/
 *.log
 .env*
 !.env.example
+
+tasc_full_repo/
+tasc_brand/
+emergent_download/
+image-backups/

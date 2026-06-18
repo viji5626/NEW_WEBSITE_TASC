@@ -1,8 +1,0 @@
-# Treat all image files as binary to prevent corruption during Git checkout or export
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.svg text
-*.ico binary
-*.webp binary
