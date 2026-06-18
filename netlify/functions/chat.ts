@@ -2,44 +2,6 @@ import { OpenAI } from "openai";
 import type { Config, Context } from "@netlify/functions";
 import knowledgeData from "../../website-knowledge.json";
 
-function isEstdQuestion(text: string): boolean {
-  const norm = text.toLowerCase().trim();
-  return (
-    norm.includes("how old") ||
-    norm.includes("howold") ||
-    norm.includes("how long") ||
-    norm.includes("howlong") ||
-    norm.includes("estd") ||
-    norm.includes("estb") ||
-    norm.includes("establish") ||
-    norm.includes("founded") ||
-    norm.includes("founding") ||
-    norm.includes("incorporat") ||
-    norm.includes("start year") ||
-    norm.includes("starting year") ||
-    norm.includes("founding year") ||
-    norm.includes("launch date") ||
-    norm.includes("launch year") ||
-    norm.includes("years in business") ||
-    norm.includes("years old") ||
-    norm.includes("age of") ||
-    norm.includes("how many years") ||
-    norm.includes("active since") ||
-    (norm.includes("since") && (norm.includes("when") || norm.includes("year"))) ||
-    ((norm.includes("what year") || norm.includes("which year") || norm.includes("when was") || norm.includes("when did")) && (norm.includes("start") || norm.includes("found") || norm.includes("launch") || norm.includes("begin") || norm.includes("setup") || norm.includes("create") || norm.includes("born") || norm.includes("company") || norm.includes("tasc") || norm.includes("firm") || norm.includes("business") || norm.includes("you") || norm.includes("organisation") || norm.includes("organization")))
-  );
-}
-
-function getImprovisedEstdResponse(): string {
-  const variations = [
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "Please contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "To learn specific Estd. information, you can contact to our team. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can discuss with our team regarding the official Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
-  ];
-  return variations[Math.floor(Math.random() * variations.length)];
-}
-
 export default async (req: Request, context: Context) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
@@ -47,17 +9,6 @@ export default async (req: Request, context: Context) => {
 
   try {
     const { messages } = await req.json();
-    const userMsg = messages[messages.length - 1]?.content || "";
-
-    // Intercept any questions about company age or establishment date
-    if (isEstdQuestion(userMsg)) {
-      return new Response(getImprovisedEstdResponse(), {
-        headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-        },
-      });
-    }
-
     const apiKey = process.env.NVIDIA_API_KEY || "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";
 
     const client = new OpenAI({
