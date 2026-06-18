@@ -40,13 +40,7 @@ function isEstdQuestion(text: string): boolean {
 }
 
 function getImprovisedEstdResponse(): string {
-  const variations = [
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
-  ];
-  return variations[Math.floor(Math.random() * variations.length)];
+  return "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]";
 }
 
 function isAuthorizedQuestion(text: string): boolean {
