@@ -160,6 +160,63 @@ async function runRestoration() {
     ],
     'public/brand/cases/sas.jpg': [
       `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/cases/sas.jpg`
+    ],
+    'public/brand/genesis64.png': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/genesis64.png`
+    ],
+    'public/brand/vcard-qr.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vcard-qr.svg`
+    ],
+    'public/brand/microsoft.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/microsoft.svg`
+    ],
+    'public/brand/openai.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/openai.svg`
+    ],
+    'public/brand/openai-white.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/openai-white.svg`
+    ],
+    'public/brand/hermes.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/hermes.svg`
+    ],
+    'public/brand/hermes-white.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/hermes-white.svg`
+    ],
+    'public/brand/ai-orchestration.svg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/ai-orchestration.svg`
+    ],
+    'public/brand/vert-auto.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-auto.jpg`
+    ],
+    'public/brand/vert-bms.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-bms.jpg`
+    ],
+    'public/brand/vert-conveyor.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-conveyor.jpg`
+    ],
+    'public/brand/vert-hvac.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-hvac.jpg`
+    ],
+    'public/brand/vert-material.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-material.jpg`
+    ],
+    'public/brand/vert-mining.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-mining.jpg`
+    ],
+    'public/brand/vert-panel.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-panel.jpg`
+    ],
+    'public/brand/vert-paper.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-paper.jpg`
+    ],
+    'public/brand/vert-substation.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-substation.jpg`
+    ],
+    'public/brand/vert-sustain.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-sustain.jpg`
+    ],
+    'public/brand/vert-water.jpg': [
+      `https://raw.githubusercontent.com/viji5626/EMERGENT_WEBSITE/main/frontend/public/brand/vert-water.jpg`
     ]
   };
 
