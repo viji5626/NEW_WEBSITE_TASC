@@ -7,7 +7,38 @@ import fs from "fs";
 
 dotenv.config();
 
+function isAuthorizedQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("authori") || // authorize, authorized, authorization, authorise, authorised, authorisation, etc.
+    norm.includes("authri") || // authrized, authrize, etc.
+    norm.includes("authr") || // authrise, etc.
+    norm.includes("auther") || // autherised, autherized
+    norm.includes("partner of") ||
+    norm.includes("official partner") ||
+    norm.includes("certified partner") ||
+    norm.includes("authorized partner") ||
+    norm.includes("brand partner") ||
+    norm.includes("siemens partner") ||
+    norm.includes("mitsubishi partner") ||
+    norm.includes("brand approval") ||
+    norm.includes("brand certification") ||
+    norm.includes("brand certificate") ||
+    norm.includes("oem license") ||
+    norm.includes("oem certificate") ||
+    norm.includes("oem partner") ||
+    norm.includes("oem authorization")
+  );
+}
+
+function getAuthorizedResponse(): string {
+  return "For this query, please contact TASC automation team. [TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]";
+}
+
 function isEstdQuestion(text: string): boolean {
+  if (isAuthorizedQuestion(text)) {
+    return false;
+  }
   const norm = text.toLowerCase().trim();
   
   return (
@@ -40,37 +71,11 @@ function isEstdQuestion(text: string): boolean {
 }
 
 function getImprovisedEstdResponse(): string {
-  return "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]";
-}
-
-function isAuthorizedQuestion(text: string): boolean {
-  const norm = text.toLowerCase().trim();
-  return (
-    norm.includes("authori") || // authorize, authorized, authorization, authorise, authorised, authorisation, etc.
-    norm.includes("authri") || // authrized, authrize, etc.
-    norm.includes("authr") || // authrise, etc.
-    norm.includes("auther") || // autherised, autherized
-    norm.includes("partner of") ||
-    norm.includes("official partner") ||
-    norm.includes("certified partner") ||
-    norm.includes("authorized partner") ||
-    norm.includes("brand partner") ||
-    norm.includes("siemens partner") ||
-    norm.includes("mitsubishi partner") ||
-    norm.includes("brand approval") ||
-    norm.includes("brand certification") ||
-    norm.includes("brand certificate") ||
-    norm.includes("oem license") ||
-    norm.includes("oem certificate") ||
-    norm.includes("oem partner") ||
-    norm.includes("oem authorization")
-  );
-}
-
-function getAuthorizedResponse(): string {
   const variations = [
-    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]",
-    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Partnership Enquiry | Please contact us regarding certified brand alignments or OEM partner authorizations.]"
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
   ];
   return variations[Math.floor(Math.random() * variations.length)];
 }
@@ -127,20 +132,20 @@ async function startServer() {
       const messages = req.body.messages || [];
       const userMsg = messages[messages.length - 1]?.content || "";
 
-      // Intercept any questions about company age or establishment date
-      if (isEstdQuestion(userMsg)) {
-        res.setHeader("Content-Type", "text/plain");
-        res.setHeader("Transfer-Encoding", "chunked");
-        res.write(getImprovisedEstdResponse());
-        res.end();
-        return;
-      }
-
       // Intercept any questions about brand authorization or partnerships
       if (isAuthorizedQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
         res.setHeader("Transfer-Encoding", "chunked");
         res.write(getAuthorizedResponse());
+        res.end();
+        return;
+      }
+
+      // Intercept any questions about company age or establishment date
+      if (isEstdQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getImprovisedEstdResponse());
         res.end();
         return;
       }
