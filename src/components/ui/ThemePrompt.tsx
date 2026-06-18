@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Moon, Sun } from 'lucide-react';
 
 export const ThemePrompt = ({ onComplete }: { onComplete: () => void }) => {
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(3);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -43,9 +43,7 @@ export const ThemePrompt = ({ onComplete }: { onComplete: () => void }) => {
   };
 
   const handleAutoTheme = () => {
-    const hour = new Date().getHours();
-    const isDay = hour >= 9 && hour < 17;
-    setTheme(isDay);
+    setTheme(false); // Default to Dark mode
   };
 
   const closePrompt = () => {
@@ -97,12 +95,12 @@ export const ThemePrompt = ({ onComplete }: { onComplete: () => void }) => {
               <motion.div
                 initial={{ width: "100%" }}
                 animate={{ width: "0%" }}
-                transition={{ duration: 5, ease: "linear" }}
+                transition={{ duration: 3, ease: "linear" }}
                 className="absolute inset-y-0 left-0 bg-tasc-cyan"
               />
             </div>
             <div className="font-[Orbitron] text-[10px] text-tasc-text/40 tracking-widest uppercase">
-              Auto selection in {timeLeft}s (Based on time of day)
+              Auto selection in {timeLeft}s (Defaulting to Dark)
             </div>
           </motion.div>
         </motion.div>
