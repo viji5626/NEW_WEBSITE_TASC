@@ -9,45 +9,68 @@ dotenv.config();
 
 function isEstdQuestion(text: string): boolean {
   const norm = text.toLowerCase().trim();
-  const cleaned = norm.replace(/[?.,!\/\\#@$%\^&\*;:{}=\-_`~()]/g, " ");
-
-  // Match common queries regarding company age, establishment, founding date or launch year
-  const keywords = ["estd", "establish", "founded", "founding", "since when", "how old"];
-  for (const kw of keywords) {
-    if (cleaned.includes(kw)) {
-      if (kw === "how old" || kw === "since when") {
-        if (cleaned.includes("company") || cleaned.includes("tasc") || cleaned.includes("firm") || cleaned.includes("business") || cleaned.includes("agency") || cleaned.includes("organization") || cleaned.includes("industrial") || cleaned.includes("automation") || cleaned.includes("you")) {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    }
-  }
-
-  if (cleaned.includes("how long") && (cleaned.includes("company") || cleaned.includes("tasc") || cleaned.includes("firm") || cleaned.includes("business") || cleaned.includes("operating") || cleaned.includes("operational") || cleaned.includes("running") || cleaned.includes("around"))) {
-    return true;
-  }
-
-  if (cleaned.includes("starting year") || cleaned.includes("start year") || cleaned.includes("founding year") || cleaned.includes("creation year")) {
-    return true;
-  }
-
-  if ((cleaned.includes("when") || cleaned.includes("what year")) && (cleaned.includes("started") || cleaned.includes("founded") || cleaned.includes("register") || cleaned.includes("launch") || cleaned.includes("begin") || cleaned.includes("commence"))) {
-    if (cleaned.includes("company") || cleaned.includes("tasc") || cleaned.includes("firm") || cleaned.includes("business") || cleaned.includes("you")) {
-      return true;
-    }
-  }
-
-  return false;
+  
+  return (
+    norm.includes("how old") ||
+    norm.includes("howold") ||
+    norm.includes("how long") ||
+    norm.includes("howlong") ||
+    norm.includes("estd") ||
+    norm.includes("estb") ||
+    norm.includes("establish") ||
+    norm.includes("founded") ||
+    norm.includes("founding") ||
+    norm.includes("incorporat") ||
+    norm.includes("start year") ||
+    norm.includes("starting year") ||
+    norm.includes("launch date") ||
+    norm.includes("launch year") ||
+    norm.includes("years in business") ||
+    norm.includes("years old") ||
+    norm.includes("age of") ||
+    (norm.includes("since") && (norm.includes("when") || norm.includes("year"))) ||
+    ((norm.includes("what year") || norm.includes("which year") || norm.includes("when was") || norm.includes("when did")) && (norm.includes("start") || norm.includes("found") || norm.includes("launch") || norm.includes("begin") || norm.includes("setup") || norm.includes("create") || norm.includes("born") || norm.includes("company") || norm.includes("tasc") || norm.includes("firm") || norm.includes("business") || norm.includes("you")))
+  );
 }
 
 function getImprovisedEstdResponse(): string {
   const variations = [
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | I would like to inquire about TASC's official establishment date and history.]",
-    "Please contact to our team for this Estd. information. However, our Founder brings decade+ experience in the industrial automation field.\n\n[TALK_TO_TASC: Company History | I am interested in knowing more about TASC's establishment date and background.]",
-    "To learn specific Estd. information, you can contact to our team. Remember that our Founder has decade+ experience in the industrial automation field.\n\n[TALK_TO_TASC: Corporate History Inquiry | I am writing to request details regarding TASC Automation's founding history and establishment date.]",
-    "You can discuss with our team regarding the official Estd. information. However key Founder is equipped with decade+ experience in managing industrial automation field operations.\n\n[TALK_TO_TASC: Estd. Inquiry | I would like to inquire about TASC's establishment date and years of operations.]"
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "Please contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "To learn specific Estd. information, you can contact to our team. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can discuss with our team regarding the official Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
+  ];
+  return variations[Math.floor(Math.random() * variations.length)];
+}
+
+function isAuthorizedQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("authori") || // authorize, authorized, authorization, authorise, authorised, authorisation, etc.
+    norm.includes("authri") || // authrized, authrize, etc.
+    norm.includes("authr") || // authrise, etc.
+    norm.includes("auther") || // autherised, autherized
+    norm.includes("partner of") ||
+    norm.includes("official partner") ||
+    norm.includes("certified partner") ||
+    norm.includes("authorized partner") ||
+    norm.includes("brand partner") ||
+    norm.includes("siemens partner") ||
+    norm.includes("mitsubishi partner") ||
+    norm.includes("brand approval") ||
+    norm.includes("brand certification") ||
+    norm.includes("brand certificate") ||
+    norm.includes("oem license") ||
+    norm.includes("oem certificate") ||
+    norm.includes("oem partner") ||
+    norm.includes("oem authorization")
+  );
+}
+
+function getAuthorizedResponse(): string {
+  const variations = [
+    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]",
+    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Partnership Enquiry | Please contact us regarding certified brand alignments or OEM partner authorizations.]"
   ];
   return variations[Math.floor(Math.random() * variations.length)];
 }
@@ -102,8 +125,6 @@ async function startServer() {
   app.post("/api/chat", async (req, res) => {
     try {
       const messages = req.body.messages || [];
-      const user_name = req.body.user_name || "";
-      const user_email = req.body.user_email || "";
       const userMsg = messages[messages.length - 1]?.content || "";
 
       // Intercept any questions about company age or establishment date
@@ -111,6 +132,15 @@ async function startServer() {
         res.setHeader("Content-Type", "text/plain");
         res.setHeader("Transfer-Encoding", "chunked");
         res.write(getImprovisedEstdResponse());
+        res.end();
+        return;
+      }
+
+      // Intercept any questions about brand authorization or partnerships
+      if (isAuthorizedQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getAuthorizedResponse());
         res.end();
         return;
       }
@@ -135,16 +165,15 @@ async function startServer() {
         console.error("Context reading error:", err);
       }
 
-      let userContextPart = "";
-      if (user_name) {
-        userContextPart = `\n\nCURRENT LOGGED-IN USER SESSION:\nThe active website visitor is currently authenticated as "${user_name}"${user_email ? ` (Email: ${user_email})` : ""}. Acknowledge, welcome, and reply to this user by their first name or display name whenever appropriate. Make the experience personal, professional, and friendly!\n\n`;
-      }
-
-      const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.${userContextPart}
+      const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.
 
 CRITICAL POLICY ON ESTABLISHMENT (ESTD) & AGE:
 If a user asks about when the company was established (Estd.), how old the company is, or how long it has been operating, you MUST NOT mention any specific years or state that the company has been operating for 11 years. Instead, always direct them to contact our team for this Estd. information, and emphasize that our founder has decade+ experience in the industrial automation field. You must format the response exactly like this and append the contact button at the end:
 "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
+
+CRITICAL POLICY ON BRAND AUTHORIZATION & PARTNERSHIPS:
+If a user asks anything about brand certification, official representation, brand partners, brand approvals, or whether TASC is authorized for any specific brand, you MUST always reply that for brand authorizations and partnership questions they should contact our team. You must format the response exactly like this:
+"For this query, please contact TASC automation team. [TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]"
 
 If the user asks an irrelevant question (outside automation, tech stack, TASC services, or missing from context) or explicitly asks to speak to humans/contact support, you MUST reply with a helpful apologetic or leading message, followed directly by exactly this markdown tag formatting: [TALK_TO_TASC: <Dedicated Heading> | <Contextual Pre-filled Scope>]
 where <Dedicated Heading> is a short (2-5 words) appropriate headline summarizing their intent (e.g., "Consultation Request", "Speak to Engineering", "Custom Service Inquiry").
