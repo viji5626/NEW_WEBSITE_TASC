@@ -34,7 +34,13 @@ function isEstdQuestion(text: string): boolean {
 }
 
 function getImprovisedEstdResponse(): string {
-  return "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]";
+  const variations = [
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
+    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field.\n\n[TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
+  ];
+  return variations[Math.floor(Math.random() * variations.length)];
 }
 
 function isAuthorizedQuestion(text: string): boolean {
@@ -62,7 +68,11 @@ function isAuthorizedQuestion(text: string): boolean {
 }
 
 function getAuthorizedResponse(): string {
-  return "For this query, please contact TASC automation team. [TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]";
+  const variations = [
+    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Brand Authorization Inquiry | I would like to inquire about TASC's official brand authorizations, certifications, or partnerships.]",
+    "For this query, please contact TASC automation team.\n\n[TALK_TO_TASC: Partnership Enquiry | Please contact us regarding certified brand alignments or OEM partner authorizations.]"
+  ];
+  return variations[Math.floor(Math.random() * variations.length)];
 }
 
 export default async (req: Request, context: Context) => {
