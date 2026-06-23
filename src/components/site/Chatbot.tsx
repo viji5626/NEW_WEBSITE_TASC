@@ -67,74 +67,143 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
+  const sendUserMessage = async (historyToSend: Message[]) => {
+    setIsLoading(true);
+
+    const maxAttempts = 3;
+    let attempt = 0;
+    let success = false;
+    let assistantMsg = "";
+    let appendedAssistant = false;
+
+    while (attempt < maxAttempts && !success) {
+      attempt++;
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: historyToSend })
+        });
+
+        if (!response.ok) {
+          let errBody = "";
+          try { errBody = await response.text(); } catch(e) {}
+          throw new Error(`Network error: ${response.status} ${errBody}`);
+        }
+        if (!response.body) throw new Error("No body");
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        
+        if (!appendedAssistant) {
+          setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+          appendedAssistant = true;
+        } else {
+          setMessages(prev => {
+            const newMessages = [...prev];
+            if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === "assistant") {
+              newMessages[newMessages.length - 1].content = "";
+            }
+            return newMessages;
+          });
+        }
+
+        assistantMsg = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          assistantMsg += decoder.decode(value, { stream: true });
+          setMessages(prev => {
+            const newMessages = [...prev];
+            if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === "assistant") {
+              newMessages[newMessages.length - 1].content = assistantMsg;
+            }
+            return newMessages;
+          });
+        }
+
+        if (!assistantMsg.trim()) {
+          throw new Error("Empty response from AI system stream");
+        }
+
+        success = true;
+      } catch (error) {
+        console.error(`Chatbot response error (attempt ${attempt}/${maxAttempts}):`, error);
+        if (attempt < maxAttempts) {
+          // Wait 1 second before retrying automatically
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        } else {
+          // All automated attempts failed. Provide custom manual retry and TASC team support option.
+          const fallbackErrorMsg = "Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_LAST_MESSAGE]";
+          if (appendedAssistant) {
+            setMessages(prev => {
+              const newMessages = [...prev];
+              if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === "assistant") {
+                newMessages[newMessages.length - 1].content = fallbackErrorMsg;
+              }
+              return newMessages;
+            });
+          } else {
+            setMessages(prev => [...prev, { role: "assistant", content: fallbackErrorMsg }]);
+          }
+        }
+      }
+    }
+    
+    setIsLoading(false);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userMsg = input.trim();
     setInput("");
-    setMessages(prev => [...prev, { role: "user", content: userMsg }]);
-    setIsLoading(true);
+    
+    const nextMessages: Message[] = [...messages, { role: "user", content: userMsg }];
+    setMessages(nextMessages);
 
-    let assistantMsg = "";
-    let appendedAssistant = false;
+    await sendUserMessage(nextMessages);
+  };
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [...messages, { role: "user", content: userMsg }] })
-      });
-
-      if (!response.ok) {
-        let errBody = "";
-        try { errBody = await response.text(); } catch(e) {}
-        throw new Error(`Network error: ${response.status} ${errBody}`);
-      }
-      if (!response.body) throw new Error("No body");
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      
-      setMessages(prev => [...prev, { role: "assistant", content: "" }]);
-      appendedAssistant = true;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        assistantMsg += decoder.decode(value, { stream: true });
-        setMessages(prev => {
-          const newMessages = [...prev];
-          if (newMessages.length > 0) {
-            newMessages[newMessages.length - 1].content = assistantMsg;
-          }
-          return newMessages;
-        });
-      }
-
-      if (!assistantMsg.trim()) {
-        throw new Error("Empty response from AI system stream");
-      }
-    } catch (error) {
-      console.error("Chatbot response error:", error);
-      if (appendedAssistant) {
-        setMessages(prev => {
-          const newMessages = [...prev];
-          if (newMessages.length > 0) {
-            newMessages[newMessages.length - 1].content = "Sorry, I am currently unable to process your request. Please try sending your message again.";
-          }
-          return newMessages;
-        });
-      } else {
-        setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I am currently unable to process your request. Please try sending your message again." }]);
-      }
-    } finally {
-      setIsLoading(false);
+  const handleRetryLastMessage = async () => {
+    // Find the last user message
+    const userMessages = messages.filter(m => m.role === "user");
+    if (userMessages.length === 0) return;
+    const lastUserMsg = userMessages[userMessages.length - 1].content;
+    
+    // Construct the history without the last assistant error message
+    const cleanHistory = [...messages];
+    if (cleanHistory.length > 0 && cleanHistory[cleanHistory.length - 1].role === "assistant") {
+      cleanHistory.pop(); // remove the error message
     }
+    
+    setMessages(cleanHistory);
+    await sendUserMessage(cleanHistory);
   };
 
   const parseMessage = (content: string) => {
+    if (content.includes("[RETRY_LAST_MESSAGE]")) {
+      const cleanedContent = content.replace(/\[RETRY_LAST_MESSAGE\]/, "");
+      return (
+        <div className="flex flex-col gap-3">
+          <div className="markdown-body text-sm prose prose-invert prose-p:leading-relaxed max-w-none">
+            <ReactMarkdown>{cleanedContent}</ReactMarkdown>
+          </div>
+          <button 
+            type="button"
+            onClick={() => {
+              handleRetryLastMessage();
+            }}
+            className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-4 py-2 border border-tasc-cyan text-tasc-cyan overflow-hidden hover:bg-tasc-cyan/10 transition-all self-start whitespace-normal text-left"
+          >
+            [ RETRY SENDING MESSAGE ]
+          </button>
+        </div>
+      );
+    }
+
     // If we receive the custom token [TALK_TO_TASC: Heading | Scope]
     const match = content.match(/\[TALK_TO_TASC:\s*(.*?)(?:\s*\|\s*(.*?))?\]/);
     if (match || content.includes("[TALK_TO_TASC]")) {
