@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Moon, Sun } from 'lucide-react';
+import { safeLocalStorage } from '@/lib/safeStorage';
 
 export const ThemePrompt = ({ onComplete }: { onComplete: () => void }) => {
   const [timeLeft, setTimeLeft] = useState(3);
@@ -31,10 +32,10 @@ export const ThemePrompt = ({ onComplete }: { onComplete: () => void }) => {
   const setTheme = (isLight: boolean) => {
     if (isLight) {
       document.documentElement.classList.add('light');
-      localStorage.theme = 'light';
+      safeLocalStorage.setItem('theme', 'light');
     } else {
       document.documentElement.classList.remove('light');
-      localStorage.theme = 'dark';
+      safeLocalStorage.setItem('theme', 'dark');
     }
     
     // Dispatch event so Header can catch the change

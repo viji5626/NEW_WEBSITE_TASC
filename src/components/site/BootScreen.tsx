@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { scrollToTop } from "@/lib/scrollTo";
 import { ThemePrompt } from "@/components/ui/ThemePrompt";
+import { safeSessionStorage } from "@/lib/safeStorage";
 
 export default function BootScreen() {
-  const [isVisible, setIsVisible] = useState(() => !sessionStorage.getItem('booted'));
+  const [isVisible, setIsVisible] = useState(() => !safeSessionStorage.getItem('booted'));
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
@@ -22,12 +23,12 @@ export default function BootScreen() {
     // Total boot time
     const timer = setTimeout(() => {
       setIsVisible(false);
-      sessionStorage.setItem('booted', 'true');
+      safeSessionStorage.setItem('booted', 'true');
       
       // Only show theme prompt once per session
-      if (!isLighthouse && !sessionStorage.getItem('themePromptShown')) {
+      if (!isLighthouse && !safeSessionStorage.getItem('themePromptShown')) {
         setShowPrompt(true);
-        sessionStorage.setItem('themePromptShown', 'true');
+        safeSessionStorage.setItem('themePromptShown', 'true');
       } else {
         document.body.style.overflow = "";
       }

@@ -15,6 +15,7 @@ const Home = lazy(() => import("@/pages/Home"));
 const MicroServices = lazy(() => import("@/pages/MicroServices"));
 const Consulting = lazy(() => import("@/pages/Consulting"));
 const FAQ = lazy(() => import("@/pages/FAQ"));
+const DownloadProfile = lazy(() => import("@/pages/DownloadProfile"));
 
 import { scrollToId, scrollToTop } from "@/lib/scrollTo";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -128,6 +129,7 @@ function App() {
             <Route path="/micro-services" element={<MicroServices />} />
             <Route path="/consulting" element={<Consulting />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/download-profile" element={<DownloadProfile />} />
           </Routes>
         </Suspense>
 

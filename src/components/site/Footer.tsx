@@ -9,7 +9,7 @@ const COLS = [
       ["SCADA & Visualization", "the-arsenal"],
       ["OT Networking", "the-arsenal"],
       ["EMS", "the-arsenal"],
-      ["IIoT", "the-arsenal"],
+      ["Digitalization & IIoT", "the-arsenal"],
     ],
   },
   {
@@ -81,7 +81,7 @@ export default function Footer() {
             </div>
             <p className="text-tasc-text/55 text-sm font-light leading-relaxed max-w-md">
               Transforming Industrial Logix. Engineering intelligent, high-availability PLC,
-              SCADA, EMS and IIoT architectures for mission-critical industrial operations.
+              SCADA, EMS, Digitalization, and IIoT solutions. We deliver complete plant-level digital transformation projects for mission-critical industrial operations.
             </p>
 
             <div className="mt-8 flex items-center gap-4 font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-text/40">

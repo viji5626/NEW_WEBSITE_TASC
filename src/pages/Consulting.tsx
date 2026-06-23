@@ -78,11 +78,11 @@ export default function Consulting() {
             08.01 // Engineering Strategy
           </h2>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-8">
-            Industrial Consulting & <br />
-            <span className="text-tasc-text/50">Engineering Strategy</span>
+            Industrial Consulting, Digitalization & <br />
+            <span className="text-tasc-text/50">Plant-Level Transformation</span>
           </h1>
           <p className="text-lg text-tasc-text/70 leading-relaxed font-light mb-6">
-            We bring real-world project mindset and PMP-oriented planning to your facility. Our execution-oriented approach ensures that every study translates into practical, reliable, and scalable infrastructure.
+            We bring a real-world project mindset and PMP-oriented planning to your facility. We specialize in planning and executing comprehensive plant-level digital transformation projects, ensuring that every digitalization feasibility study translates into practical, highly-available, and cyber-secure industrial infrastructure.
           </p>
           <p className="text-lg text-tasc-text/70 leading-relaxed font-light">
             <strong className="text-tasc-text font-normal">Greenfield & Brownfield Expertise:</strong> Whether defining secure network perimeters for new greenfield sites or auditing integration limits within legacy brownfield environments, our consulting brings clarity and actionable roadmaps to complex environments.

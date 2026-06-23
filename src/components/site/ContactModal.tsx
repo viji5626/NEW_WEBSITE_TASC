@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 
@@ -23,6 +24,26 @@ export default function ContactModal() {
     window.addEventListener("tasc:open-contact-modal", handler);
     return () => window.removeEventListener("tasc:open-contact-modal", handler);
   }, []);
+
+  // Lock scroll of body and custom Lenis smooth scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+
+      const lenis = (window as any).lenis;
+      if (lenis) {
+        lenis.stop();
+      }
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (lenis) {
+          lenis.start();
+        }
+      };
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -94,10 +115,12 @@ export default function ContactModal() {
     setIsOpen(false);
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#0a0a0b]/80 backdrop-blur-sm transition-all duration-300">
+  if (typeof window === 'undefined') return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-[#0a0a0b]/35 backdrop-blur-lg transition-all duration-300">
       <div 
-        className="w-full max-w-3xl bg-tasc-bg border border-tasc-border shadow-2xl relative"
+        className="w-full max-w-3xl bg-tasc-bg border border-tasc-border shadow-2xl relative z-[99999]"
       >
         <div className="flex items-center justify-between px-5 py-3 border-b border-tasc-border">
             <div className="flex items-center gap-3">
@@ -161,7 +184,8 @@ export default function ContactModal() {
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

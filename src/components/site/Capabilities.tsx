@@ -29,15 +29,15 @@ const CARDS = [
     id: "ems",
     code: "//02.04",
     icon: Zap,
-    title: "Energy Management Systems",
+    title: "Utility Management System",
     body: "Power, water, steam, compressed air and ZLD utilities — monitored, sub-metered and continuously optimized.",
   },
   {
     id: "iiot",
     code: "//02.05",
     icon: Cloud,
-    title: "IIoT & Industry 4.0",
-    body: "OPC UA, MQTT over TLS, LoRaWAN, edge gateways and cloud integrations bridging OT to IT cleanly.",
+    title: "Digitalization, IIoT & Industry 4.0",
+    body: "OPC UA, MQTT over TLS, LoRaWAN, edge gateways and cloud integrations bridging OT to IT cleanly. We engineer turnkey plant-level digital transformation projects to modernize factory operations.",
   },
   {
     id: "arch",

@@ -1,8 +1,6 @@
 import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Download } from 'lucide-react';
-import ProfileDownloadModal from './ProfileDownloadModal';
-import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { MagneticWrapper } from '@/components/ui/MagneticWrapper';
 import { TextReveal } from '@/components/ui/TextReveal';
 import { scrollToId } from '@/lib/scrollTo';
@@ -12,7 +10,6 @@ const HeroBackground3D = React.lazy(() =>
 );
 
 const Hero = () => {
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const scrollToContact = () => scrollToId('terminal-interface');
   const scrollToVerticals = () => scrollToId('the-arsenal');
 
@@ -21,7 +18,6 @@ const Hero = () => {
       <Suspense fallback={null}>
         <HeroBackground3D />
       </Suspense>
-      <ProfileDownloadModal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} />
       <div className="max-w-7xl mx-auto w-full text-center z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -39,8 +35,8 @@ const Hero = () => {
             as="h2"
           />
           
-          <p className="text-lg md:text-xl text-soft-white/60 max-w-3xl mx-auto mb-10 font-light leading-relaxed">
-            Architecting the Industrial Nervous System. We engineer high-availability SCADA, PLC, and IIoT architectures for the world's most demanding industries.
+          <p className="text-lg md:text-xl text-soft-white/60 max-w-4xl mx-auto mb-10 font-light leading-relaxed">
+            Architecting the Industrial Nervous System. We engineer high-availability SCADA, PLC, and IIoT solutions, executing plant-level digital transformation(Digitalization) for the world's most demanding industries.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
@@ -51,13 +47,13 @@ const Hero = () => {
             >
               <MagneticWrapper>
                 <button
-                  onClick={() => setIsDownloadModalOpen(true)}
+                  onClick={scrollToVerticals}
                   className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 text-slate-900 bg-tasc-cyan hover:bg-tasc-cyan/80 transition-all duration-300 flex items-center gap-3 overflow-hidden border border-tasc-cyan"
                   style={{ borderRadius: '0' }}
                 >
                   <span className="relative z-10 flex items-center gap-3 font-semibold">
-                    DOWNLOAD PROFILE
-                    <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                    EXPLORE SOLUTIONS
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </button>
               </MagneticWrapper>
@@ -74,25 +70,6 @@ const Hero = () => {
                   style={{ borderRadius: '0' }}
                 >
                   <span className="relative z-10">[ INITIATE CONSULTATION ]</span>
-                </button>
-              </MagneticWrapper>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <MagneticWrapper>
-                <button
-                  onClick={scrollToVerticals}
-                  className="group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-8 py-4 text-tasc-text hover:text-slate-900 hover:bg-tasc-cyan/80 transition-all duration-300 flex items-center gap-3 overflow-hidden border border-tasc-border hover:border-tasc-cyan"
-                  style={{ borderRadius: '0' }}
-                >
-                  <span className="relative z-10 flex items-center gap-3">
-                    EXPLORE SOLUTIONS
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
                 </button>
               </MagneticWrapper>
             </motion.div>

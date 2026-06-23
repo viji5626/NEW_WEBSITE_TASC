@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Download, Loader2, ShieldCheck, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { loginWithGoogle, auth, logout } from '@/lib/firebase';
@@ -16,6 +17,26 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
     });
     return () => unsubscribe();
   }, []);
+
+  // Lock scroll of body and custom Lenis smooth scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+
+      const lenis = (window as any).lenis;
+      if (lenis) {
+        lenis.stop();
+      }
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        if (lenis) {
+          lenis.start();
+        }
+      };
+    }
+  }, [isOpen]);
 
   const handleLogin = async () => {
     setLoading(true);
@@ -79,21 +100,22 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
       return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  if (typeof window === 'undefined') return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/30 backdrop-blur-lg"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="w-full max-w-md bg-tasc-bg border border-tasc-border p-6 sm:p-8 relative"
+            className="w-full max-w-md bg-tasc-bg border border-tasc-border p-6 sm:p-8 relative z-[99999]"
           >
             <button
               onClick={onClose}
@@ -105,12 +127,26 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
 
             <div className="mb-6">
               <h3 className="text-2xl font-display font-light text-tasc-cyan mb-2">Company Profile</h3>
-              <p className="text-sm text-tasc-text/70 font-light pr-4">
+              <p className="text-sm text-tasc-text/70 font-light pr-4 mb-4">
                 {user 
                   ? "Authentication successful. You can now access the comprehensive TASC Company Profile document."
                   : "Please sign in securely with Google to access the comprehensive TASC Company Profile document."
                 }
               </p>
+
+              {!user && (
+                <div className="border border-tasc-cyan/20 bg-tasc-cyan/[0.03] p-4 text-xs text-tasc-text/80 leading-relaxed font-light text-left">
+                  <div className="flex items-center gap-2 text-tasc-cyan font-semibold font-[Orbitron] text-[9px] tracking-wider mb-1.5">
+                    <ShieldCheck className="w-4 h-4 shrink-0" /> B2B SECURE GATEWAY
+                  </div>
+                  <p className="mb-1">
+                    To deliver this file directly from our corporate Google Drive, a standard Google OAuth check is used to authorize download permissions.
+                  </p>
+                  <p className="text-tasc-text/50">
+                    <strong>Notice:</strong> This is a simple identity verification to ensure <strong>verified professional access</strong>. We never read or modify your private emails, contacts, or files.
+                  </p>
+                </div>
+              )}
             </div>
 
             {user ? (
@@ -169,6 +205,7 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

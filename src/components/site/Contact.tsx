@@ -3,10 +3,12 @@ import axios from "axios";
 import { toast } from "sonner";
 import { SectionHeader } from "./Capabilities";
 import { scrollToId } from "@/lib/scrollTo";
+import { Download } from "lucide-react";
+import ProfileDownloadModal from "./ProfileDownloadModal";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 const API = `${BACKEND_URL}/api`;
-const WEB3FORMS_KEY = process.env.REACT_APP_WEB3FORMS_ACCESS_KEY;
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "";
 
 const LINKS = [
   ["Capabilities", "the-arsenal"],
@@ -21,6 +23,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", organization: "", project_scope: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<boolean | string>(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
 
   // Allow other sections (e.g. AMC) to pre-fill the project scope and pull focus.
   useEffect(() => {
@@ -169,6 +172,32 @@ export default function Contact() {
                 </form>
               )}
             </div>
+
+            {/* Download Company Profile Block */}
+            <div className="mt-8 border border-tasc-border bg-tasc-bg/40 backdrop-blur-sm p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="max-w-xl">
+                <h4 className="font-[Orbitron] text-xs tracking-[0.25em] text-tasc-cyan mb-2">
+                  // DOWNLOAD COMPANY PROFILE
+                </h4>
+                <p className="text-sm text-tasc-text/80 leading-relaxed font-light">
+                  The TASC website provides a comprehensive overview of our services, capabilities, industry expertise, and solutions. 
+                  For <strong>offline review</strong>, <strong>internal circulation</strong>, or <strong>procurement/vendor evaluation</strong> purposes, you may download the complete TASC Company Profile and Service Portfolio securely via a Google account identity check.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsDownloadModalOpen(true)}
+                type="button"
+                className="shrink-0 group relative font-[Orbitron] text-[11px] tracking-[0.25em] px-6 py-4 text-slate-900 bg-tasc-cyan hover:bg-tasc-cyan/80 transition-all duration-300 flex items-center gap-3 overflow-hidden border border-tasc-cyan self-start md:self-auto cursor-pointer"
+                style={{ borderRadius: '0' }}
+              >
+                <span className="relative z-10 flex items-center gap-3 font-semibold">
+                  DOWNLOAD PROFILE
+                  <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                </span>
+              </button>
+            </div>
+
+            <ProfileDownloadModal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} />
           </div>
 
           {/* Right: links / ops */}

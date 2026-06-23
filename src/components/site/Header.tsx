@@ -4,6 +4,7 @@ import { Sun, Moon, LogOut, User as UserIcon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { auth, logout } from '@/lib/firebase';
 import { User } from 'firebase/auth';
+import { safeLocalStorage } from "@/lib/safeStorage";
 
 const NAV = [
   { code: "//01", label: "HOME", id: "command-center" },
@@ -17,6 +18,7 @@ const NAV = [
   { code: "//09", label: "ABOUT", id: "tenacious-by-design" },
   { code: "//10", label: "CONTACT", id: "terminal-interface" },
   { code: "//11", label: "MICRO SERVICES", id: "micro-services" },
+  { code: "//12", label: "DOWNLOAD PROFILE", id: "download-profile" },
 ];
 
 export default function Header() {
@@ -36,7 +38,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleThemeChange = () => {
-      if (document.documentElement.classList.contains('light') || localStorage.theme === 'light') {
+      if (document.documentElement.classList.contains('light') || safeLocalStorage.getItem('theme') === 'light') {
         setIsLightMode(true);
       } else {
         setIsLightMode(false);
@@ -44,7 +46,7 @@ export default function Header() {
     };
 
     // Check initial preference
-    if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+    if (safeLocalStorage.getItem('theme') === 'light' || (!safeLocalStorage.has('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
       document.documentElement.classList.add('light');
       setIsLightMode(true);
     } else {
@@ -60,11 +62,11 @@ export default function Header() {
     
     if (isLightMode) {
       document.documentElement.classList.remove('light');
-      localStorage.theme = 'dark';
+      safeLocalStorage.setItem('theme', 'dark');
       setIsLightMode(false);
     } else {
       document.documentElement.classList.add('light');
-      localStorage.theme = 'light';
+      safeLocalStorage.setItem('theme', 'light');
       setIsLightMode(true);
     }
     
@@ -90,6 +92,11 @@ export default function Header() {
   const handleNavClick = (n: typeof NAV[0]) => {
     if (n.label === "MICRO SERVICES") {
       navigate('/micro-services');
+      return;
+    }
+
+    if (n.label === "DOWNLOAD PROFILE") {
+      navigate('/download-profile');
       return;
     }
     

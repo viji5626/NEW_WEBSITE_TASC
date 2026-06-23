@@ -23,7 +23,7 @@ export default function Chatbot() {
       console.warn("Failed to retrieve chat history:", e);
     }
     return [
-      { role: "assistant", content: "Hello! I am the TENACIOUS AI Assistant. Ask me anything about our automation services, consulting, or technologies." }
+      { role: "assistant", content: "Hello! I am the TASC AI Assistant. Ask me anything about our automation services, consulting, or technologies." }
     ];
   });
   const [input, setInput] = useState("");
@@ -54,7 +54,7 @@ export default function Chatbot() {
 
   const handleClearHistory = () => {
     setMessages([
-      { role: "assistant", content: "Hello! I am the TENACIOUS AI Assistant. Ask me anything about our automation services, consulting, or technologies." }
+      { role: "assistant", content: "Hello! I am the TASC AI Assistant. Ask me anything about our automation services, consulting, or technologies." }
     ]);
   };
 
@@ -76,6 +76,9 @@ export default function Chatbot() {
     setMessages(prev => [...prev, { role: "user", content: userMsg }]);
     setIsLoading(true);
 
+    let assistantMsg = "";
+    let appendedAssistant = false;
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -92,25 +95,40 @@ export default function Chatbot() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let assistantMsg = "";
       
       setMessages(prev => [...prev, { role: "assistant", content: "" }]);
+      appendedAssistant = true;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         
         assistantMsg += decoder.decode(value, { stream: true });
-        // We might get chunked text
         setMessages(prev => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1].content = assistantMsg;
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1].content = assistantMsg;
+          }
           return newMessages;
         });
       }
+
+      if (!assistantMsg.trim()) {
+        throw new Error("Empty response from AI system stream");
+      }
     } catch (error) {
-      console.error(error);
-      setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I am currently unable to process your request." }]);
+      console.error("Chatbot response error:", error);
+      if (appendedAssistant) {
+        setMessages(prev => {
+          const newMessages = [...prev];
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1].content = "Sorry, I am currently unable to process your request. Please try sending your message again.";
+          }
+          return newMessages;
+        });
+      } else {
+        setMessages(prev => [...prev, { role: "assistant", content: "Sorry, I am currently unable to process your request. Please try sending your message again." }]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -165,7 +183,7 @@ export default function Chatbot() {
             <span className="w-1 h-1 rounded-full bg-tasc-cyan shadow-[0_0_6px_#00c2ff] animate-pulse" />
             <span className="text-[7.5px] uppercase font-[Orbitron] tracking-[0.1em] text-tasc-cyan font-bold leading-none">AI ONLINE</span>
           </div>
-          <span className="text-[9.5px] font-sans text-white/95 font-medium mt-0.5 whitespace-nowrap leading-tight">Ask TENACIOUS AI</span>
+          <span className="text-[9.5px] font-sans text-white/95 font-medium mt-0.5 whitespace-nowrap leading-tight">Ask TASC AI</span>
           
           {/* Subtle little down arrowhead pointing to the bot icon */}
           <div className="absolute top-full right-6 -mt-[1px] w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-tasc-cyan/40" />
@@ -175,7 +193,7 @@ export default function Chatbot() {
         <button
           onClick={() => setIsOpen(true)}
           className="relative group p-4 bg-tasc-bg hover:bg-black border-2 border-tasc-cyan text-tasc-[#00c2ff] shadow-[0_0_20px_rgba(0,194,255,0.4)] hover:shadow-[0_0_35px_rgba(0,194,255,0.75)] transition-all duration-300 rounded-full flex items-center justify-center cursor-pointer h-14 w-14"
-          aria-label="Open TENACIOUS AI System Chat"
+          aria-label="Open TASC AI System Chat"
         >
           {/* Animated pulsing outer waves */}
           <span className="absolute inset-0 rounded-full border-2 border-tasc-cyan/60 opacity-50 group-hover:scale-125 transition-transform duration-500 animate-[ping_2s_infinite]"></span>
@@ -217,7 +235,7 @@ export default function Chatbot() {
               <div className="flex items-center gap-2 sm:gap-3 justify-start flex-1 min-w-0">
                 <span className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full bg-tasc-cyan shadow-[0_0_10px_var(--tasc-glow)] animate-pulse shrink-0" />
                 <span className="font-[Orbitron] text-[10px] sm:text-[11px] tracking-widest text-[#00c2ff] uppercase font-bold select-none leading-none truncate">
-                  TENACIOUS AI SYSTEM
+                  TASC AI SYSTEM
                 </span>
               </div>
               <div className="flex items-center gap-1 shrink-0">
