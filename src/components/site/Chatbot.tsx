@@ -164,6 +164,36 @@ export default function Chatbot() {
     const nextMessages: Message[] = [...messages, { role: "user", content: userMsg }];
     setMessages(nextMessages);
 
+    // Client-side interceptor for founder contact questions
+    const norm = userMsg.toLowerCase().trim();
+    const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
+    const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
+    
+    const isFounderContact = (
+      (mentionsFounder && mentionsContact) ||
+      norm.includes("how to contact him") ||
+      norm.includes("add to contact") ||
+      norm.includes("save to contact") ||
+      norm.includes("save contact") ||
+      norm.includes("add contact") ||
+      norm.includes("vcard") ||
+      norm.includes("vcf") ||
+      (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay"))) ||
+      (norm.includes("founder") && norm.includes("details")) ||
+      (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay")))
+    );
+
+    if (isFounderContact) {
+      setIsLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts:\n\n[FOUNDER_CONTACT]"
+      }]);
+      setIsLoading(false);
+      return;
+    }
+
     await sendUserMessage(nextMessages);
   };
 
@@ -180,6 +210,36 @@ export default function Chatbot() {
     }
     
     setMessages(cleanHistory);
+
+    const norm = lastUserMsg.toLowerCase().trim();
+    const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
+    const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
+    
+    const isFounderContact = (
+      (mentionsFounder && mentionsContact) ||
+      norm.includes("how to contact him") ||
+      norm.includes("add to contact") ||
+      norm.includes("save to contact") ||
+      norm.includes("save contact") ||
+      norm.includes("add contact") ||
+      norm.includes("vcard") ||
+      norm.includes("vcf") ||
+      (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay"))) ||
+      (norm.includes("founder") && norm.includes("details")) ||
+      (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay")))
+    );
+
+    if (isFounderContact) {
+      setIsLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts:\n\n[FOUNDER_CONTACT]"
+      }]);
+      setIsLoading(false);
+      return;
+    }
+
     await sendUserMessage(cleanHistory);
   };
 
