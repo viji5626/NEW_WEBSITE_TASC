@@ -82,6 +82,34 @@ function getImprovisedEstdResponse(): string {
   return variations[Math.floor(Math.random() * variations.length)];
 }
 
+function isFounderContactQuestion(text: string): boolean {
+  if (isAuthorizedQuestion(text) || isEstdQuestion(text)) {
+    return false;
+  }
+  const norm = text.toLowerCase().trim();
+  
+  const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
+  const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
+  
+  return (
+    (mentionsFounder && mentionsContact) ||
+    norm.includes("how to contact him") ||
+    norm.includes("add to contact") ||
+    norm.includes("save to contact") ||
+    norm.includes("save contact") ||
+    norm.includes("add contact") ||
+    norm.includes("vcard") ||
+    norm.includes("vcf") ||
+    (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay"))) ||
+    (norm.includes("founder") && norm.includes("details")) ||
+    (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay")))
+  );
+}
+
+function getFounderContactResponse(): string {
+  return "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts:\n\n[FOUNDER_CONTACT]";
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -152,6 +180,15 @@ async function startServer() {
         return;
       }
 
+      // Intercept any questions about contacting the founder
+      if (isFounderContactQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getFounderContactResponse());
+        res.end();
+        return;
+      }
+
       const apiKey = process.env.NVIDIA_API_KEY || "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";
       
       const { OpenAI } = await import("openai");
@@ -183,6 +220,10 @@ If a user asks about the case studies, cornerstone projects, or track record (in
 
 CRITICAL POLICY ON BRAND AUTHORIZATION & PARTNERSHIPS:
 If a user asks about brand certification, official representation, brand partners, brand approvals, or whether TASC is an authorized partner or representative of any specific brand/make (such as Siemens, Mitsubishi, etc.), you MUST answer neutrally and authentically: clarify that TASC is NOT an officially authorized partner, dealer, or certified representative of any specific brand/make, but TASC has extensive specialized engineering expertise and has worked with these brands extensively in the industrial automation field. Do NOT include any contact buttons or TALK_TO_TASC referral tags for these brand questions.
+
+CRITICAL POLICY ON CONTACTING THE FOUNDER:
+If a user asks about how to contact the founder (Mr. Vijay Shankar), how to reach him, how to save his contact card, or asks for his phone, email, QR code or vCard, you MUST politely direct them to save his contact details using our direct contact tag and always append exactly this tag at the very end of your response: [FOUNDER_CONTACT]
+Example: "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts: [FOUNDER_CONTACT]"
 
 If the user asks an irrelevant question (outside automation, tech stack, TASC services, or missing from context) or explicitly asks to speak to humans/contact support, you MUST reply with a helpful apologetic or leading message, followed directly by exactly this markdown tag formatting: [TALK_TO_TASC: <Dedicated Heading> | <Contextual Pre-filled Scope>]
 where <Dedicated Heading> is a short (2-5 words) appropriate headline summarizing their intent (e.g., "Consultation Request", "Speak to Engineering", "Custom Service Inquiry").

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Bot, User, Sparkles, Trash2 } from "lucide-react";
+import { MessageSquare, X, Send, Bot, User, Sparkles, Trash2, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
@@ -184,6 +184,56 @@ export default function Chatbot() {
   };
 
   const parseMessage = (content: string) => {
+    if (content.includes("[FOUNDER_CONTACT]")) {
+      const cleanedContent = content.replace(/\[FOUNDER_CONTACT\]/g, "");
+      return (
+        <div className="flex flex-col gap-3">
+          <div className="markdown-body text-sm prose prose-invert prose-p:leading-relaxed max-w-none">
+            <ReactMarkdown>{cleanedContent}</ReactMarkdown>
+          </div>
+          <div className="flex flex-col items-center gap-3 p-4 bg-tasc-bg border border-tasc-cyan/20 relative mt-2">
+            {/* TASC Industrial corner ticks */}
+            <div className="absolute top-0 left-0 w-2 h-2 border-l border-t border-tasc-cyan" />
+            <div className="absolute top-0 right-0 w-2 h-2 border-r border-t border-tasc-cyan" />
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-l border-b border-tasc-cyan" />
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-r border-b border-tasc-cyan" />
+            
+            <div className="font-[Orbitron] text-[8px] tracking-[0.25em] text-tasc-cyan font-semibold">
+              MR. VIJAY SHANKAR · vCARD
+            </div>
+            
+            <div className="relative w-24 h-24 bg-white p-1 shrink-0 border border-tasc-border">
+              <img
+                src="/brand/vcard-qr.svg"
+                alt="vCard QR Code"
+                loading="lazy"
+                className="w-full h-full object-contain"
+                draggable={false}
+              />
+            </div>
+            
+            <div className="text-center">
+              <div className="font-[Orbitron] text-[7.5px] tracking-[0.2em] text-tasc-text/50 uppercase leading-none">
+                Scan with phone camera
+              </div>
+              <div className="font-[Montserrat] text-[10px] text-tasc-text/40 mt-1">
+                to save contact instantly
+              </div>
+            </div>
+
+            <a
+              href="/brand/vijay-shankar.vcf"
+              download="Vijay-Shankar-TASC.vcf"
+              className="group relative w-full font-[Orbitron] text-[10px] tracking-[0.2em] py-2.5 border border-tasc-border text-tasc-text overflow-hidden hover:border-tasc-cyan hover:bg-tasc-cyan hover:text-slate-900 transition-all duration-300 inline-flex items-center justify-center gap-2"
+            >
+              <Download size={12} strokeWidth={1.5} className="relative shrink-0" />
+              <span className="relative">[ ADD TO CONTACTS ]</span>
+            </a>
+          </div>
+        </div>
+      );
+    }
+
     if (content.includes("[RETRY_LAST_MESSAGE]")) {
       const cleanedContent = content.replace(/\[RETRY_LAST_MESSAGE\]/, "");
       return (
