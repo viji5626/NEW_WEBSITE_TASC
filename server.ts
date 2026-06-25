@@ -110,6 +110,22 @@ function getFounderContactResponse(): string {
   return "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts:\n\n[FOUNDER_CONTACT]";
 }
 
+function isFounderLinkedinQuestion(text: string): boolean {
+  if (isAuthorizedQuestion(text) || isEstdQuestion(text)) {
+    return false;
+  }
+  const norm = text.toLowerCase().trim();
+  const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("owner") || norm.includes("co-founder") || norm.includes("cofounder");
+  return (
+    (mentionsFounder && norm.includes("linkedin")) ||
+    (norm.includes("linkedin") && (norm.includes("link") || norm.includes("profile") || norm.includes("page") || norm.includes("account") || norm.includes("connect")))
+  );
+}
+
+function getFounderLinkedinResponse(): string {
+  return "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn:\n\n[FOUNDER_LINKEDIN]";
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -189,6 +205,15 @@ async function startServer() {
         return;
       }
 
+      // Intercept any questions about the founder's linkedin
+      if (isFounderLinkedinQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getFounderLinkedinResponse());
+        res.end();
+        return;
+      }
+
       const apiKey = process.env.NVIDIA_API_KEY || "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";
       
       const { OpenAI } = await import("openai");
@@ -224,6 +249,10 @@ If a user asks about brand certification, official representation, brand partner
 CRITICAL POLICY ON CONTACTING THE FOUNDER:
 If a user asks about how to contact the founder (Mr. Vijay Shankar), how to reach him, how to save his contact card, or asks for his phone, email, QR code or vCard, you MUST politely direct them to save his contact details using our direct contact tag and always append exactly this tag at the very end of your response: [FOUNDER_CONTACT]
 Example: "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts: [FOUNDER_CONTACT]"
+
+CRITICAL POLICY ON FOUNDER'S LINKEDIN:
+If a user asks about the founder's LinkedIn, Mr. Vijay Shankar's LinkedIn, or how to connect with him on social media/LinkedIn, you MUST politely direct them to view his profile using our direct LinkedIn tag and always append exactly this tag at the very end of your response: [FOUNDER_LINKEDIN]
+Example: "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn: [FOUNDER_LINKEDIN]"
 
 If the user asks an irrelevant question (outside automation, tech stack, TASC services, or missing from context) or explicitly asks to speak to humans/contact support, you MUST reply with a helpful apologetic or leading message, followed directly by exactly this markdown tag formatting: [TALK_TO_TASC: <Dedicated Heading> | <Contextual Pre-filled Scope>]
 where <Dedicated Heading> is a short (2-5 words) appropriate headline summarizing their intent (e.g., "Consultation Request", "Speak to Engineering", "Custom Service Inquiry").

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Bot, User, Sparkles, Trash2, Download } from "lucide-react";
+import { MessageSquare, X, Send, Bot, User, Sparkles, Trash2, Download, Linkedin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
@@ -164,8 +164,27 @@ export default function Chatbot() {
     const nextMessages: Message[] = [...messages, { role: "user", content: userMsg }];
     setMessages(nextMessages);
 
-    // Client-side interceptor for founder contact questions
+    // Client-side interceptor for founder contact/linkedin questions
     const norm = userMsg.toLowerCase().trim();
+    
+    const isFounderLinkedin = (
+      (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("owner") || norm.includes("co-founder") || norm.includes("cofounder")) &&
+      norm.includes("linkedin")
+    ) || (
+      norm.includes("linkedin") && (norm.includes("link") || norm.includes("profile") || norm.includes("page") || norm.includes("account") || norm.includes("connect"))
+    );
+
+    if (isFounderLinkedin) {
+      setIsLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn:\n\n[FOUNDER_LINKEDIN]"
+      }]);
+      setIsLoading(false);
+      return;
+    }
+
     const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
     const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
     
@@ -212,6 +231,25 @@ export default function Chatbot() {
     setMessages(cleanHistory);
 
     const norm = lastUserMsg.toLowerCase().trim();
+    
+    const isFounderLinkedin = (
+      (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("owner") || norm.includes("co-founder") || norm.includes("cofounder")) &&
+      norm.includes("linkedin")
+    ) || (
+      norm.includes("linkedin") && (norm.includes("link") || norm.includes("profile") || norm.includes("page") || norm.includes("account") || norm.includes("connect"))
+    );
+
+    if (isFounderLinkedin) {
+      setIsLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn:\n\n[FOUNDER_LINKEDIN]"
+      }]);
+      setIsLoading(false);
+      return;
+    }
+
     const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
     const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
     
@@ -244,6 +282,26 @@ export default function Chatbot() {
   };
 
   const parseMessage = (content: string) => {
+    if (content.includes("[FOUNDER_LINKEDIN]")) {
+      const cleanedContent = content.replace(/\[FOUNDER_LINKEDIN\]/g, "");
+      return (
+        <div className="flex flex-col gap-3">
+          <div className="markdown-body text-sm prose prose-invert prose-p:leading-relaxed max-w-none">
+            <ReactMarkdown>{cleanedContent}</ReactMarkdown>
+          </div>
+          <a
+            href="https://www.linkedin.com/in/vijay-shankar-TASC"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative w-full font-[Orbitron] text-[10px] tracking-[0.2em] py-2.5 border border-tasc-cyan bg-tasc-cyan/10 hover:bg-tasc-cyan text-tasc-text hover:text-slate-900 overflow-hidden transition-all duration-300 inline-flex items-center justify-center gap-2 self-start rounded font-bold"
+          >
+            <Linkedin size={12} className="relative shrink-0 text-tasc-cyan group-hover:text-slate-900 transition-colors" />
+            <span className="relative">[ VIEW FOUNDER LINKEDIN ]</span>
+          </a>
+        </div>
+      );
+    }
+
     if (content.includes("[FOUNDER_CONTACT]")) {
       const cleanedContent = content.replace(/\[FOUNDER_CONTACT\]/g, "");
       return (
