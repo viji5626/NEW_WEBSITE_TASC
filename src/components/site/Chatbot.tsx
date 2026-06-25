@@ -186,7 +186,7 @@ export default function Chatbot() {
     }
 
     const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
-    const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
+    const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address") || norm.includes("number") || norm.includes("detail");
     
     const isFounderContact = (
       (mentionsFounder && mentionsContact) ||
@@ -197,9 +197,17 @@ export default function Chatbot() {
       norm.includes("add contact") ||
       norm.includes("vcard") ||
       norm.includes("vcf") ||
-      (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay"))) ||
+      norm.includes("his contact") ||
+      norm.includes("his number") ||
+      norm.includes("his phone") ||
+      norm.includes("his mobile") ||
+      norm.includes("his email") ||
+      norm.includes("his detail") ||
+      (norm.includes("his") && norm.includes("contact")) ||
+      ((norm.includes("his") || norm.includes("him")) && (norm.includes("contact") || norm.includes("number") || norm.includes("phone") || norm.includes("mobile") || norm.includes("email") || norm.includes("detail") || norm.includes("card"))) ||
+      (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay") || norm.includes("him"))) ||
       (norm.includes("founder") && norm.includes("details")) ||
-      (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay")))
+      (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay") || norm.includes("him") || norm.includes("his")))
     );
 
     if (isFounderContact) {
@@ -251,7 +259,7 @@ export default function Chatbot() {
     }
 
     const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
-    const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
+    const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address") || norm.includes("number") || norm.includes("detail");
     
     const isFounderContact = (
       (mentionsFounder && mentionsContact) ||
@@ -262,9 +270,17 @@ export default function Chatbot() {
       norm.includes("add contact") ||
       norm.includes("vcard") ||
       norm.includes("vcf") ||
-      (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay"))) ||
+      norm.includes("his contact") ||
+      norm.includes("his number") ||
+      norm.includes("his phone") ||
+      norm.includes("his mobile") ||
+      norm.includes("his email") ||
+      norm.includes("his detail") ||
+      (norm.includes("his") && norm.includes("contact")) ||
+      ((norm.includes("his") || norm.includes("him")) && (norm.includes("contact") || norm.includes("number") || norm.includes("phone") || norm.includes("mobile") || norm.includes("email") || norm.includes("detail") || norm.includes("card"))) ||
+      (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay") || norm.includes("him"))) ||
       (norm.includes("founder") && norm.includes("details")) ||
-      (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay")))
+      (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay") || norm.includes("him") || norm.includes("his")))
     );
 
     if (isFounderContact) {

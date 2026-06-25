@@ -89,10 +89,38 @@ function isFounderContactQuestion(text: string): boolean {
   const norm = text.toLowerCase().trim();
   
   const mentionsFounder = norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("director") || norm.includes("monika") || norm.includes("chauhan") || norm.includes("co-founder") || norm.includes("cofounder") || norm.includes("owner");
-  const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address");
+  const mentionsContact = norm.includes("contact") || norm.includes("phone") || norm.includes("email") || norm.includes("mobile") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("save") || norm.includes("add") || norm.includes("reach") || norm.includes("call") || norm.includes("card") || norm.includes("address") || norm.includes("number") || norm.includes("detail");
   
+  const isPronounContact = (
+    norm.includes("his contact") ||
+    norm.includes("his number") ||
+    norm.includes("his phone") ||
+    norm.includes("his mobile") ||
+    norm.includes("his email") ||
+    norm.includes("his detail") ||
+    norm.includes("contact him") ||
+    norm.includes("contact details of him") ||
+    norm.includes("contact detail of him") ||
+    norm.includes("reach him") ||
+    norm.includes("save him") ||
+    norm.includes("save his") ||
+    norm.includes("get his") ||
+    norm.includes("view his") ||
+    norm.includes("show his") ||
+    norm.includes("download his") ||
+    norm.includes("how to reach him") ||
+    norm.includes("how to contact him") ||
+    norm.includes("his vcard") ||
+    norm.includes("his qr") ||
+    norm.includes("his card") ||
+    norm.includes("his details") ||
+    (norm.includes("his") && norm.includes("contact")) ||
+    ((norm.includes("his") || norm.includes("him")) && (norm.includes("contact") || norm.includes("number") || norm.includes("phone") || norm.includes("mobile") || norm.includes("email") || norm.includes("detail") || norm.includes("card")))
+  );
+
   return (
     (mentionsFounder && mentionsContact) ||
+    isPronounContact ||
     norm.includes("how to contact him") ||
     norm.includes("add to contact") ||
     norm.includes("save to contact") ||
@@ -100,9 +128,9 @@ function isFounderContactQuestion(text: string): boolean {
     norm.includes("add contact") ||
     norm.includes("vcard") ||
     norm.includes("vcf") ||
-    (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay"))) ||
+    (norm.includes("how") && norm.includes("contact") && (norm.includes("you") || norm.includes("founder") || norm.includes("vijay") || norm.includes("him"))) ||
     (norm.includes("founder") && norm.includes("details")) ||
-    (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay")))
+    (norm.includes("contact") && norm.includes("details") && (norm.includes("founder") || norm.includes("vijay") || norm.includes("him") || norm.includes("his")))
   );
 }
 
