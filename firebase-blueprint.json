@@ -20,12 +20,27 @@
         }
       },
       "required": ["email", "uid"]
+    },
+    "VisitorCount": {
+      "title": "VisitorCount",
+      "description": "Store the global visitor counter",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer"
+        }
+      },
+      "required": ["count"]
     }
   },
   "firestore": {
     "profile_downloads/{downloadId}": {
       "schema": "ProfileDownload",
       "description": "Store all profile downloads"
+    },
+    "site_stats/{statsId}": {
+      "schema": "VisitorCount",
+      "description": "Store site visitor stats"
     }
   }
 }

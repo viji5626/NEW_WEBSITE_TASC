@@ -5,7 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { loginWithGoogle, auth, logout } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 
-export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+export default function ProfileDownloadModal({ 
+  isOpen, 
+  onClose,
+  documentName = "Company Profile",
+  downloadUrl = "https://drive.usercontent.google.com/u/0/uc?id=1HJFg-OQfWMqw0hLmOiB3vL5w_NjUhtWA&export=download",
+  documentId = "profile"
+}: { 
+  isOpen: boolean, 
+  onClose: () => void,
+  documentName?: string,
+  downloadUrl?: string,
+  documentId?: string
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [user, setUser] = useState<User | null>(null);
@@ -65,6 +77,8 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
           email: user.email,
           displayName: user.displayName || null,
           uid: user.uid,
+          documentId,
+          documentName,
           downloadedAt: serverTimestamp()
         });
       } catch (err: any) {
@@ -77,16 +91,16 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
         try {
           const formPayload = new FormData();
           formPayload.append("access_key", "cc7c2810-6da6-4d9b-b2cc-f3ebc28759d0");
-          formPayload.append("subject", `[DOWNLOAD LOG] Company Profile - Auth: ${user.email}`);
+          formPayload.append("subject", `[DOWNLOAD LOG] ${documentName} - Auth: ${user.email}`);
           formPayload.append("name", user.displayName || 'Authenticated User');
           formPayload.append("email", user.email || 'no-email@example.com');
-          formPayload.append("message", `UID: ${user.uid}\nGoogle Auth profile downloaded the profile document.`);
+          formPayload.append("message", `UID: ${user.uid}\nGoogle Auth profile downloaded the document: ${documentName} (${documentId}).`);
           fetch("https://api.web3forms.com/submit", { method: "POST", body: formPayload }).catch(() => {});
         } catch (weberr) {}
       }
     }
     // Direct Google Drive download link
-    window.location.href = 'https://drive.usercontent.google.com/u/0/uc?id=1HJFg-OQfWMqw0hLmOiB3vL5w_NjUhtWA&export=download';
+    window.location.href = downloadUrl;
     onClose();
   };
 
@@ -126,11 +140,11 @@ export default function ProfileDownloadModal({ isOpen, onClose }: { isOpen: bool
             </button>
 
             <div className="mb-6">
-              <h3 className="text-2xl font-display font-light text-tasc-cyan mb-2">Company Profile</h3>
+              <h3 className="text-2xl font-display font-light text-tasc-cyan mb-2">{documentName}</h3>
               <p className="text-sm text-tasc-text/70 font-light pr-4 mb-4">
                 {user 
-                  ? "Authentication successful. You can now access the comprehensive TASC Company Profile document."
-                  : "Please sign in securely with Google to access the comprehensive TASC Company Profile document."
+                  ? `Authentication successful. You can now access the comprehensive ${documentName} document.`
+                  : `Please sign in securely with Google to access the comprehensive ${documentName} document.`
                 }
               </p>
 
