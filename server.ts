@@ -286,8 +286,6 @@ ${contextText}`;
       const sysMessage = { role: "system", content: systemPrompt };
       const chatMessages = [sysMessage, ...messages];
 
-      const { OpenAI } = await import("openai");
-
       const primaryKey = process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "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";
       const standbyKey = process.env.NVIDIA_STANDBY_API_KEY || "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";
 
@@ -306,130 +304,158 @@ ${contextText}`;
         }
       };
 
-      let completionStream: any = null;
-      let usedStandby = false;
+      async function* getStreamIterator(response: Response) {
+        const body = response.body;
+        if (!body) return;
 
-      // Try Primary Model Connection
-      try {
-        console.log("Attempting primary chatbot API (nvidia/nemotron-3-nano-30b-a3b)...");
-        const clientPrimary = new OpenAI({
-          baseURL: "https://integrate.api.nvidia.com/v1",
-          apiKey: primaryKey,
-        });
-
-        // We pass reasoning_budget via RequestOptions' body so it merges as a root property in the final payload
-        // Note: OpenAI SDK options.body overrides the entire request body, so we must include all standard parameters.
-        const primaryPromise = (clientPrimary.chat.completions.create as any)({
-          model: "nvidia/nemotron-3-nano-30b-a3b",
-          messages: chatMessages as any,
-          temperature: 1.0,
-          top_p: 1.0,
-          max_tokens: 4096,
-          stream: true
-        }, {
-          body: {
-            model: "nvidia/nemotron-3-nano-30b-a3b",
-            messages: chatMessages,
-            temperature: 1.0,
-            top_p: 1.0,
-            max_tokens: 4096,
-            stream: true,
-            reasoning_budget: 4096
+        if (typeof (body as any).getReader === "function") {
+          const reader = (body as any).getReader();
+          const decoder = new TextDecoder("utf-8");
+          let buffer = "";
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split("\n");
+              buffer = lines.pop() || "";
+              for (const line of lines) {
+                yield line;
+              }
+            }
+            if (buffer) {
+              yield buffer;
+            }
+          } finally {
+            reader.releaseLock();
           }
-        });
-
-        completionStream = await withTimeout(primaryPromise, 2500, "Primary API Connection Timeout");
-        console.log("Primary API connected.");
-      } catch (primaryErr: any) {
-        console.warn(`Primary API connection failed or delayed (${primaryErr.message}). Switching to standby...`);
-        usedStandby = true;
-      }
-
-      // If connected to primary, try to stream first chunk
-      let firstResult: any = null;
-      let primaryIterator: any = null;
-      if (completionStream && !usedStandby) {
-        try {
-          primaryIterator = completionStream[Symbol.asyncIterator]();
-          // Timeout after 2000ms if first token doesn't arrive
-          firstResult = await withTimeout(primaryIterator.next(), 2000, "Primary API Stream First Token Timeout");
-          console.log("Primary API started streaming.");
-        } catch (streamErr: any) {
-          console.warn(`Primary API streaming failed mid-stream or delayed (${streamErr.message}). Falling back to standby...`);
-          usedStandby = true;
-          primaryIterator = null;
-          firstResult = null;
+        } else if (typeof (body as any).on === "function") {
+          const decoder = new TextDecoder("utf-8");
+          let buffer = "";
+          for await (const chunk of (body as any)) {
+            buffer += decoder.decode(chunk, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+            for (const line of lines) {
+              yield line;
+            }
+          }
+          if (buffer) {
+            yield buffer;
+          }
         }
       }
 
-      // If we need to switch to Standby
+      const fetchWithTimeout = async (url: string, payload: any, apiKey: string, timeoutMs: number) => {
+        const responsePromise = fetch(url, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream"
+          },
+          body: JSON.stringify(payload)
+        });
+        return await withTimeout(responsePromise, timeoutMs, "Connection Timeout");
+      };
+
+      let response: Response | null = null;
+      let usedStandby = false;
+
+      // Try primary
+      try {
+        console.log("Express Server: Trying primary model nvidia/nemotron-3-nano-30b-a3b...");
+        const primaryPayload = {
+          model: "nvidia/nemotron-3-nano-30b-a3b",
+          messages: chatMessages,
+          temperature: 1.0,
+          top_p: 1.0,
+          max_tokens: 4096,
+          reasoning_budget: 4096,
+          stream: true
+        };
+        response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", primaryPayload, primaryKey, 2500);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (primaryErr: any) {
+        console.warn(`Express Server: Primary API failed or delayed (${primaryErr.message}). Switching to standby...`);
+        usedStandby = true;
+      }
+
+      // Validate streaming of first token from primary
+      let primaryIterator: any = null;
+      let firstResult: any = null;
+      if (response && !usedStandby) {
+        try {
+          primaryIterator = getStreamIterator(response);
+          firstResult = await withTimeout(primaryIterator.next(), 2000, "First token timeout");
+          console.log("Express Server: Primary API streaming started.");
+        } catch (streamErr: any) {
+          console.warn(`Express Server: Primary stream failed or delayed (${streamErr.message}). Falling back to standby...`);
+          usedStandby = true;
+        }
+      }
+
+      // Try standby if primary failed/delayed
       if (usedStandby) {
         try {
-          console.log("Initializing standby chatbot API (google/diffusiongemma-26b-a4b-it)...");
-          const clientStandby = new OpenAI({
-            baseURL: "https://integrate.api.nvidia.com/v1",
-            apiKey: standbyKey,
-          });
-
-          const standbyPromise = (clientStandby.chat.completions.create as any)({
+          console.log("Express Server: Trying standby model google/diffusiongemma-26b-a4b-it...");
+          const standbyPayload = {
             model: "google/diffusiongemma-26b-a4b-it",
-            messages: chatMessages as any,
+            messages: chatMessages,
+            max_tokens: 4096,
             temperature: 1.0,
             top_p: 0.95,
-            max_tokens: 4096,
-            stream: true
-          }, {
-            body: {
-              model: "google/diffusiongemma-26b-a4b-it",
-              messages: chatMessages,
-              temperature: 1.0,
-              top_p: 0.95,
-              max_tokens: 4096,
-              stream: true,
-              chat_template_kwargs: { enable_thinking: true }
-            }
-          });
-
-          completionStream = await withTimeout(standbyPromise, 4000, "Standby API Connection Timeout");
-          
-          for await (const chunk of completionStream) {
-            const content = chunk.choices?.[0]?.delta?.content || "";
-            if (content) {
-              res.write(content);
-            }
+            stream: true,
+            chat_template_kwargs: { enable_thinking: true }
+          };
+          response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", standbyPayload, standbyKey, 4000);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
           }
-          res.end();
-          return;
+          primaryIterator = getStreamIterator(response);
+          firstResult = await withTimeout(primaryIterator.next(), 3000, "First token timeout");
+          console.log("Express Server: Standby API streaming started.");
         } catch (standbyErr: any) {
-          console.error("Both primary and standby APIs failed:", standbyErr);
+          console.error("Express Server: Both primary and standby APIs failed:", standbyErr);
           res.write("Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]");
           res.end();
           return;
         }
       }
 
-      // Otherwise, continue streaming from Primary
       try {
-        if (firstResult && !firstResult.done) {
-          const content = firstResult.value?.choices?.[0]?.delta?.content || "";
-          if (content) {
-            res.write(content);
+        const processLine = (line: string) => {
+          const trimmed = line.trim();
+          if (!trimmed) return;
+          if (trimmed === "data: [DONE]") return;
+          if (trimmed.startsWith("data: ")) {
+            try {
+              const jsonStr = trimmed.slice(6);
+              const data = JSON.parse(jsonStr);
+              const content = data.choices?.[0]?.delta?.content || "";
+              if (content) {
+                res.write(content);
+              }
+            } catch (e) {
+              // ignore invalid lines or partial chunks
+            }
           }
+        };
+
+        if (firstResult && !firstResult.done) {
+          processLine(firstResult.value);
         }
 
         while (true) {
           const { value, done } = await primaryIterator.next();
           if (done) break;
-          const content = value?.choices?.[0]?.delta?.content || "";
-          if (content) {
-            res.write(content);
-          }
+          processLine(value);
         }
         res.end();
-      } catch (primaryStreamErr: any) {
-        console.error("Error during primary stream reading:", primaryStreamErr);
-        // If it fails mid-stream, we can't easily start standby from the beginning because part of the response is already sent.
-        // We'll just end the response cleanly.
+      } catch (streamReadErr) {
+        console.error("Express Server: Stream reading error:", streamReadErr);
         res.end();
       }
     } catch (error) {
