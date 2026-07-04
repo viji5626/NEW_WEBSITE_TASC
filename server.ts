@@ -242,14 +242,6 @@ async function startServer() {
         return;
       }
 
-      const apiKey = process.env.NVIDIA_API_KEY || "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";
-      
-      const { OpenAI } = await import("openai");
-      const client = new OpenAI({
-        baseURL: "https://integrate.api.nvidia.com/v1",
-        apiKey: apiKey
-      });
-
       let contextText = "";
       try {
         const knowledgeData = JSON.parse(fs.readFileSync(path.join(process.cwd(), "website-knowledge.json"), "utf-8"));
@@ -294,33 +286,145 @@ ${contextText}`;
       const sysMessage = { role: "system", content: systemPrompt };
       const chatMessages = [sysMessage, ...messages];
 
-      const completion = await (client.chat.completions.create as any)({
-        model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
-        messages: chatMessages,
-        temperature: 0.6,
-        top_p: 0.95,
-        max_tokens: 1024,
-        // @ts-ignore
-        extra_body: { chat_template_kwargs: { enable_thinking: true }, reasoning_budget: 1024 },
-        stream: true
-      });
+      const { OpenAI } = await import("openai");
+
+      const primaryKey = process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "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";
+      const standbyKey = process.env.NVIDIA_STANDBY_API_KEY || "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";
+
+      let completionStream: any;
+      let usedStandby = false;
+
+      // Try Primary Model
+      try {
+        console.log("Attempting primary chatbot API (nvidia/nemotron-3-nano-30b-a3b)...");
+        const clientPrimary = new OpenAI({
+          baseURL: "https://integrate.api.nvidia.com/v1",
+          apiKey: primaryKey,
+        });
+
+        // Race the primary API call against a timeout of 2500ms
+        const primaryPromise = (clientPrimary.chat.completions.create as any)({
+          model: "nvidia/nemotron-3-nano-30b-a3b",
+          messages: chatMessages as any,
+          temperature: 1.0,
+          top_p: 1.0,
+          max_tokens: 4096,
+          extra_body: { reasoning_budget: 4096 },
+          stream: true
+        });
+
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Primary API Timeout")), 2500)
+        );
+
+        completionStream = await Promise.race([primaryPromise, timeoutPromise]);
+        console.log("Primary API connected successfully.");
+      } catch (primaryErr: any) {
+        console.warn(`Primary API failed or delayed (${primaryErr.message}). Switching to standby (google/diffusiongemma-26b-a4b-it)...`);
+        usedStandby = true;
+        try {
+          const clientStandby = new OpenAI({
+            baseURL: "https://integrate.api.nvidia.com/v1",
+            apiKey: standbyKey,
+          });
+
+          completionStream = await (clientStandby.chat.completions.create as any)({
+            model: "google/diffusiongemma-26b-a4b-it",
+            messages: chatMessages as any,
+            temperature: 1.0,
+            top_p: 0.95,
+            max_tokens: 4096,
+            extra_body: { chat_template_kwargs: { enable_thinking: true } },
+            stream: true
+          });
+          console.log("Standby API connected successfully.");
+        } catch (standbyErr: any) {
+          console.error("Both primary and standby APIs failed:", standbyErr);
+          res.setHeader("Content-Type", "text/plain");
+          res.write("Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]");
+          res.end();
+          return;
+        }
+      }
 
       res.setHeader("Content-Type", "text/plain");
       res.setHeader("Transfer-Encoding", "chunked");
 
-      for await (const chunk of completion) {
-        if (!chunk.choices || chunk.choices.length === 0) continue;
-        const delta = chunk.choices[0].delta as any;
-        if (!delta) continue;
-        const content = delta.content || "";
-        // Note: Nemotron-3 reasoning content can be streamed back if needed, 
-        // but for a user-facing chatbot, we usually only care about the final response content.
-        // We will just stream back the content part.
-        if (content) {
-           res.write(content);
+      try {
+        const iterator = completionStream[Symbol.asyncIterator]();
+        let firstChunkPromise = iterator.next();
+        let firstChunkTimeout = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Stream read timeout")), 2000)
+        );
+
+        let firstResult;
+        if (!usedStandby) {
+          try {
+            firstResult = await Promise.race([firstChunkPromise, firstChunkTimeout]);
+          } catch (readErr: any) {
+            console.warn(`Failed reading first chunk from primary (${readErr.message}). Switching to standby mid-stream...`);
+            usedStandby = true;
+            
+            const clientStandby = new OpenAI({
+              baseURL: "https://integrate.api.nvidia.com/v1",
+              apiKey: standbyKey,
+            });
+
+            completionStream = await (clientStandby.chat.completions.create as any)({
+              model: "google/diffusiongemma-26b-a4b-it",
+              messages: chatMessages as any,
+              temperature: 1.0,
+              top_p: 0.95,
+              max_tokens: 4096,
+              extra_body: { chat_template_kwargs: { enable_thinking: true } },
+              stream: true
+            });
+            console.log("Standby API connected successfully mid-stream.");
+          }
         }
+
+        if (usedStandby) {
+          for await (const chunk of completionStream) {
+            if (!chunk.choices || chunk.choices.length === 0) continue;
+            const delta = chunk.choices[0].delta;
+            if (!delta) continue;
+            const content = delta.content || "";
+            if (content) {
+              res.write(content);
+            }
+          }
+        } else {
+          // Stream the first chunk we already read
+          if (firstResult && !firstResult.done) {
+            const chunk = firstResult.value;
+            if (chunk.choices && chunk.choices.length > 0) {
+              const delta = chunk.choices[0].delta;
+              if (delta) {
+                const content = delta.content || "";
+                if (content) {
+                  res.write(content);
+                }
+              }
+            }
+          }
+          // Continue with the remaining chunks
+          while (true) {
+            const { value: chunk, done } = await iterator.next();
+            if (done) break;
+            if (!chunk.choices || chunk.choices.length === 0) continue;
+            const delta = chunk.choices[0].delta;
+            if (!delta) continue;
+            const content = delta.content || "";
+            if (content) {
+              res.write(content);
+            }
+          }
+        }
+        res.end();
+      } catch (streamErr: any) {
+        console.error("Error during streaming response:", streamErr);
+        res.end();
       }
-      res.end();
     } catch (error) {
       console.error("Chat API Error:", error);
       res.status(500).json({ error: "Failed to process chat" });
