@@ -291,10 +291,25 @@ ${contextText}`;
       const primaryKey = process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "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";
       const standbyKey = process.env.NVIDIA_STANDBY_API_KEY || "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";
 
-      let completionStream: any;
+      res.setHeader("Content-Type", "text/plain");
+      res.setHeader("Transfer-Encoding", "chunked");
+
+      const withTimeout = async <T>(promise: Promise<T>, ms: number, errorMessage: string): Promise<T> => {
+        let timeoutId: any;
+        const timeoutPromise = new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error(errorMessage)), ms);
+        });
+        try {
+          return await Promise.race([promise, timeoutPromise]);
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      };
+
+      let completionStream: any = null;
       let usedStandby = false;
 
-      // Try Primary Model
+      // Try Primary Model Connection
       try {
         console.log("Attempting primary chatbot API (nvidia/nemotron-3-nano-30b-a3b)...");
         const clientPrimary = new OpenAI({
@@ -302,127 +317,119 @@ ${contextText}`;
           apiKey: primaryKey,
         });
 
-        // Race the primary API call against a timeout of 2500ms
+        // We pass reasoning_budget via RequestOptions' body so it merges as a root property in the final payload
+        // Note: OpenAI SDK options.body overrides the entire request body, so we must include all standard parameters.
         const primaryPromise = (clientPrimary.chat.completions.create as any)({
           model: "nvidia/nemotron-3-nano-30b-a3b",
           messages: chatMessages as any,
           temperature: 1.0,
           top_p: 1.0,
           max_tokens: 4096,
-          extra_body: { reasoning_budget: 4096 },
           stream: true
+        }, {
+          body: {
+            model: "nvidia/nemotron-3-nano-30b-a3b",
+            messages: chatMessages,
+            temperature: 1.0,
+            top_p: 1.0,
+            max_tokens: 4096,
+            stream: true,
+            reasoning_budget: 4096
+          }
         });
 
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Primary API Timeout")), 2500)
-        );
-
-        completionStream = await Promise.race([primaryPromise, timeoutPromise]);
-        console.log("Primary API connected successfully.");
+        completionStream = await withTimeout(primaryPromise, 2500, "Primary API Connection Timeout");
+        console.log("Primary API connected.");
       } catch (primaryErr: any) {
-        console.warn(`Primary API failed or delayed (${primaryErr.message}). Switching to standby (google/diffusiongemma-26b-a4b-it)...`);
+        console.warn(`Primary API connection failed or delayed (${primaryErr.message}). Switching to standby...`);
         usedStandby = true;
+      }
+
+      // If connected to primary, try to stream first chunk
+      let firstResult: any = null;
+      let primaryIterator: any = null;
+      if (completionStream && !usedStandby) {
         try {
+          primaryIterator = completionStream[Symbol.asyncIterator]();
+          // Timeout after 2000ms if first token doesn't arrive
+          firstResult = await withTimeout(primaryIterator.next(), 2000, "Primary API Stream First Token Timeout");
+          console.log("Primary API started streaming.");
+        } catch (streamErr: any) {
+          console.warn(`Primary API streaming failed mid-stream or delayed (${streamErr.message}). Falling back to standby...`);
+          usedStandby = true;
+          primaryIterator = null;
+          firstResult = null;
+        }
+      }
+
+      // If we need to switch to Standby
+      if (usedStandby) {
+        try {
+          console.log("Initializing standby chatbot API (google/diffusiongemma-26b-a4b-it)...");
           const clientStandby = new OpenAI({
             baseURL: "https://integrate.api.nvidia.com/v1",
             apiKey: standbyKey,
           });
 
-          completionStream = await (clientStandby.chat.completions.create as any)({
+          const standbyPromise = (clientStandby.chat.completions.create as any)({
             model: "google/diffusiongemma-26b-a4b-it",
             messages: chatMessages as any,
             temperature: 1.0,
             top_p: 0.95,
             max_tokens: 4096,
-            extra_body: { chat_template_kwargs: { enable_thinking: true } },
             stream: true
+          }, {
+            body: {
+              model: "google/diffusiongemma-26b-a4b-it",
+              messages: chatMessages,
+              temperature: 1.0,
+              top_p: 0.95,
+              max_tokens: 4096,
+              stream: true,
+              chat_template_kwargs: { enable_thinking: true }
+            }
           });
-          console.log("Standby API connected successfully.");
+
+          completionStream = await withTimeout(standbyPromise, 4000, "Standby API Connection Timeout");
+          
+          for await (const chunk of completionStream) {
+            const content = chunk.choices?.[0]?.delta?.content || "";
+            if (content) {
+              res.write(content);
+            }
+          }
+          res.end();
+          return;
         } catch (standbyErr: any) {
           console.error("Both primary and standby APIs failed:", standbyErr);
-          res.setHeader("Content-Type", "text/plain");
           res.write("Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]");
           res.end();
           return;
         }
       }
 
-      res.setHeader("Content-Type", "text/plain");
-      res.setHeader("Transfer-Encoding", "chunked");
-
+      // Otherwise, continue streaming from Primary
       try {
-        const iterator = completionStream[Symbol.asyncIterator]();
-        let firstChunkPromise = iterator.next();
-        let firstChunkTimeout = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Stream read timeout")), 2000)
-        );
-
-        let firstResult;
-        if (!usedStandby) {
-          try {
-            firstResult = await Promise.race([firstChunkPromise, firstChunkTimeout]);
-          } catch (readErr: any) {
-            console.warn(`Failed reading first chunk from primary (${readErr.message}). Switching to standby mid-stream...`);
-            usedStandby = true;
-            
-            const clientStandby = new OpenAI({
-              baseURL: "https://integrate.api.nvidia.com/v1",
-              apiKey: standbyKey,
-            });
-
-            completionStream = await (clientStandby.chat.completions.create as any)({
-              model: "google/diffusiongemma-26b-a4b-it",
-              messages: chatMessages as any,
-              temperature: 1.0,
-              top_p: 0.95,
-              max_tokens: 4096,
-              extra_body: { chat_template_kwargs: { enable_thinking: true } },
-              stream: true
-            });
-            console.log("Standby API connected successfully mid-stream.");
+        if (firstResult && !firstResult.done) {
+          const content = firstResult.value?.choices?.[0]?.delta?.content || "";
+          if (content) {
+            res.write(content);
           }
         }
 
-        if (usedStandby) {
-          for await (const chunk of completionStream) {
-            if (!chunk.choices || chunk.choices.length === 0) continue;
-            const delta = chunk.choices[0].delta;
-            if (!delta) continue;
-            const content = delta.content || "";
-            if (content) {
-              res.write(content);
-            }
-          }
-        } else {
-          // Stream the first chunk we already read
-          if (firstResult && !firstResult.done) {
-            const chunk = firstResult.value;
-            if (chunk.choices && chunk.choices.length > 0) {
-              const delta = chunk.choices[0].delta;
-              if (delta) {
-                const content = delta.content || "";
-                if (content) {
-                  res.write(content);
-                }
-              }
-            }
-          }
-          // Continue with the remaining chunks
-          while (true) {
-            const { value: chunk, done } = await iterator.next();
-            if (done) break;
-            if (!chunk.choices || chunk.choices.length === 0) continue;
-            const delta = chunk.choices[0].delta;
-            if (!delta) continue;
-            const content = delta.content || "";
-            if (content) {
-              res.write(content);
-            }
+        while (true) {
+          const { value, done } = await primaryIterator.next();
+          if (done) break;
+          const content = value?.choices?.[0]?.delta?.content || "";
+          if (content) {
+            res.write(content);
           }
         }
         res.end();
-      } catch (streamErr: any) {
-        console.error("Error during streaming response:", streamErr);
+      } catch (primaryStreamErr: any) {
+        console.error("Error during primary stream reading:", primaryStreamErr);
+        // If it fails mid-stream, we can't easily start standby from the beginning because part of the response is already sent.
+        // We'll just end the response cleanly.
         res.end();
       }
     } catch (error) {
