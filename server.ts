@@ -156,7 +156,12 @@ function getFounderLinkedinResponse(): string {
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const isProduction = process.env.NODE_ENV === "production" || 
+    (process.argv[1] && (process.argv[1].includes("server.cjs") || process.argv[1].includes("dist")));
+
+  const PORT = isProduction
+    ? (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000)
+    : 3000;
 
   app.use(express.json());
 
@@ -473,7 +478,7 @@ ${contextText}`;
   app.use(express.static(path.join(process.cwd(), "public")));
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
