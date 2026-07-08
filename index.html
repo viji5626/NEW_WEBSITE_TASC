@@ -161,13 +161,27 @@
     <title>Tenacious Automation Solutions & Consulting (TASC Automation)</title>
     <meta name="description" content="TASC provides premium industrial automation, SCADA/HMI engineering, PLC programming (Siemens, Mitsubishi), and Industrial AI solutions for manufacturing plants in India and globally." />
     <meta name="keywords" content="Industrial Automation, SCADA integration, PLC programming, Siemens, Mitsubishi, Industrial AI, Smart Factory, Manufacturing, DCS, Panel Engineering" />
+    <meta name="author" content="Tenacious Automation Solutions & Consulting" />
     <link rel="canonical" href="https://www.tascautomation.com" />
+    
+    <!-- Robot Indexing Instructions -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    
+    <!-- Mobile Theme Color -->
+    <meta name="theme-color" content="#020817" />
     
     <!-- Open Graph / Social Platform Integration -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Industrial Automation & SCADA Integration | TASC" />
     <meta property="og:description" content="Expert PLC/SCADA integration, smart factory solutions, and energy monitoring systems. We deliver standards-first architecture using top-tier platforms." />
     <meta property="og:image" content="https://www.tascautomation.com/brand/tasc-logo-dark.png" />
+    <meta property="og:image:secure_url" content="https://www.tascautomation.com/brand/tasc-logo-dark.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Tenacious Automation Solutions & Consulting (TASC Automation) logo featuring modern industrial design" />
     <meta property="og:url" content="https://www.tascautomation.com" />
     <meta property="og:site_name" content="Tenacious Automation Solutions & Consulting (TASC Automation)" />
     <meta name="apple-mobile-web-app-title" content="TASC Automation" />
@@ -176,10 +190,13 @@
     <meta name="twitter:title" content="Industrial Automation & SCADA Integration | TASC" />
     <meta name="twitter:description" content="Expert PLC/SCADA integration, smart factory solutions, and energy monitoring systems." />
     <meta name="twitter:image" content="https://www.tascautomation.com/brand/tasc-logo-dark.png" />
+    <meta name="twitter:image:alt" content="Tenacious Automation Solutions & Consulting (TASC Automation) logo featuring modern industrial design" />
 
-    <link rel="icon" type="image/png" href="/favicon.png?v=2" />
-    <link rel="shortcut icon" type="image/png" href="/favicon.png?v=2" />
-    <link rel="apple-touch-icon" href="/favicon.png?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png?v=2" />
+    <link rel="shortcut icon" href="/favicon.ico?v=2" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png?v=2" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Google Search Site Name Structured Data -->
     <script type="application/ld+json">
@@ -308,7 +325,124 @@
 <meta name="google-adsense-account" content="ca-pub-1416708332319042">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <h1 class="sr-only">Tenacious Automation Solutions & Consulting (TASC Automation)</h1>
+    </div>
+    
+    <!-- Web Vitals Telemetry and Performance Monitoring -->
+    <script type="text/javascript">
+    (function() {
+      const vitals = {
+        FCP: null,
+        LCP: null,
+        FID: null,
+        CLS: 0,
+        TTFB: null
+      };
+      window.TASC_VITALS = vitals;
+
+      function reportMetric(name, value, unit, thresholds) {
+        vitals[name] = value;
+        let rating = 'GOOD';
+        let color = '#10B981'; // emerald-500
+        if (value > thresholds.needsImprovement) {
+          rating = 'POOR';
+          color = '#EF4444'; // red-500
+        } else if (value > thresholds.good) {
+          rating = 'NEEDS IMPROVEMENT';
+          color = '#F59E0B'; // amber-500
+        }
+        
+        const formattedValue = value.toFixed(name === 'CLS' ? 4 : 0);
+        console.log(
+          `%c⚡ TASC PERF%c %c${name}%c = %c${formattedValue}${unit}%c [%c${rating}%c]`,
+          'color: #020817; background: #38BDF8; padding: 2px 5px; border-radius: 3px; font-weight: bold; font-family: system-ui, sans-serif;',
+          '',
+          'color: #38BDF8; font-weight: bold;',
+          '',
+          `color: ${color}; font-weight: bold; font-family: monospace;`,
+          '',
+          `color: ${color}; font-weight: bold;`,
+          ''
+        );
+      }
+
+      // Time to First Byte (TTFB)
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          try {
+            const [nav] = performance.getEntriesByType('navigation');
+            if (nav) {
+              const ttfb = nav.responseStart - nav.requestStart;
+              if (ttfb >= 0) {
+                reportMetric('TTFB', ttfb, 'ms', { good: 800, needsImprovement: 1800 });
+              }
+            }
+          } catch (e) {
+            console.debug('TTFB measurement failed:', e);
+          }
+        }, 100);
+      });
+
+      // First Contentful Paint (FCP)
+      try {
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          const fcp = entries.find(e => e.name === 'first-contentful-paint');
+          if (fcp) {
+            reportMetric('FCP', fcp.startTime, 'ms', { good: 1800, needsImprovement: 3000 });
+          }
+        }).observe({ type: 'paint', buffered: true });
+      } catch (e) {
+        console.debug('FCP observer failed:', e);
+      }
+
+      // Largest Contentful Paint (LCP)
+      try {
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          if (lastEntry) {
+            reportMetric('LCP', lastEntry.startTime, 'ms', { good: 2500, needsImprovement: 4000 });
+          }
+        }).observe({ type: 'largest-contentful-paint', buffered: true });
+      } catch (e) {
+        console.debug('LCP observer failed:', e);
+      }
+
+      // First Input Delay (FID)
+      try {
+        new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          entries.forEach(entry => {
+            const fid = entry.processingStart - entry.startTime;
+            reportMetric('FID', fid, 'ms', { good: 100, needsImprovement: 300 });
+          });
+        }).observe({ type: 'first-input', buffered: true });
+      } catch (e) {
+        console.debug('FID observer failed:', e);
+      }
+
+      // Cumulative Layout Shift (CLS)
+      let clsSum = 0;
+      try {
+        new PerformanceObserver((entryList) => {
+          let updated = false;
+          for (const entry of entryList.getEntries()) {
+            if (!entry.hadRecentInput) {
+              clsSum += entry.value;
+              updated = true;
+            }
+          }
+          if (updated) {
+            reportMetric('CLS', clsSum, '', { good: 0.1, needsImprovement: 0.25 });
+          }
+        }).observe({ type: 'layout-shift', buffered: true });
+      } catch (e) {
+        console.debug('CLS observer failed:', e);
+      }
+    })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
