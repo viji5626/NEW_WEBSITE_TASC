@@ -1,6 +1,5 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import { Resend } from "resend";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -82,6 +81,22 @@ function getImprovisedEstdResponse(): string {
   return variations[Math.floor(Math.random() * variations.length)];
 }
 
+function isMsmeQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("msme") ||
+    norm.includes("udyam") ||
+    norm.includes("micro small") ||
+    norm.includes("micro, small") ||
+    norm.includes("medium enterprise") ||
+    (norm.includes("registration") && norm.includes("certificate"))
+  );
+}
+
+function getMsmeResponse(): string {
+  return "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). For any specific copy or verification, please contact our team. [TALK_TO_TASC: MSME Verification | Please share the MSME Udyam Certificate copy or registration details]";
+}
+
 function isFounderContactQuestion(text: string): boolean {
   if (isAuthorizedQuestion(text) || isEstdQuestion(text)) {
     return false;
@@ -157,6 +172,7 @@ function getFounderLinkedinResponse(): string {
 async function startServer() {
   const app = express();
   const isProduction = process.env.NODE_ENV === "production" || 
+    (typeof __filename !== "undefined" && (__filename.includes("server.cjs") || __filename.includes("dist"))) ||
     (process.argv[1] && (process.argv[1].includes("server.cjs") || process.argv[1].includes("dist")));
 
   const PORT = isProduction
@@ -220,6 +236,15 @@ async function startServer() {
         return;
       }
 
+      // Intercept any questions about MSME Udyam Certificate
+      if (isMsmeQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getMsmeResponse());
+        res.end();
+        return;
+      }
+
       // Intercept any questions about company age or establishment date
       if (isEstdQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
@@ -278,6 +303,10 @@ Example: "You can download Mr. Vijay Shankar's direct contact card (vCard) or sc
 CRITICAL POLICY ON FOUNDER'S LINKEDIN:
 If a user asks about the founder's LinkedIn, Mr. Vijay Shankar's LinkedIn, or how to connect with him on social media/LinkedIn, you MUST politely direct them to view his profile using our direct LinkedIn tag and always append exactly this tag at the very end of your response: [FOUNDER_LINKEDIN]
 Example: "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn: [FOUNDER_LINKEDIN]"
+
+CRITICAL POLICY ON MSME UDYAM CERTIFICATE:
+If a user asks if the company has an MSME certificate, Udyam Certificate, or holds micro/small/medium enterprise registrations, you MUST explicitly state that TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). Add a TALK_TO_TASC action block for MSME verification if they want to verify or request a copy.
+Example: "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). For any specific copy or verification, please contact our team. [TALK_TO_TASC: MSME Verification | Please share the MSME Udyam Certificate copy or registration details]"
 
 If the user asks an irrelevant question (outside automation, tech stack, TASC services, or missing from context) or explicitly asks to speak to humans/contact support, you MUST reply with a helpful apologetic or leading message, followed directly by exactly this markdown tag formatting: [TALK_TO_TASC: <Dedicated Heading> | <Contextual Pre-filled Scope>]
 where <Dedicated Heading> is a short (2-5 words) appropriate headline summarizing their intent (e.g., "Consultation Request", "Speak to Engineering", "Custom Service Inquiry").

@@ -27,6 +27,10 @@ const FAQS = [
   {
     question: "Can your team build full-stack web applications for our manufacturing data?",
     answer: "Absolutely. Leveraging modern tech stacks alongside AI orchestration (Vibe Coding), we rapidly develop robust internal web portals, dashboards, and Microservices. We bridge the gap between plant-floor SQL/Historian databases and top-floor ERP/MES systems for real-time visibility."
+  },
+  {
+    question: "Does the company have an MSME Udyam Certificate?",
+    answer: "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate as a registered enterprise under the Ministry of Micro, Small and Medium Enterprises (MSME)."
   }
 ];
 
