@@ -156,7 +156,7 @@ function getFounderLinkedinResponse(): string {
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const PORT = 3000;
 
   app.use(express.json());
 
@@ -374,7 +374,7 @@ ${contextText}`;
           reasoning_budget: 4096,
           stream: true
         };
-        response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", primaryPayload, primaryKey, 2500);
+        response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", primaryPayload, primaryKey, 8000);
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
@@ -389,7 +389,7 @@ ${contextText}`;
       if (response && !usedStandby) {
         try {
           primaryIterator = getStreamIterator(response);
-          firstResult = await withTimeout(primaryIterator.next(), 2000, "First token timeout");
+          firstResult = await withTimeout(primaryIterator.next(), 6000, "First token timeout");
           console.log("Express Server: Primary API streaming started.");
         } catch (streamErr: any) {
           console.warn(`Express Server: Primary stream failed or delayed (${streamErr.message}). Falling back to standby...`);
@@ -410,12 +410,12 @@ ${contextText}`;
             stream: true,
             chat_template_kwargs: { enable_thinking: true }
           };
-          response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", standbyPayload, standbyKey, 4000);
+          response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", standbyPayload, standbyKey, 10000);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
           }
           primaryIterator = getStreamIterator(response);
-          firstResult = await withTimeout(primaryIterator.next(), 3000, "First token timeout");
+          firstResult = await withTimeout(primaryIterator.next(), 8000, "First token timeout");
           console.log("Express Server: Standby API streaming started.");
         } catch (standbyErr: any) {
           console.error("Express Server: Both primary and standby APIs failed:", standbyErr);
