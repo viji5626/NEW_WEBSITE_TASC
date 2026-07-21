@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import path from "path";
 import dotenv from "dotenv";
 import fs from "fs";
@@ -175,9 +174,11 @@ async function startServer() {
     (typeof __filename !== "undefined" && (__filename.includes("server.cjs") || __filename.includes("dist"))) ||
     (process.argv[1] && (process.argv[1].includes("server.cjs") || process.argv[1].includes("dist")));
 
-  const PORT = isProduction
-    ? (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000)
-    : 3000;
+  if (isProduction) {
+    process.env.NODE_ENV = "production";
+  }
+
+  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
   app.use(express.json());
 
@@ -508,6 +509,7 @@ ${contextText}`;
 
   // Vite middleware for development
   if (!isProduction) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
