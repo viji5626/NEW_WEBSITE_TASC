@@ -60,7 +60,7 @@ function isEstdQuestion(text: string): boolean {
 }
 
 function getAuthorizedResponse(): string {
-  return "Nowhere we have mentioned that we are authorized to any of the make. However we have expertise in brand and we worked with it.";
+  return "While TASC Automation is an independent systems integrator and consulting firm (and not an officially authorized partner or distributor for specific OEM brands like Mitsubishi, Siemens, or ABB), we possess deep, hands-on engineering expertise and decades of practical experience working with these brands' platforms. We regularly design, integrate, program, and migrate hardware and software systems from these and other major manufacturers to deliver optimal industrial automation solutions for our clients.\n\nWe would be glad to discuss your project requirements or system integration needs! [TALK_TO_TASC: OEM Integration Inquiry | Project discussion for Mitsubishi, Siemens, and other brand hardware]";
 }
 
 function getImprovisedEstdResponse(): string {
