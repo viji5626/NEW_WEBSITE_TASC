@@ -66,18 +66,118 @@ function isEstdQuestion(text: string): boolean {
   );
 }
 
-function getAuthorizedResponse(): string {
-  return "While TASC Automation is an independent systems integrator and consulting firm (and not an officially authorized partner or distributor for specific OEM brands like Mitsubishi, Siemens, or ABB), we possess deep, hands-on engineering expertise and decades of practical experience working with these brands' platforms. We regularly design, integrate, program, and migrate hardware and software systems from these and other major manufacturers to deliver optimal industrial automation solutions for our clients.\n\nWe would be glad to discuss your project requirements or system integration needs! [TALK_TO_TASC: OEM Integration Inquiry | Project discussion for Mitsubishi, Siemens, and other brand hardware]";
+function shouldIncludeCTA(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("contact") ||
+    norm.includes("talk to") ||
+    norm.includes("reach out") ||
+    norm.includes("get in touch") ||
+    norm.includes("quote") ||
+    norm.includes("discuss") ||
+    norm.includes("hire") ||
+    norm.includes("for us") ||
+    norm.includes("for me") ||
+    norm.includes("pricing") ||
+    norm.includes("price") ||
+    norm.includes("cost") ||
+    norm.includes("how to get") ||
+    norm.includes("how can i") ||
+    norm.includes("interested") ||
+    norm.includes("want it") ||
+    norm.includes("want this") ||
+    norm.includes("need this") ||
+    norm.includes("need it") ||
+    norm.includes("order") ||
+    norm.includes("button") ||
+    norm.includes("link") ||
+    norm.includes("email") ||
+    norm.includes("phone") ||
+    norm.includes("number") ||
+    norm.includes("vcard") ||
+    norm.includes("connect") ||
+    norm.includes("request") ||
+    norm.includes("call") ||
+    norm.includes("appointment") ||
+    norm.includes("meeting") ||
+    norm.includes("consult") ||
+    norm.includes("work with") ||
+    norm.includes("help us") ||
+    norm.includes("help me")
+  );
 }
 
-function getImprovisedEstdResponse(): string {
-  const variations = [
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]",
-    "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]"
-  ];
-  return variations[Math.floor(Math.random() * variations.length)];
+function getAuthorizedResponse(userMsg?: string): string {
+  const base = "While TASC Automation is an independent systems integrator and consulting firm (and not an officially authorized partner or distributor for specific OEM brands like Mitsubishi, Siemens, or ABB), we possess deep, hands-on engineering expertise and decades of practical experience working with these brands' platforms. We regularly design, integrate, program, and migrate hardware and software systems from these and other major manufacturers to deliver optimal industrial automation solutions for our clients.\n\nWe would be glad to discuss your project requirements or system integration needs!";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: OEM Integration Inquiry | Project discussion for Mitsubishi, Siemens, and other brand hardware]";
+  }
+  return base;
+}
+
+function getImprovisedEstdResponse(userMsg?: string): string {
+  const base = "You can contact our team for this Estd. information. However, our founder has a decade+ of experience in the industrial automation field.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]";
+  }
+  return base;
+}
+
+function isBuiltByTascQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    (norm.includes("build") || norm.includes("built") || norm.includes("made") || norm.includes("create") || norm.includes("design") || norm.includes("develop")) &&
+    (norm.includes("tasc") || norm.includes("you ") || norm.includes("your team") || norm.includes("who built this") || norm.includes("who made this") || norm.includes("who created this") || norm.includes("is it build by") || norm.includes("is this built by"))
+  );
+}
+
+function getBuiltByTascResponse(userMsg?: string): string {
+  const base = "Yes! This website and its integrated AI assistant were designed, developed, and deployed entirely by TASC Automation's in-house engineering team. It serves as a live demonstration of our rapid full-stack digital development and custom AI orchestration capabilities. We can design, build, and deploy similar highly polished, responsive, and intelligent digital interfaces tailored specifically for your company's industrial operations, telemetry dashboards, or client-facing portals.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Custom App Request | Discuss custom software or AI agent development with an engineer]";
+  }
+  return base;
+}
+
+function isCanTascBuildQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    (norm.includes("can you") || norm.includes("can tasc") || norm.includes("could you") || norm.includes("build for us") || norm.includes("make a website") || norm.includes("make an app") || norm.includes("build this kind") || norm.includes("build websites") || norm.includes("develop websites") || norm.includes("build a chatbot")) &&
+    (norm.includes("website") || norm.includes("site") || norm.includes("app ") || norm.includes("application") || norm.includes("software") || norm.includes("chatbot") || norm.includes("this kind") || norm.includes("for us") || norm.includes("for me") || norm.includes("client"))
+  );
+}
+
+function getCanTascBuildResponse(userMsg?: string): string {
+  const base = "Yes, absolutely! Custom full-stack web applications, industrial telemetry dashboards, responsive client portals, and bespoke AI/RAG integrations are core pillars of TASC Automation's Rapid Deployment services. We design and deliver production-ready digital architectures utilizing modern React, TypeScript, and SQL databases, integrated with intelligent LLM pipelines. We would be glad to design and build a customized solution tailored specifically to your operational requirements.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Custom App Request | Discuss custom software or AI agent development with an engineer]";
+  }
+  return base;
+}
+
+function isChatbotModelQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("which ai") ||
+    norm.includes("what ai") ||
+    norm.includes("what model") ||
+    norm.includes("what is your model") ||
+    norm.includes("which model") ||
+    norm.includes("what llm") ||
+    norm.includes("which llm") ||
+    norm.includes("how does your chatbot work") ||
+    norm.includes("what is your engine") ||
+    norm.includes("what ai engine") ||
+    norm.includes("chatbot's engine")
+  );
+}
+
+function getChatbotModelResponse(userMsg?: string): string {
+  const base = "The TASC AI System is powered by state-of-the-art Large Language Models (LLMs) integrated via custom server-side orchestration and Retrieval-Augmented Generation (RAG). This allows the assistant to securely, accurately, and contextually answer queries based strictly on TASC Automation's specialized industrial knowledge base. TASC Automation specializes in deploying custom localized LLM architectures, intelligent autonomous agents, and RAG pipelines (using leading models, Ollama, LM Studio, and vector databases) that run securely offline or on-premise using your proprietary company data.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: AI Integration Request | Learn more about deploying localized LLMs and AI agents for your business]";
+  }
+  return base;
 }
 
 function isWebsiteQuestion(text: string): boolean {
@@ -93,31 +193,23 @@ function isWebsiteQuestion(text: string): boolean {
     norm.includes("website tech stack") ||
     norm.includes("site tech stack") ||
     norm.includes("technologies used to build this") ||
-    norm.includes("how does your chatbot work") ||
-    norm.includes("what model are you") ||
-    norm.includes("what ai model") ||
-    norm.includes("what is your model") ||
-    norm.includes("which model") ||
-    norm.includes("what llm") ||
     norm.includes("what is your backend") ||
     norm.includes("your backend") ||
-    norm.includes("this chatbot's") ||
     norm.includes("your api") ||
-    norm.includes("your engine") ||
-    norm.includes("your ai engine") ||
-    norm.includes("how you are built") ||
     norm.includes("source code of this website") ||
     norm.includes("github repository for this website") ||
-    norm.includes("how do you work") ||
-    norm.includes("how do you reply") ||
     norm.includes("where are you hosted") ||
     norm.includes("built with react") ||
     norm.includes("built using react")
   );
 }
 
-function getWebsiteResponse(): string {
-  return "This website is a modern digital interface designed to showcase TASC Automation's industrial engineering and consulting services. We leverage advanced automation and digital solutions to help our clients succeed. Let me know if you would like to learn more about our core industrial services, such as design engineering, legacy PLC migrations, or customized panels!";
+function getWebsiteResponse(userMsg?: string): string {
+  const base = "This website is a modern, high-performance digital interface designed and developed by TASC Automation to showcase our industrial automation, engineering consulting, and custom software services. It leverages ultra-quick full-stack web technology paired with intelligent AI orchestration. We specialize in building and deploying customized full-stack applications, industrial dashboards, and localized AI models for our clients to streamline their industrial and business processes.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Custom App Request | Request a quote or discuss a custom software project]";
+  }
+  return base;
 }
 
 function isMsmeQuestion(text: string): boolean {
@@ -132,8 +224,12 @@ function isMsmeQuestion(text: string): boolean {
   );
 }
 
-function getMsmeResponse(): string {
-  return "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). For any specific copy or verification, please contact our team. [TALK_TO_TASC: MSME Verification | Please share the MSME Udyam Certificate copy or registration details]";
+function getMsmeResponse(userMsg?: string): string {
+  const base = "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). For any specific copy or verification, please contact our team.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: MSME Verification | Please share the MSME Udyam Certificate copy or registration details]";
+  }
+  return base;
 }
 
 function isFounderContactQuestion(text: string): boolean {
@@ -268,11 +364,38 @@ async function startServer() {
       const messages = req.body.messages || [];
       const userMsg = messages[messages.length - 1]?.content || "";
 
+      // Intercept questions about whether TASC built this website/chatbot
+      if (isBuiltByTascQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getBuiltByTascResponse(userMsg));
+        res.end();
+        return;
+      }
+
+      // Intercept questions about whether TASC can build custom websites, apps, or chatbots for clients
+      if (isCanTascBuildQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getCanTascBuildResponse(userMsg));
+        res.end();
+        return;
+      }
+
+      // Intercept questions about which AI or LLM is powering this chatbot
+      if (isChatbotModelQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getChatbotModelResponse(userMsg));
+        res.end();
+        return;
+      }
+
       // Intercept any questions about the website build, tech stack, or AI engine
       if (isWebsiteQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
         res.setHeader("Transfer-Encoding", "chunked");
-        res.write(getWebsiteResponse());
+        res.write(getWebsiteResponse(userMsg));
         res.end();
         return;
       }
@@ -281,7 +404,7 @@ async function startServer() {
       if (isAuthorizedQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
         res.setHeader("Transfer-Encoding", "chunked");
-        res.write(getAuthorizedResponse());
+        res.write(getAuthorizedResponse(userMsg));
         res.end();
         return;
       }
@@ -290,7 +413,7 @@ async function startServer() {
       if (isMsmeQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
         res.setHeader("Transfer-Encoding", "chunked");
-        res.write(getMsmeResponse());
+        res.write(getMsmeResponse(userMsg));
         res.end();
         return;
       }
@@ -299,7 +422,7 @@ async function startServer() {
       if (isEstdQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
         res.setHeader("Transfer-Encoding", "chunked");
-        res.write(getImprovisedEstdResponse());
+        res.write(getImprovisedEstdResponse(userMsg));
         res.end();
         return;
       }
