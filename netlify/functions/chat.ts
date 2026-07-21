@@ -67,6 +67,46 @@ function getImprovisedEstdResponse(): string {
   return "You can contact to our team for this Estd. information. However Founder have decade+ experience in industrial automation field. [TALK_TO_TASC: Estd. Information Request | Please contact us for detailed company establishment history]";
 }
 
+function isWebsiteQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("how this website is built") ||
+    norm.includes("how is this website built") ||
+    norm.includes("how was this website built") ||
+    norm.includes("how the website is built") ||
+    norm.includes("how is this site built") ||
+    norm.includes("how this site is built") ||
+    norm.includes("what is the tech stack") ||
+    norm.includes("website tech stack") ||
+    norm.includes("site tech stack") ||
+    norm.includes("technologies used to build this") ||
+    norm.includes("how does your chatbot work") ||
+    norm.includes("what model are you") ||
+    norm.includes("what ai model") ||
+    norm.includes("what is your model") ||
+    norm.includes("which model") ||
+    norm.includes("what llm") ||
+    norm.includes("what is your backend") ||
+    norm.includes("your backend") ||
+    norm.includes("this chatbot's") ||
+    norm.includes("your api") ||
+    norm.includes("your engine") ||
+    norm.includes("your ai engine") ||
+    norm.includes("how you are built") ||
+    norm.includes("source code of this website") ||
+    norm.includes("github repository for this website") ||
+    norm.includes("how do you work") ||
+    norm.includes("how do you reply") ||
+    norm.includes("where are you hosted") ||
+    norm.includes("built with react") ||
+    norm.includes("built using react")
+  );
+}
+
+function getWebsiteResponse(): string {
+  return "This website is a modern digital interface designed to showcase TASC Automation's industrial engineering and consulting services. We leverage advanced automation and digital solutions to help our clients succeed. Let me know if you would like to learn more about our core industrial services, such as design engineering, legacy PLC migrations, or customized panels!";
+}
+
 // Timeout Helper
 const withTimeout = async <T>(promise: Promise<T>, ms: number, errorMessage: string): Promise<T> => {
   let timeoutId: any;
@@ -132,6 +172,13 @@ export default async (req: Request, context: Context) => {
     const { messages } = await req.json();
     const userMsg = messages[messages.length - 1]?.content || "";
 
+    // Intercept any questions about the website build, tech stack, or AI engine
+    if (isWebsiteQuestion(userMsg)) {
+      return new Response(getWebsiteResponse(), {
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
+
     // Intercept any questions about authorization
     if (isAuthorizedQuestion(userMsg)) {
       return new Response(getAuthorizedResponse(), {
@@ -155,6 +202,12 @@ export default async (req: Request, context: Context) => {
     }
 
     const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.
+
+CRITICAL POLICY ON DISCUSSING WEBSITE BUILD, AI ENGINE, OR BACKEND SYSTEMS:
+1. NEVER disclose, discuss, or explain the technical implementation details of this website or the chatbot itself. This includes details of our backend (Express server, APIs, Web3Forms, Firebase, Netlify, etc.), folder structures, file names, libraries/frameworks (React, Vite, Lenis, GSAP, Tailwind), or the AI engine (Gemini, NVIDIA, LLMs, API endpoints).
+2. If a user asks "how this website is built", "what technologies are used for this site", or asks about our APIs/AI engine, do NOT provide any technical breakdown, markdown tables, list of dependencies, or backend architecture details.
+3. Instead, respond with a very simple, high-level, elegant, and non-technical statement: "This website is a modern digital interface designed to showcase TASC Automation's industrial engineering and consulting services. We leverage advanced automation and digital solutions to help our clients succeed. Let me know if you would like to learn more about our core industrial services, such as design engineering, legacy PLC migrations, or customized panels!"
+4. Keep all responses strictly business-focused, professional, and tailored to industrial automation and consulting. Refuse politely to discuss technical code, backend systems, directories, or AI model APIs of this website.
 
 CRITICAL POLICY ON ESTABLISHMENT (ESTD) & AGE:
 If a user asks about when the company was established (Estd.), how old the company is, or how long it has been operating, you MUST NOT mention any specific years or state that the company has been operating for 11 years. Instead, always direct them to contact our team for this Estd. information, and emphasize that our founder has decade+ experience in the industrial automation field. You must format the response exactly like this and append the contact button at the end:
