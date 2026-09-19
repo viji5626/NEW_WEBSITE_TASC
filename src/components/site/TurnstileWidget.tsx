@@ -14,13 +14,15 @@ interface TurnstileWidgetProps {
   theme?: "dark" | "light" | "auto";
   action?: string;
   className?: string;
+  id?: string;
+  title?: string;
 }
 
 // Configured Cloudflare Turnstile site key
-const CONFIGURED_SITE_KEY = "0x4AAAAAAExngSt5D0NoAlM0";
+export const CONFIGURED_SITE_KEY = "0x4AAAAAAExngSt5D0NoAlM0";
 
 export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetProps>(
-  ({ onVerify, onExpire, onError, theme = "dark", action = "contact", className = "" }, ref) => {
+  ({ onVerify, onExpire, onError, theme = "dark", action = "contact", className = "", id, title = "CLOUDFLARE TURNSTILE" }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
     const [status, setStatus] = useState<"loading" | "ready" | "verified" | "expired" | "error">("loading");
@@ -206,7 +208,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
 
     return (
       <div
-        id="cloudflare-turnstile-container"
+        id={id || "cloudflare-turnstile-container"}
         className={`border border-tasc-border bg-tasc-bg/60 p-4 transition-all duration-300 ${
           status === "verified"
             ? "border-emerald-500/50 bg-emerald-950/10"
@@ -225,7 +227,7 @@ export const TurnstileWidget = forwardRef<TurnstileWidgetRef, TurnstileWidgetPro
               <Shield className="w-4 h-4 text-tasc-cyan shrink-0 animate-pulse" />
             )}
             <span className="font-[Orbitron] text-[10px] tracking-[0.2em] text-tasc-text/90">
-              CLOUDFLARE TURNSTILE
+              {title}
             </span>
           </div>
 

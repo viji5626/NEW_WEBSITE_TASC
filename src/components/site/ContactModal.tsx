@@ -187,6 +187,7 @@ export default function ContactModal() {
             <div className="md:col-span-2">
               <TurnstileWidget
                 ref={turnstileRef}
+                id="cf-turnstile-modal"
                 action="contact"
                 onVerify={(token) => setTurnstileToken(token)}
                 onExpire={() => setTurnstileToken("")}

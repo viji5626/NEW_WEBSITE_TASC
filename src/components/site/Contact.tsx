@@ -174,7 +174,8 @@ export default function Contact() {
                   <div className="md:col-span-2">
                     <TurnstileWidget
                       ref={turnstileRef}
-                      action="contact-page"
+                      id="cf-turnstile-contact"
+                      action="contact"
                       onVerify={(token) => setTurnstileToken(token)}
                       onExpire={() => setTurnstileToken("")}
                       onError={() => setTurnstileToken("")}
