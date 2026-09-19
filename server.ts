@@ -321,121 +321,8 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Canonical Cloudflare Turnstile Server Verification according to Cloudflare Spin specs
-  async function verifyTurnstileToken(
-    token?: unknown,
-    clientIp?: string,
-    expectedAction = "contact"
-  ): Promise<{ success: boolean; action?: string; hostname?: string; errorCodes?: string[] }> {
-    if (typeof token !== "string" || token.length === 0 || token.length > 2048) {
-      return { success: false, errorCodes: ["missing-input-response"] };
-    }
-
-    const secretKey =
-      process.env.TURNSTILE_SECRET ||
-      "1x0000000000000000000000000000000AA";
-
-    const expectedHostnames = new Set(
-      (process.env.TURNSTILE_HOSTNAMES ?? "")
-        .split(",")
-        .map((hostname) => hostname.trim())
-        .filter(Boolean)
-    );
-
-    try {
-      const formData = new URLSearchParams({
-        secret: secretKey,
-        response: token
-      });
-      if (clientIp) {
-        formData.append("remoteip", clientIp);
-      }
-
-      const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        signal: AbortSignal.timeout(10_000),
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error(`siteverify ${response.status}`);
-      }
-
-      const outcome = await response.json();
-      const success = Boolean(outcome.success);
-
-      if (!success) {
-        return {
-          success: false,
-          errorCodes: outcome["error-codes"] || ["validation_failed"]
-        };
-      }
-
-      // Check action if present on token outcome
-      if (outcome.action && outcome.action !== expectedAction) {
-        return {
-          success: false,
-          errorCodes: ["action_mismatch"]
-        };
-      }
-
-      // Check hostnames if configured
-      if (expectedHostnames.size > 0 && outcome.hostname && !expectedHostnames.has(outcome.hostname)) {
-        return {
-          success: false,
-          errorCodes: ["hostname_mismatch"]
-        };
-      }
-
-      return {
-        success: true,
-        action: outcome.action,
-        hostname: outcome.hostname,
-        errorCodes: []
-      };
-    } catch (err) {
-      console.warn("Cloudflare Turnstile verification fallback:", err);
-      // In development or when Cloudflare test keys are active without secret, allow safe fallback
-      const isTestSecret = secretKey.startsWith("1x") || secretKey.startsWith("2x") || secretKey.startsWith("3x");
-      return { success: isTestSecret, errorCodes: ["network_or_service_error"] };
-    }
-  }
-
-  // Cloudflare Turnstile Verification API Route
-  app.post("/api/turnstile/verify", async (req, res) => {
-    try {
-      const token = req.body["cf-turnstile-response"] || req.body.token || req.body.turnstileToken;
-      const clientIp = (req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.socket.remoteAddress) as string | undefined;
-      const result = await verifyTurnstileToken(token, clientIp, req.body.action || "contact");
-
-      if (result.success) {
-        res.status(200).json({ success: true, message: "Turnstile validation passed" });
-      } else {
-        res.status(400).json({ success: false, message: "Turnstile challenge failed", errors: result.errorCodes });
-      }
-    } catch (error) {
-      console.error("Turnstile endpoint error:", error);
-      res.status(500).json({ success: false, message: "Server error during verification" });
-    }
-  });
-
   app.post("/api/contact/email", async (req, res) => {
-    // Contact submission handler gated on Turnstile validation
     try {
-      const token = req.body["cf-turnstile-response"] || req.body.turnstileToken;
-      const clientIp = (req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.socket.remoteAddress) as string | undefined;
-
-      // Gate: verify Turnstile token
-      const hasSecret = Boolean(process.env.TURNSTILE_SECRET);
-      if (token || hasSecret) {
-        const verification = await verifyTurnstileToken(token, clientIp, "contact");
-        if (!verification.success && hasSecret) {
-          res.status(403).json({ success: false, message: "Turnstile bot verification failed", errors: verification.errorCodes });
-          return;
-        }
-      }
-
       const packetId = Math.floor(100000 + Math.random() * 900000).toString();
       const { name, email, organization, project_scope, subject, from_name, replyto } = req.body;
       
@@ -450,10 +337,6 @@ async function startServer() {
         "Project Scope": project_scope,
         "Packet ID": packetId
       };
-
-      if (token) {
-        payload["cf-turnstile-response"] = token;
-      }
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
