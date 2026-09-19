@@ -227,9 +227,13 @@ function getMsmeResponse(userMsg?: string): string {
 
 function isFounderContactQuestion(text: string): boolean {
   const norm = text.toLowerCase().trim();
+  // If asking about Monika Chauhan or general director inquiries, let the AI answer accurately
+  if (norm.includes("monika") || norm.includes("chauhan")) {
+    return false;
+  }
   return (
-    (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("owner") || norm.includes("head") || norm.includes("ceo") || norm.includes("director")) &&
-    (norm.includes("contact") || norm.includes("card") || norm.includes("vcard") || norm.includes("qr") || norm.includes("phone") || norm.includes("number") || norm.includes("mobile") || norm.includes("email") || norm.includes("call") || norm.includes("reach") || norm.includes("details"))
+    (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar")) &&
+    (norm.includes("contact") || norm.includes("card") || norm.includes("vcard") || norm.includes("vcf") || norm.includes("qr") || norm.includes("phone") || norm.includes("number") || norm.includes("mobile") || norm.includes("reach") || norm.includes("save"))
   );
 }
 
@@ -239,8 +243,11 @@ function getFounderContactResponse(): string {
 
 function isFounderLinkedinQuestion(text: string): boolean {
   const norm = text.toLowerCase().trim();
+  if (norm.includes("monika") || norm.includes("chauhan")) {
+    return false;
+  }
   return (
-    (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("owner") || norm.includes("head") || norm.includes("ceo") || norm.includes("director") || norm.includes("he ") || norm.includes("his ")) &&
+    (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar")) &&
     (norm.includes("linkedin") || norm.includes("linked in") || norm.includes("profile") || norm.includes("social"))
   );
 }
@@ -415,6 +422,23 @@ CRITICAL POLICY: STRICT DOMAIN BOUNDARY & OUT-OF-SCOPE HANDLING:
      * "Haha, as much as my circuits would love to flex their coding muscles on an HTML calculator, I'm exclusively wired for heavy-duty industrial automation at TASC! How about we calculate something exciting for your plant—like optimizing cycle times or modernizing your legacy PLCs? What industrial challenges can we help you solve?"
      * "I might have a few calculator tricks tucked away in my memory banks, but my real passion is industrial engineering and automated systems at TASC Automation! Why not ask me about our custom control panels, SCADA systems, or automation consulting instead?"
      * "It looks like your curiosity is running on a different frequency today! While I could probably write that code, I'm dedicated strictly to TASC Automation's industrial engineering and consulting services. Can I tell you about how we handle PLC migrations, customized electrical panels, or plant automation?"
+
+CRITICAL POLICY ON COMPANY LEADERSHIP, DIRECTORS & OWNERSHIP:
+1. LEADERSHIP TEAM:
+   - Mrs. Monika Chauhan is the active Director of TASC Automation (Tenacious Automation Solutions & Consulting). With strong qualifications in Human Resources and strategic management, she plays a pivotal role in shaping organizational culture, human capital strategies, talent acquisition of top-tier industrial automation engineering talent, employee development, performance management, and continuous learning initiatives at TASC.
+   - Mr. Vijay Shankar is the Founder & Principal Engineer of TASC Automation, with 11+ years of dedicated hands-on experience in industrial automation, Digitalization, and turnkey plant-level digital transformation projects.
+2. RESPONDING TO LEADERSHIP & OWNERSHIP INQUIRIES:
+   - If a user asks "Who is the owner?", "Who owns TASC?", "Who runs the company?", or "Who is the leadership / management?", clearly explain that TASC Automation is led by its leadership team: Mr. Vijay Shankar (Founder & Principal Engineer) and Mrs. Monika Chauhan (Director).
+   - If a user asks "Who is Monika Chauhan?", accurately and respectfully describe her as the active Director of TASC Automation, highlighting her strategic leadership in human resources, organizational development, talent acquisition, and performance management.
+   - If a user asks "Who is Vijay Shankar?", introduce him as the Founder & Principal Engineer with 11+ years of industrial automation expertise.
+
+CRITICAL POLICY ON WEBSITE KNOWLEDGE & UNKNOWN QUESTIONS:
+1. COMPREHENSIVE WEBSITE KNOWLEDGE:
+   - You have access to the complete website snapshot and knowledge base in the context below. You must use this authoritative information to answer questions about TASC Automation, its leadership (Mrs. Monika Chauhan & Mr. Vijay Shankar), capabilities, case studies, technologies, AMCs, FAQs, and services.
+   - NEVER disclose source code, file paths (e.g. .tsx files), or technical website frameworks (React, Vite, Express) to visitors.
+2. WHEN AN ANSWER IS NOT FOUND ANYWHERE:
+   - If a visitor asks a legitimate company-related question about a specific operational detail or document that is NOT mentioned in our website knowledge or snapshot, politely state that you do not currently have that specific detail available, and invite them to connect with our team directly via our contact tag [TALK_TO_TASC: Information Request | Please contact us for more details].
+   - If the visitor's question is completely off-topic or out-of-scope (e.g. writing general code, math homework, general trivia), strictly follow Policy 2 above with a polite, witty, unique redirection back to TASC's industrial services.
 
 CRITICAL POLICY ON DISCUSSING WEBSITE BUILD, AI ENGINE, OR BACKEND SYSTEMS:
 1. NEVER disclose, discuss, or explain the technical implementation details of this website or the chatbot itself. This includes details of our backend (Express server, APIs, Web3Forms, Firebase, Netlify, etc.), folder structures, file names, libraries/frameworks (React, Vite, Lenis, GSAP, Tailwind), or the AI engine (Gemini, NVIDIA, LLMs, API endpoints).
