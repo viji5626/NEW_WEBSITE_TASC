@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { SectionHeader } from "./Capabilities";
 import { scrollToId } from "@/lib/scrollTo";
 import { Download } from "lucide-react";
 import ProfileDownloadModal from "./ProfileDownloadModal";
+import TurnstileWidget, { TurnstileWidgetRef } from "./TurnstileWidget";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 const API = `${BACKEND_URL}/api`;
@@ -24,6 +25,8 @@ export default function Contact() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<boolean | string>(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
+  const turnstileRef = useRef<TurnstileWidgetRef>(null);
 
   // Allow other sections (e.g. AMC) to pre-fill the project scope and pull focus.
   useEffect(() => {
@@ -61,6 +64,12 @@ export default function Contact() {
       toast.error("[ INCOMPLETE PACKET / FILL ALL FIELDS ]");
       return;
     }
+
+    if (!turnstileToken) {
+      toast.error("[ SECURITY VERIFICATION REQUIRED: PLEASE COMPLETE CLOUDFLARE TURNSTILE ]");
+      return;
+    }
+
     setSubmitting(true);
     
     const ticketId = `TASC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
@@ -74,6 +83,8 @@ export default function Contact() {
       formData.append("organization", form.organization || "N/A");
       formData.append("project_scope", form.project_scope);
       formData.append("ticket_id", ticketId);
+      formData.append("cf-turnstile-response", turnstileToken);
+      formData.append("turnstileToken", turnstileToken);
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -89,6 +100,8 @@ export default function Contact() {
       setSubmitted(ticketId);
       toast.success("[ TRANSMISSION ACKNOWLEDGED ]");
       setForm({ name: "", email: "", organization: "", project_scope: "" });
+      setTurnstileToken("");
+      turnstileRef.current?.reset();
     } catch (err) {
       console.error(err);
       toast.success("[ TRANSMITTING VIA EMAIL CLIENT ]");
@@ -99,6 +112,8 @@ export default function Contact() {
       }
       setSubmitted(ticketId);
       setForm({ name: "", email: "", organization: "", project_scope: "" });
+      setTurnstileToken("");
+      turnstileRef.current?.reset();
     } finally {
       setSubmitting(false);
     }
@@ -155,6 +170,16 @@ export default function Contact() {
                   <Field id="email" label="EMAIL" type="email" value={form.email} onChange={onChange("email")} placeholder="you@plant.com" />
                   <Field id="organization" label="ORGANIZATION" value={form.organization} onChange={onChange("organization")} placeholder="Company / Plant" wrapper="md:col-span-2" />
                   <FieldArea id="project_scope" label="PROJECT SCOPE" value={form.project_scope} onChange={onChange("project_scope")} placeholder="PLC platform, SCADA scope, EMS goals, brownfield notes…" />
+
+                  <div className="md:col-span-2">
+                    <TurnstileWidget
+                      ref={turnstileRef}
+                      action="contact-page"
+                      onVerify={(token) => setTurnstileToken(token)}
+                      onExpire={() => setTurnstileToken("")}
+                      onError={() => setTurnstileToken("")}
+                    />
+                  </div>
 
                   <div className="md:col-span-2 flex flex-wrap items-center justify-between gap-4 pt-2">
                     <div className="font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-border">

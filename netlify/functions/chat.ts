@@ -205,6 +205,50 @@ function getWebsiteResponse(userMsg?: string): string {
   return base;
 }
 
+function isMsmeQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("msme") ||
+    norm.includes("udyam") ||
+    norm.includes("micro small") ||
+    norm.includes("micro, small") ||
+    norm.includes("medium enterprise") ||
+    (norm.includes("registration") && norm.includes("certificate"))
+  );
+}
+
+function getMsmeResponse(userMsg?: string): string {
+  const base = "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). For any specific copy or verification, please contact our team.";
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: MSME Verification | Please share the MSME Udyam Certificate copy or registration details]";
+  }
+  return base;
+}
+
+function isFounderContactQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("owner") || norm.includes("head") || norm.includes("ceo") || norm.includes("director")) &&
+    (norm.includes("contact") || norm.includes("card") || norm.includes("vcard") || norm.includes("qr") || norm.includes("phone") || norm.includes("number") || norm.includes("mobile") || norm.includes("email") || norm.includes("call") || norm.includes("reach") || norm.includes("details"))
+  );
+}
+
+function getFounderContactResponse(): string {
+  return "You can download Mr. Vijay Shankar's direct contact card (vCard) or scan his QR code below to save his details directly to your mobile contacts:\n\n[FOUNDER_CONTACT]";
+}
+
+function isFounderLinkedinQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    (norm.includes("founder") || norm.includes("vijay") || norm.includes("shankar") || norm.includes("owner") || norm.includes("head") || norm.includes("ceo") || norm.includes("director") || norm.includes("he ") || norm.includes("his ")) &&
+    (norm.includes("linkedin") || norm.includes("linked in") || norm.includes("profile") || norm.includes("social"))
+  );
+}
+
+function getFounderLinkedinResponse(): string {
+  return "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn:\n\n[FOUNDER_LINKEDIN]";
+}
+
 // Timeout Helper
 const withTimeout = async <T>(promise: Promise<T>, ms: number, errorMessage: string): Promise<T> => {
   let timeoutId: any;
@@ -305,6 +349,13 @@ export default async (req: Request, context: Context) => {
       });
     }
 
+    // Intercept any questions about MSME Udyam Certificate
+    if (isMsmeQuestion(userMsg)) {
+      return new Response(getMsmeResponse(userMsg), {
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
+
     // Intercept any questions about company age or establishment date
     if (isEstdQuestion(userMsg)) {
       return new Response(getImprovisedEstdResponse(userMsg), {
@@ -312,12 +363,34 @@ export default async (req: Request, context: Context) => {
       });
     }
 
-    const primaryKey = process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "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";
-    const standbyKey = process.env.NVIDIA_STANDBY_API_KEY || "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";
+    // Intercept any questions about contacting the founder
+    if (isFounderContactQuestion(userMsg)) {
+      return new Response(getFounderContactResponse(), {
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
+
+    // Intercept any questions about the founder's linkedin
+    if (isFounderLinkedinQuestion(userMsg)) {
+      return new Response(getFounderLinkedinResponse(), {
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
+
+    const primaryKey = (process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "").trim();
+    const standbyKey = (process.env.NVIDIA_STANDBY_API_KEY || process.env.NVIDIA_SECONDARY_API_KEY || primaryKey || "").trim();
+
+    if (!primaryKey && !standbyKey) {
+      console.error("Netlify Function: No NVIDIA API keys configured in environment.");
+      return new Response("AI Assistant is currently offline as API keys are not configured in the environment settings.", {
+        status: 503,
+        headers: { "Content-Type": "text/plain" }
+      });
+    }
 
     let contextText = knowledgeData.context || "";
-    if (contextText.length > 200000) {
-      contextText = contextText.substring(0, 200000) + "... (truncated)";
+    if (contextText.length > 80000) {
+      contextText = contextText.substring(0, 80000) + "... (truncated)";
     }
 
     const systemPrompt = `You are the TASC AI Assistant for TASC Automation's website. You help visitors answer questions based strictly on the provided website content context.
@@ -372,71 +445,102 @@ ${contextText}`;
       return await withTimeout(responsePromise, timeoutMs, "Connection Timeout");
     };
 
-    let response: Response | null = null;
-    let usedStandby = false;
+    const primaryModel = process.env.NVIDIA_PRIMARY_MODEL || "meta/llama-3.2-11b-vision-instruct";
+    const standbyModel = process.env.NVIDIA_STANDBY_MODEL || "google/diffusiongemma-26b-a4b-it";
+    const tertiaryModel = process.env.NVIDIA_TERTIARY_MODEL || "nvidia/nemotron-3-super-120b-a12b";
 
-    // Try primary
-    try {
-      console.log("Netlify Function: Trying primary model nvidia/nemotron-3-nano-30b-a3b...");
-      const primaryPayload = {
-        model: "nvidia/nemotron-3-nano-30b-a3b",
-        messages: chatMessages,
-        temperature: 1.0,
-        top_p: 1.0,
-        max_tokens: 4096,
-        reasoning_budget: 4096,
-        stream: true
-      };
-      response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", primaryPayload, primaryKey, 8000);
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-    } catch (primaryErr: any) {
-      console.warn(`Netlify Function: Primary API failed or delayed (${primaryErr.message}). Switching to standby...`);
-      usedStandby = true;
-    }
-
-    // Validate streaming of first token from primary
-    let primaryIterator: any = null;
-    let firstResult: any = null;
-    if (response && !usedStandby) {
-      try {
-        primaryIterator = getStreamIterator(response);
-        firstResult = await withTimeout(primaryIterator.next(), 6000, "First token timeout");
-        console.log("Netlify Function: Primary API streaming started.");
-      } catch (streamErr: any) {
-        console.warn(`Netlify Function: Primary stream failed or delayed (${streamErr.message}). Falling back to standby...`);
-        usedStandby = true;
-      }
-    }
-
-    // Try standby if primary failed/delayed
-    if (usedStandby) {
-      try {
-        console.log("Netlify Function: Trying standby model google/diffusiongemma-26b-a4b-it...");
-        const standbyPayload = {
-          model: "google/diffusiongemma-26b-a4b-it",
+    // Tier configurations
+    const tiers = [
+      {
+        name: "Primary Tier",
+        model: primaryModel,
+        key: primaryKey,
+        payload: {
+          model: primaryModel,
           messages: chatMessages,
+          temperature: 1.0,
+          top_p: 1.0,
+          frequency_penalty: 0,
+          presence_penalty: 0,
+          max_tokens: 1024,
+          stream: true
+        },
+        timeout: 10000,
+        tokenTimeout: 8000
+      },
+      {
+        name: "Standby Tier",
+        model: standbyModel,
+        key: standbyKey,
+        payload: {
+          model: standbyModel,
+          messages: chatMessages,
+          chat_template_kwargs: {
+            enable_thinking: true
+          },
           max_tokens: 4096,
           temperature: 1.0,
           top_p: 0.95,
-          stream: true,
-          chat_template_kwargs: { enable_thinking: true }
-        };
-        response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", standbyPayload, standbyKey, 10000);
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        primaryIterator = getStreamIterator(response);
-        firstResult = await withTimeout(primaryIterator.next(), 8000, "First token timeout");
-        console.log("Netlify Function: Standby API streaming started.");
-      } catch (standbyErr: any) {
-        console.error("Netlify Function: Both primary and standby APIs failed:", standbyErr);
-        const fallbackText = "Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]";
-        return new Response(fallbackText, {
-          headers: { "Content-Type": "text/plain" }
-        });
+          stream: true
+        },
+        timeout: 12000,
+        tokenTimeout: 9000
+      },
+      {
+        name: "Tertiary Tier",
+        model: tertiaryModel,
+        key: standbyKey,
+        payload: {
+          model: tertiaryModel,
+          messages: chatMessages,
+          temperature: 0.5,
+          top_p: 1.0,
+          max_tokens: 1024,
+          stream: true
+        },
+        timeout: 12000,
+        tokenTimeout: 9000
       }
+    ];
+
+    let primaryIterator: any = null;
+    let firstResult: any = null;
+    let streamSuccess = false;
+
+    for (const tier of tiers) {
+      if (!tier.key) {
+        console.warn(`Netlify Function: Skipping ${tier.name} (${tier.model}) - no API key configured.`);
+        continue;
+      }
+      try {
+        console.log(`Netlify Function: Attempting ${tier.name} with model: ${tier.model}...`);
+        const resp = await fetchWithTimeout(
+          "https://integrate.api.nvidia.com/v1/chat/completions",
+          tier.payload,
+          tier.key,
+          tier.timeout
+        );
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+        const iterator = getStreamIterator(resp);
+        const result = await withTimeout(iterator.next(), tier.tokenTimeout, "First token timeout");
+        primaryIterator = iterator;
+        firstResult = result;
+        streamSuccess = true;
+        console.log(`Netlify Function: ${tier.name} (${tier.model}) streaming connected successfully.`);
+        break;
+      } catch (err: any) {
+        console.warn(`Netlify Function: ${tier.name} (${tier.model}) failed: ${err.message}. Cascading to next tier...`);
+      }
+    }
+
+    if (!streamSuccess || !primaryIterator) {
+      console.error("Netlify Function: All 3 NVIDIA tiers failed.");
+      const fallbackText = "Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]";
+      return new Response(fallbackText, {
+        headers: { "Content-Type": "text/plain" }
+      });
     }
 
     // Create ReadableStream for response

@@ -318,13 +318,125 @@ async function startServer() {
 
   app.use(express.json());
 
-  app.post("/api/contact/email", async (req, res) => {
-    // ... existing Web3Forms contact logic ...
+  // Canonical Cloudflare Turnstile Server Verification according to Cloudflare Spin specs
+  async function verifyTurnstileToken(
+    token?: unknown,
+    clientIp?: string,
+    expectedAction = "contact"
+  ): Promise<{ success: boolean; action?: string; hostname?: string; errorCodes?: string[] }> {
+    if (typeof token !== "string" || token.length === 0 || token.length > 2048) {
+      return { success: false, errorCodes: ["missing-input-response"] };
+    }
+
+    const secretKey =
+      process.env.TURNSTILE_SECRET ||
+      "1x0000000000000000000000000000000AA";
+
+    const expectedHostnames = new Set(
+      (process.env.TURNSTILE_HOSTNAMES ?? "")
+        .split(",")
+        .map((hostname) => hostname.trim())
+        .filter(Boolean)
+    );
+
     try {
-      const { name, email, organization, project_scope, subject, from_name, replyto } = req.body;
+      const formData = new URLSearchParams({
+        secret: secretKey,
+        response: token
+      });
+      if (clientIp) {
+        formData.append("remoteip", clientIp);
+      }
+
+      const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        signal: AbortSignal.timeout(10_000),
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`siteverify ${response.status}`);
+      }
+
+      const outcome = await response.json();
+      const success = Boolean(outcome.success);
+
+      if (!success) {
+        return {
+          success: false,
+          errorCodes: outcome["error-codes"] || ["validation_failed"]
+        };
+      }
+
+      // Check action if present on token outcome
+      if (outcome.action && outcome.action !== expectedAction) {
+        return {
+          success: false,
+          errorCodes: ["action_mismatch"]
+        };
+      }
+
+      // Check hostnames if configured
+      if (expectedHostnames.size > 0 && outcome.hostname && !expectedHostnames.has(outcome.hostname)) {
+        return {
+          success: false,
+          errorCodes: ["hostname_mismatch"]
+        };
+      }
+
+      return {
+        success: true,
+        action: outcome.action,
+        hostname: outcome.hostname,
+        errorCodes: []
+      };
+    } catch (err) {
+      console.warn("Cloudflare Turnstile verification fallback:", err);
+      // In development or when Cloudflare test keys are active without secret, allow safe fallback
+      const isTestSecret = secretKey.startsWith("1x") || secretKey.startsWith("2x") || secretKey.startsWith("3x");
+      return { success: isTestSecret, errorCodes: ["network_or_service_error"] };
+    }
+  }
+
+  // Cloudflare Turnstile Verification API Route
+  app.post("/api/turnstile/verify", async (req, res) => {
+    try {
+      const token = req.body["cf-turnstile-response"] || req.body.token || req.body.turnstileToken;
+      const clientIp = (req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.socket.remoteAddress) as string | undefined;
+      const result = await verifyTurnstileToken(token, clientIp, req.body.action || "contact");
+
+      if (result.success) {
+        res.status(200).json({ success: true, message: "Turnstile validation passed" });
+      } else {
+        res.status(400).json({ success: false, message: "Turnstile challenge failed", errors: result.errorCodes });
+      }
+    } catch (error) {
+      console.error("Turnstile endpoint error:", error);
+      res.status(500).json({ success: false, message: "Server error during verification" });
+    }
+  });
+
+  app.post("/api/contact/email", async (req, res) => {
+    // Contact submission handler gated on Turnstile validation
+    try {
+      const token = req.body["cf-turnstile-response"] || req.body.turnstileToken;
+      const clientIp = (req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"] || req.socket.remoteAddress) as string | undefined;
+
+      // Gate: verify Turnstile token
+      const hasSecret = Boolean(process.env.TURNSTILE_SECRET);
+      if (token || hasSecret) {
+        const verification = await verifyTurnstileToken(token, clientIp, "contact");
+        if (!verification.success && hasSecret) {
+          res.status(403).json({ success: false, message: "Turnstile bot verification failed", errors: verification.errorCodes });
+          return;
+        }
+      }
+
       const packetId = Math.floor(100000 + Math.random() * 900000).toString();
+      const { name, email, organization, project_scope, subject, from_name, replyto } = req.body;
       
-      const payload = {
+      const payload: Record<string, any> = {
         access_key: "cc7c2810-6da6-4d9b-b2cc-f3ebc28759d0",
         name,
         email,
@@ -336,6 +448,10 @@ async function startServer() {
         "Packet ID": packetId
       };
 
+      if (token) {
+        payload["cf-turnstile-response"] = token;
+      }
+
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
@@ -345,15 +461,21 @@ async function startServer() {
         body: JSON.stringify(payload)
       });
       
-      const data = await response.json();
+      let data: any = {};
+      const rawText = await response.text();
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = { success: response.ok, message: response.ok ? "Transmission delivered" : "Upstream gateway response" };
+      }
       
-      if (response.ok && data.success) {
-         res.status(200).json({ success: true, packetId, message: "Email sent successfully" });
+      if (response.ok && (data.success !== false)) {
+         res.status(200).json({ success: true, packetId, message: "Transmission acknowledged" });
       } else {
-         res.status(500).json({ success: false, message: data.message || "Failed to send email" });
+         res.status(response.ok ? 200 : 502).json({ success: false, message: data.message || "Failed to transmit packet" });
       }
     } catch (error) {
-       console.error("Web3Forms proxy error:", error);
+       console.error("Transmission error:", error);
        res.status(500).json({ success: false, message: "Internal server error" });
     }
   });
@@ -449,9 +571,9 @@ async function startServer() {
       try {
         const knowledgeData = JSON.parse(fs.readFileSync(path.join(process.cwd(), "website-knowledge.json"), "utf-8"));
         contextText = knowledgeData.context;
-        // Strip out base64 images that might eat tokens
-        if (contextText.length > 200000) {
-          contextText = contextText.substring(0, 200000) + "... (truncated)";
+        // Keep context within snappy prefill token boundaries
+        if (contextText.length > 80000) {
+          contextText = contextText.substring(0, 80000) + "... (truncated)";
         }
       } catch (err) {
         console.error("Context reading error:", err);
@@ -499,11 +621,18 @@ ${contextText}`;
       const sysMessage = { role: "system", content: systemPrompt };
       const chatMessages = [sysMessage, ...messages];
 
-      const primaryKey = process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "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";
-      const standbyKey = process.env.NVIDIA_STANDBY_API_KEY || "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";
+      const primaryKey = (process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "").trim();
+      const standbyKey = (process.env.NVIDIA_STANDBY_API_KEY || process.env.NVIDIA_SECONDARY_API_KEY || primaryKey || "").trim();
 
       res.setHeader("Content-Type", "text/plain");
       res.setHeader("Transfer-Encoding", "chunked");
+
+      if (!primaryKey && !standbyKey) {
+        console.error("Express Server: No NVIDIA API keys configured in environment.");
+        res.status(503).write("AI Assistant is currently offline as API keys are not configured in the environment settings.");
+        res.end();
+        return;
+      }
 
       const withTimeout = async <T>(promise: Promise<T>, ms: number, errorMessage: string): Promise<T> => {
         let timeoutId: any;
@@ -572,70 +701,101 @@ ${contextText}`;
         return await withTimeout(responsePromise, timeoutMs, "Connection Timeout");
       };
 
-      let response: Response | null = null;
-      let usedStandby = false;
+      const primaryModel = process.env.NVIDIA_PRIMARY_MODEL || "meta/llama-3.2-11b-vision-instruct";
+      const standbyModel = process.env.NVIDIA_STANDBY_MODEL || "google/diffusiongemma-26b-a4b-it";
+      const tertiaryModel = process.env.NVIDIA_TERTIARY_MODEL || "nvidia/nemotron-3-super-120b-a12b";
 
-      // Try primary
-      try {
-        console.log("Express Server: Trying primary model nvidia/nemotron-3-nano-30b-a3b...");
-        const primaryPayload = {
-          model: "nvidia/nemotron-3-nano-30b-a3b",
-          messages: chatMessages,
-          temperature: 1.0,
-          top_p: 1.0,
-          max_tokens: 4096,
-          reasoning_budget: 4096,
-          stream: true
-        };
-        response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", primaryPayload, primaryKey, 8000);
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-      } catch (primaryErr: any) {
-        console.warn(`Express Server: Primary API failed or delayed (${primaryErr.message}). Switching to standby...`);
-        usedStandby = true;
-      }
-
-      // Validate streaming of first token from primary
-      let primaryIterator: any = null;
-      let firstResult: any = null;
-      if (response && !usedStandby) {
-        try {
-          primaryIterator = getStreamIterator(response);
-          firstResult = await withTimeout(primaryIterator.next(), 6000, "First token timeout");
-          console.log("Express Server: Primary API streaming started.");
-        } catch (streamErr: any) {
-          console.warn(`Express Server: Primary stream failed or delayed (${streamErr.message}). Falling back to standby...`);
-          usedStandby = true;
-        }
-      }
-
-      // Try standby if primary failed/delayed
-      if (usedStandby) {
-        try {
-          console.log("Express Server: Trying standby model google/diffusiongemma-26b-a4b-it...");
-          const standbyPayload = {
-            model: "google/diffusiongemma-26b-a4b-it",
+      // Tier configurations
+      const tiers = [
+        {
+          name: "Primary Tier",
+          model: primaryModel,
+          key: primaryKey,
+          payload: {
+            model: primaryModel,
             messages: chatMessages,
+            temperature: 1.0,
+            top_p: 1.0,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            max_tokens: 1024,
+            stream: true
+          },
+          timeout: 10000,
+          tokenTimeout: 8000
+        },
+        {
+          name: "Standby Tier",
+          model: standbyModel,
+          key: standbyKey,
+          payload: {
+            model: standbyModel,
+            messages: chatMessages,
+            chat_template_kwargs: {
+              enable_thinking: true
+            },
             max_tokens: 4096,
             temperature: 1.0,
             top_p: 0.95,
-            stream: true,
-            chat_template_kwargs: { enable_thinking: true }
-          };
-          response = await fetchWithTimeout("https://integrate.api.nvidia.com/v1/chat/completions", standbyPayload, standbyKey, 10000);
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-          primaryIterator = getStreamIterator(response);
-          firstResult = await withTimeout(primaryIterator.next(), 8000, "First token timeout");
-          console.log("Express Server: Standby API streaming started.");
-        } catch (standbyErr: any) {
-          console.error("Express Server: Both primary and standby APIs failed:", standbyErr);
-          res.write("Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]");
-          res.end();
-          return;
+            stream: true
+          },
+          timeout: 12000,
+          tokenTimeout: 9000
+        },
+        {
+          name: "Tertiary Tier",
+          model: tertiaryModel,
+          key: standbyKey,
+          payload: {
+            model: tertiaryModel,
+            messages: chatMessages,
+            temperature: 0.5,
+            top_p: 1.0,
+            max_tokens: 1024,
+            stream: true
+          },
+          timeout: 12000,
+          tokenTimeout: 9000
         }
+      ];
+
+      let primaryIterator: any = null;
+      let firstResult: any = null;
+      let streamSuccess = false;
+
+      for (const tier of tiers) {
+        if (!tier.key) {
+          console.warn(`Express Server: Skipping ${tier.name} (${tier.model}) - no API key configured.`);
+          continue;
+        }
+        try {
+          console.log(`Express Server: Attempting ${tier.name} with model: ${tier.model}...`);
+          const resp = await fetchWithTimeout(
+            "https://integrate.api.nvidia.com/v1/chat/completions",
+            tier.payload,
+            tier.key,
+            tier.timeout
+          );
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}`);
+          }
+          const iterator = getStreamIterator(resp);
+          const result = await withTimeout(iterator.next(), tier.tokenTimeout, "First token timeout");
+          primaryIterator = iterator;
+          firstResult = result;
+          streamSuccess = true;
+          console.log(`Express Server: ${tier.name} (${tier.model}) streaming connected successfully.`);
+          break;
+        } catch (err: any) {
+          console.warn(`Express Server: ${tier.name} (${tier.model}) failed: ${err.message}. Cascading to next tier...`);
+        }
+      }
+
+      if (!streamSuccess || !primaryIterator) {
+        console.error("Express Server: All 3 NVIDIA tiers failed.");
+        res.write("Our AI system is temporarily experiencing heavy load. Please try sending your message again, or contact our team if the issue persists.\n\n[RETRY_SENDING_MESSAGE]");
+        res.end();
+        return;
       }
 
       try {

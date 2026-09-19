@@ -14,3 +14,8 @@
   from = "/api/contact/email"
   to = "/.netlify/functions/email"
   status = 200
+
+[[redirects]]
+  from = "/api/turnstile/verify"
+  to = "/.netlify/functions/turnstile"
+  status = 200
