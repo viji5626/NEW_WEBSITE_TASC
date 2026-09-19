@@ -379,8 +379,9 @@ export default async (req: Request, context: Context) => {
 
     const primaryKey = (process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "").trim();
     const standbyKey = (process.env.NVIDIA_STANDBY_API_KEY || process.env.NVIDIA_SECONDARY_API_KEY || primaryKey || "").trim();
+    const tertiaryKey = (process.env.NVIDIA_TERTIARY_API_KEY || standbyKey || primaryKey || "").trim();
 
-    if (!primaryKey && !standbyKey) {
+    if (!primaryKey && !standbyKey && !tertiaryKey) {
       console.error("Netlify Function: No NVIDIA API keys configured in environment.");
       return new Response("AI Assistant is currently offline as API keys are not configured in the environment settings.", {
         status: 503,
@@ -489,7 +490,7 @@ ${contextText}`;
       {
         name: "Tertiary Tier",
         model: tertiaryModel,
-        key: standbyKey,
+        key: tertiaryKey,
         payload: {
           model: tertiaryModel,
           messages: chatMessages,

@@ -623,11 +623,12 @@ ${contextText}`;
 
       const primaryKey = (process.env.NVIDIA_PRIMARY_API_KEY || process.env.NVIDIA_API_KEY || "").trim();
       const standbyKey = (process.env.NVIDIA_STANDBY_API_KEY || process.env.NVIDIA_SECONDARY_API_KEY || primaryKey || "").trim();
+      const tertiaryKey = (process.env.NVIDIA_TERTIARY_API_KEY || standbyKey || primaryKey || "").trim();
 
       res.setHeader("Content-Type", "text/plain");
       res.setHeader("Transfer-Encoding", "chunked");
 
-      if (!primaryKey && !standbyKey) {
+      if (!primaryKey && !standbyKey && !tertiaryKey) {
         console.error("Express Server: No NVIDIA API keys configured in environment.");
         res.status(503).write("AI Assistant is currently offline as API keys are not configured in the environment settings.");
         res.end();
@@ -745,7 +746,7 @@ ${contextText}`;
         {
           name: "Tertiary Tier",
           model: tertiaryModel,
-          key: standbyKey,
+          key: tertiaryKey,
           payload: {
             model: tertiaryModel,
             messages: chatMessages,
