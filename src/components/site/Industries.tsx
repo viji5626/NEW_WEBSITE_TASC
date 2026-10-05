@@ -86,9 +86,9 @@ const VERTICALS = [
   {
     id: "panel",
     code: "//04.10",
-    name: "Panel Engineering",
-    body: "Custom MCC, PCC and PLC panel manufacturing along with full VFD lineup solutions. Wiring discipline, thermal management and serviceability built in.",
-    items: ["MCC / PCC / PLC panels", "VFD lineup integration", "Thermal & cable management", "Factory acceptance testing"],
+    name: "Panel Manufacturing",
+    body: "Custom power and control panel manufacturer equipped with certified 7-tank chemical process, laser welding, and 6+1 axis bending CNC for heavy-duty MCC, PCC, and PLC systems.",
+    items: ["7-tank process & laser welding", "6+1 axis CNC bending", "MCC, PCC & PLC panels", "VFD lineups & FAT testing"],
     photo: "/brand/vert-panel.jpg",
   },
   {

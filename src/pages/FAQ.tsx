@@ -18,7 +18,7 @@ const FAQS = [
   },
   {
     question: "Do you supply custom MCC, PCC, VFD, and PLC panels?",
-    answer: "Yes, we provide turnkey panel engineering. Our team handles complete end-to-end manufacturing—from thermal calculations, component sizing, and CAD wiring schematics to assembly, rigorous Factory Acceptance Testing (FAT), and dispatch."
+    answer: "Yes, we are a full-service power and control panel manufacturer equipped with a 7-tank chemical pre-treatment process, precision laser welding, and 6+1 axis bending CNC. Our team handles complete end-to-end manufacturing—from thermal calculations, component sizing, and CAD wiring schematics to precision fabrication, assembly, rigorous Factory Acceptance Testing (FAT), and dispatch."
   },
   {
     question: "How do you integrate Industrial AI into existing brownfield plants?",

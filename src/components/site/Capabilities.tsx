@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Cpu, Activity, Network, Zap, Cloud, Layers, Package, Power, Server } from "lucide-react";
+import { Cpu, Activity, Network, Zap, Cloud, Layers, Package, Power, Server, Factory, GitMerge, ShieldCheck } from "lucide-react";
 import { TextReveal } from "@/components/ui/TextReveal";
 
 const CARDS = [
@@ -19,50 +19,73 @@ const CARDS = [
     body: "GENESIS64, WinCC Unified and PCS 7 dashboards with alarm handling, historian-linked screens and operator-grade UX.",
   },
   {
-    id: "net",
+    id: "panel-mfg",
     code: "//02.03",
+    icon: Factory,
+    title: "Power & Control Panel Manufacturing",
+    highlight: "IN-HOUSE MFG",
+    tags: ["7-Tank Process", "Laser Welding", "6+1 Axis CNC"],
+    body: "Leading power and control panel manufacturer equipped with 7 tank process chemical pre-treatment, precision laser welding, and 6+1 axis bending CNC for heavy-duty PCC, MCC, VFD and PLC automation enclosures.",
+  },
+  {
+    id: "net",
+    code: "//02.04",
     icon: Network,
     title: "OT Networking & Security",
     body: "Profinet, EtherNet/IP, Modbus, IEC 61850, CC-Link IE. VLANs, DMZs, secure remote access and protocol diagnostics.",
   },
   {
     id: "ems",
-    code: "//02.04",
+    code: "//02.05",
     icon: Zap,
     title: "Utility Management System",
     body: "Power, water, steam, compressed air and ZLD utilities — monitored, sub-metered and continuously optimized.",
   },
   {
     id: "iiot",
-    code: "//02.05",
+    code: "//02.06",
     icon: Cloud,
     title: "Digitalization, IIoT & Industry 4.0",
     body: "OPC UA, MQTT over TLS, LoRaWAN, edge gateways and cloud integrations bridging OT to IT cleanly. We engineer turnkey plant-level digital transformation projects to modernize factory operations.",
   },
   {
+    id: "dcs",
+    code: "//02.07",
+    icon: GitMerge,
+    title: "DCS & Hybrid Process Integration",
+    body: "Distributed Control Systems integration on Siemens PCS 7 and Mitsubishi iQ-R with hot-redundant controllers, remote I/O islands, and batch process control.",
+  },
+  {
+    id: "switchgear",
+    code: "//02.08",
+    icon: ShieldCheck,
+    title: "LT Switchgear & Distribution",
+    body: "Engineering and assembly of low-tension switchgear up to 6300 A with ACB/MCCB protection coordination, busbar sizing, and comprehensive thermal ratings.",
+  },
+  {
     id: "arch",
-    code: "//02.06",
+    code: "//02.09",
     icon: Layers,
     title: "Interoperability & Architecture",
     body: "Vendor-neutral L0–L4 ISA-95 design for greenfield builds and brownfield modernization across multi-OEM stacks.",
   },
   {
     id: "plc-sales",
-    code: "//02.07",
+    code: "//02.10",
     icon: Package,
     title: "PLC Hardware Sales",
     body: "Turnkey supply of programmable controllers from Siemens, Mitsubishi, and leading OEMs. Scalable from compact brick PLCs to redundant high-availability plant controllers.",
   },
   {
     id: "vfd-sales",
-    code: "//02.08",
+    code: "//02.11",
     icon: Power,
     title: "VFD Sales",
     body: "Complete portfolio of Variable Frequency Drives for discrete manufacturing and process control. We provide drive sizing, parameterization logic, and on-site integration support.",
   },
   {
     id: "web-hosting",
-    code: "//02.09",
+    code: "//02.12",
     icon: Server,
     title: "Web Hosting Services",
     body: "Industrial-grade website development, domain procurement, and robust web hosting solutions. We ensure your corporate digital identities remain secure and fast.",
@@ -108,6 +131,11 @@ const CapabilityCard: React.FC<{ card: any; index: any }> = ({ card, index }) =>
         <div className="w-12 h-12 border border-tasc-border flex items-center justify-center group-hover:border-tasc-cyan transition-colors shrink-0">
           <Icon size={22} strokeWidth={1.25} className="text-tasc-text/80 group-hover:text-tasc-cyan transition-colors" aria-hidden="true" />
         </div>
+        {card.highlight && (
+          <span className="font-[Orbitron] text-[9px] uppercase tracking-widest px-2.5 py-1 border border-tasc-cyan/40 text-tasc-cyan bg-tasc-cyan/10">
+            {card.highlight}
+          </span>
+        )}
       </div>
 
       <div className="font-[Orbitron] text-[9px] tracking-[0.3em] text-tasc-text/40 mb-3" aria-hidden="true">
@@ -116,6 +144,18 @@ const CapabilityCard: React.FC<{ card: any; index: any }> = ({ card, index }) =>
       <h3 id={`capability-title-${card.id}`} className="font-[Montserrat] text-xl md:text-2xl font-medium text-tasc-text mb-4 leading-tight">
         {card.title}
       </h3>
+      {card.tags && (
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {card.tags.map((tag: string) => (
+            <span
+              key={tag}
+              className="font-[Orbitron] text-[9px] tracking-wider px-2 py-0.5 border border-tasc-cyan/30 text-tasc-cyan bg-tasc-cyan/5"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
       <div className="mt-auto pt-4 border-t border-tasc-border/50">
         <p id={`capability-desc-${card.id}`} className="text-tasc-text/55 text-sm md:text-[15px] leading-relaxed font-light">
           {card.body}

@@ -23,12 +23,19 @@ export default function Chatbot() {
       console.warn("Failed to retrieve chat history:", e);
     }
     return [
-      { role: "assistant", content: "Hello! I am the TASC AI Assistant. Ask me anything about our automation services, consulting, or technologies." }
+      { role: "assistant", content: "Hello! I am the TASC AI Assistant. Ask me anything about our industrial automation services, power & control panel manufacturing (7-tank process, laser welding & 6+1 axis CNC bending), consulting, or technologies." }
     ];
   });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleQuickPrompt = (promptText: string) => {
+    if (isLoading) return;
+    const nextMessages: Message[] = [...messages, { role: "user", content: promptText }];
+    setMessages(nextMessages);
+    sendUserMessage(nextMessages);
+  };
 
   useEffect(() => {
     try {
@@ -510,6 +517,27 @@ export default function Chatbot() {
                   </div>
                 </div>
               ))}
+              {messages.length <= 1 && !isLoading && (
+                <div className="pt-2 pl-9 sm:pl-11 space-y-1.5">
+                  <div className="text-[10px] font-[Orbitron] uppercase tracking-wider text-tasc-text/40">Suggested Topics:</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      "Power & Control Panel Manufacturing",
+                      "7-Tank Process & CNC Bending",
+                      "Automation & PLC Systems",
+                      "Industrial AI & SCADA"
+                    ].map((promptText) => (
+                      <button
+                        key={promptText}
+                        onClick={() => handleQuickPrompt(promptText)}
+                        className="text-[10.5px] font-[Orbitron] tracking-wider px-2.5 py-1 border border-tasc-cyan/30 text-tasc-cyan bg-tasc-cyan/5 hover:bg-tasc-cyan/20 hover:border-tasc-cyan transition-all text-left"
+                      >
+                        {promptText}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {isLoading && (
                 <div className="flex gap-2 sm:gap-3 flex-row">
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded shrink-0 flex items-center justify-center border bg-tasc-cyan/10 border-tasc-cyan/30 text-tasc-cyan">

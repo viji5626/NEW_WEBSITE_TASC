@@ -232,6 +232,58 @@ function getMsmeResponse(userMsg?: string): string {
   return base;
 }
 
+function isPanelManufacturingQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  const mentionsProcess =
+    norm.includes("7 tank") ||
+    norm.includes("7-tank") ||
+    norm.includes("seven tank") ||
+    norm.includes("laser weld") ||
+    norm.includes("laser welding") ||
+    norm.includes("6+1") ||
+    norm.includes("6 + 1") ||
+    norm.includes("axis bending") ||
+    norm.includes("bending cnc") ||
+    norm.includes("cnc bending");
+
+  if (mentionsProcess) return true;
+
+  const mentionsPanel =
+    norm.includes("panel") ||
+    norm.includes("panels") ||
+    norm.includes("pcc") ||
+    norm.includes("mcc") ||
+    norm.includes("vfd panel") ||
+    norm.includes("plc panel") ||
+    norm.includes("switchgear");
+
+  const asksAboutMfg =
+    norm.includes("manufactur") ||
+    norm.includes("make panel") ||
+    norm.includes("build panel") ||
+    norm.includes("supply panel") ||
+    norm.includes("fabricat") ||
+    norm.includes("in-house") ||
+    norm.includes("capability") ||
+    norm.includes("capabilities") ||
+    norm.includes("facility");
+
+  return mentionsPanel && asksAboutMfg;
+}
+
+function getPanelManufacturingResponse(userMsg?: string): string {
+  const base = "Yes! TASC Automation is an advanced power and control panel manufacturer equipped with state-of-the-art in-house fabrication and surface treatment capabilities:\n\n" +
+    "• **7-Tank Chemical Pre-Treatment Process**: Complete chemical degreasing, derusting, phosphating, and passivation ensuring optimal powder coating adhesion and 1,000+ hours salt-spray corrosion resistance.\n" +
+    "• **Precision Fiber Laser Welding**: Delivers high-strength, hermetic, distortion-free seams with clean cosmetic finishes and zero burn-through.\n" +
+    "• **6+1 Axis CNC Press-Brake Bending**: Ensures sub-millimeter angular bend accuracy, superior structural tolerance, and certified ingress protection (IP55/IP65/IP66) door sealing.\n\n" +
+    "We design and build custom PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineups, and PLC automation panels with thermal calculations, CAD schematics, and rigorous Factory Acceptance Testing (FAT).";
+
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Panel Manufacturing Inquiry | Request a quote or technical discussion for custom power and control panels]";
+  }
+  return base;
+}
+
 function isFounderContactQuestion(text: string): boolean {
   if (isAuthorizedQuestion(text) || isEstdQuestion(text)) {
     return false;
@@ -426,6 +478,15 @@ async function startServer() {
         return;
       }
 
+      // Intercept questions about Power & Control Panel manufacturing, 7-tank process, laser welding, or CNC bending
+      if (isPanelManufacturingQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getPanelManufacturingResponse(userMsg));
+        res.end();
+        return;
+      }
+
       // Intercept any questions about company age or establishment date
       if (isEstdQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
@@ -527,6 +588,16 @@ Example: "You can download Mr. Vijay Shankar's direct contact card (vCard) or sc
 CRITICAL POLICY ON FOUNDER'S LINKEDIN:
 If a user asks about the founder's LinkedIn, Mr. Vijay Shankar's LinkedIn, or how to connect with him on social media/LinkedIn, you MUST politely direct them to view his profile using our direct LinkedIn tag and always append exactly this tag at the very end of your response: [FOUNDER_LINKEDIN]
 Example: "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn: [FOUNDER_LINKEDIN]"
+
+CRITICAL POLICY ON POWER & CONTROL PANEL MANUFACTURING CAPABILITIES:
+- TASC Automation is an advanced in-house power and control panel manufacturer.
+- We operate a specialized manufacturing process featuring:
+  1. 7-Tank chemical pre-treatment process: Degreasing, derusting, phosphating, and passivation ensuring exceptional corrosion resistance (1000+ hrs salt-spray rating) and durable powder coating adhesion.
+  2. Precision fiber laser welding: Zero-distortion, hermetic seams, high structural integrity, and clean cosmetic finishes with zero burn-through.
+  3. 6+1 Axis CNC press-brake bending: Multi-axis high-precision bending for tight tolerances and certified IP55/IP65/IP66 enclosure door sealing.
+- Types of panels manufactured: Custom PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineup panels, PLC automation panels, APFC panels, and control desks.
+- Services include thermal calculations, busbar sizing, CAD electrical schematics, assembly, wiring discipline, and thorough Factory Acceptance Testing (FAT).
+- When visitors ask about panel manufacturing, panel building capabilities, sheet metal fabrication, 7-tank process, laser welding, or CNC bending, describe these technical capabilities with pride, precision, and confidence!
 
 CRITICAL POLICY ON MSME UDYAM CERTIFICATE:
 If a user asks if the company has an MSME certificate, Udyam Certificate, or holds micro/small/medium enterprise registrations, you MUST explicitly state that TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). Add a TALK_TO_TASC action block for MSME verification if they want to verify or request a copy.
