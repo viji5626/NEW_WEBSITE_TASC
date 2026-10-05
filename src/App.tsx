@@ -52,9 +52,27 @@ function ScrollToTop() {
   return null;
 }
 
+function PageTitleManager() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      "/": "Tenacious Automation Solutions and Consulting #TASC | Industrial Automation & SCADA Solutions",
+      "/micro-services": "Micro Services | Tenacious Automation Solutions and Consulting #TASC",
+      "/consulting": "Consulting & Architecture | Tenacious Automation Solutions and Consulting #TASC",
+      "/faq": "FAQ & Technical Architecture | Tenacious Automation Solutions and Consulting #TASC",
+      "/download-profile": "Download Company Profile | Tenacious Automation Solutions and Consulting #TASC",
+    };
+
+    document.title = titles[pathname] || "Tenacious Automation Solutions and Consulting #TASC";
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   useEffect(() => {
-    document.title = "TASC Automation // Tenacious Automation Solutions & Consulting";
+    document.title = "Tenacious Automation Solutions and Consulting #TASC | Industrial Automation & SCADA Solutions";
     // Force scroll to top on mount/refresh
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
@@ -103,6 +121,7 @@ function App() {
       <BrowserRouter>
         <BootScreen />
         <ScrollToTop />
+        <PageTitleManager />
         <div className="App relative bg-tasc-bg min-h-screen text-tasc-text selection:bg-tasc-cyan selection:text-slate-900 overflow-x-hidden" data-testid="tasc-app">
           <TechBackground />
           {/* Noise Overlay */}
