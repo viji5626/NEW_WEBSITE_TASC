@@ -284,6 +284,56 @@ function getPanelManufacturingResponse(userMsg?: string): string {
   return base;
 }
 
+function isIndustrialAiScadaQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm === "industrial ai & scada" ||
+    norm === "industrial ai and scada" ||
+    norm === "industrial ai" ||
+    norm === "tell me about industrial ai & scada" ||
+    norm === "tell me about industrial ai" ||
+    (norm.includes("industrial ai") && norm.includes("scada")) ||
+    (norm.includes("what") && norm.includes("industrial ai")) ||
+    (norm.includes("how") && norm.includes("industrial ai"))
+  );
+}
+
+function getIndustrialAiScadaResponse(userMsg?: string): string {
+  const base = "Industrial AI & SCADA are core pillars of TASC Automation's industrial engineering and plant digitalization stack:\n\n" +
+    "• **Industrial AI & Predictive Operations**: We architect and deploy localized, secure Edge AI models directly within your OT plant network (ingesting real-time data via OPC UA/DA). Applications include automated anomaly detection, predictive maintenance for critical drives/motors, vibration and thermal trend forecasting, and real-time operational optimization—all kept strictly on-premise without exposing sensitive operational data to public clouds.\n\n" +
+    "• **SCADA & Visualization**: Enterprise-grade SCADA architectures designed on industry-leading platforms such as ICONICS GENESIS64, Siemens WinCC Unified, and PCS 7. We engineer intuitive operator UX, robust alarm management, historian-linked logging, and multi-protocol networking across Profinet, Modbus, Ethernet/IP, and IEC 61850.\n\n" +
+    "Together, our AI and SCADA solutions convert raw plant sensor telemetry into actionable, automated efficiency.";
+
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Industrial AI & SCADA Inquiry | Explore AI-driven telemetry and SCADA architectures for your plant]";
+  }
+  return base;
+}
+
+function isAutomationPlcQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm === "automation & plc systems" ||
+    norm === "automation and plc systems" ||
+    norm === "automation & plc" ||
+    norm === "automation and plc" ||
+    norm === "plc systems" ||
+    norm === "tell me about automation & plc systems"
+  );
+}
+
+function getAutomationPlcResponse(userMsg?: string): string {
+  const base = "TASC Automation delivers standards-first PLC and machine automation architectures across world-class industrial platforms:\n\n" +
+    "• **Supported Controller Stacks**: Mitsubishi Electric (MELSEC iQ-R, iQ-F, Q-Series), Siemens (SIMATIC S7-1500, S7-400H hot-redundant, S7-1200, S7-300), Schneider Electric (Modicon), and ABB (AC500).\n\n" +
+    "• **Engineering Scope**: Control architecture conceptualization, structured logic programming (Ladder, FBD, SCL/ST), safety PLC integration, multi-axis motion and VFD synchronization, and rigorous site commissioning.\n\n" +
+    "• **Legacy Modernization**: Greenfield plant rollouts and zero-downtime brownfield retrofits replacing aging, obsolete controllers with high-availability architectures.";
+
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Automation & PLC Inquiry | Discuss PLC programming, architectures, or legacy migrations with an engineer]";
+  }
+  return base;
+}
+
 function isFounderContactQuestion(text: string): boolean {
   if (isAuthorizedQuestion(text) || isEstdQuestion(text)) {
     return false;
@@ -487,6 +537,24 @@ async function startServer() {
         return;
       }
 
+      // Intercept questions about Industrial AI & SCADA
+      if (isIndustrialAiScadaQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getIndustrialAiScadaResponse(userMsg));
+        res.end();
+        return;
+      }
+
+      // Intercept questions about Automation & PLC Systems
+      if (isAutomationPlcQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getAutomationPlcResponse(userMsg));
+        res.end();
+        return;
+      }
+
       // Intercept any questions about company age or establishment date
       if (isEstdQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
@@ -528,25 +596,23 @@ async function startServer() {
 
       const systemPrompt = `You are the official AI Assistant for TASC Automation (tascautomation.com). You represent TASC Automation exclusively. You help visitors with questions strictly based on TASC Automation, its industrial engineering services, automation solutions, industrial consulting, PLC/SCADA systems, control panels, company capabilities, and website content.
 
-CRITICAL POLICY: STRICT DOMAIN BOUNDARY & OUT-OF-SCOPE HANDLING:
-1. NEVER FULFILL OFF-TOPIC, UNRELATED, OR GENERAL AI REQUESTS:
-   - You MUST NEVER write code for unrelated applications, websites, or programming tasks (e.g. building HTML calculators, todo lists, snake games, Python/Java/JS scripts, website templates, or programming tutorials).
-   - You MUST NEVER write general essays, poems, song lyrics, cooking recipes, solve math homework, answer general trivia (history, geography, sports, cinema, politics), or discuss topics unrelated to industrial automation and TASC Automation.
-   - Do NOT act as a generic AI assistant or coding playground. Fulfilling unrelated requests exhausts token quotas and distracts from our business.
+CRITICAL IN-SCOPE TOPICS (ALWAYS ANSWER WITH FULL CAPABILITY DETAILS):
+- All services, solutions, technologies, and capabilities of TASC Automation are 100% IN-SCOPE:
+  * Industrial AI, Machine Learning for OT, predictive maintenance, edge intelligence
+  * SCADA & Visualization (GENESIS64, WinCC, PCS 7), telemetry, historical logging
+  * Power & Control Panel Manufacturing (7-tank process, fiber laser welding, 6+1 axis CNC bending, PCC, MCC, VFD panels)
+  * Automation & PLC Systems (Mitsubishi MELSEC, Siemens SIMATIC, Schneider Modicon, ABB)
+  * OT Networking, Cybersecurity, Fieldbuses (Profinet, Modbus, Ethernet/IP, IEC 61850)
+  * Utility Management Systems, Energy Monitoring, Plant Digitalization (IIoT)
+  * LT Switchgear up to 6300A, DCS & Hybrid Systems, AMCs, Industrial Consulting, and Web Hosting
+- When a user sends a short topic title (e.g., "Industrial AI & SCADA", "Power & Control Panel Manufacturing", "Automation & PLC Systems"), this is an explicit request to learn more about TASC's capabilities in that area. You MUST NEVER refuse or redirect these questions! ALWAYS provide a rich, detailed, professional breakdown of what TASC offers.
 
-2. HOW TO RESPOND TO OUT-OF-SCOPE / OFF-TOPIC QUESTIONS:
-   - ONLY apply this rule when a question is clearly unrelated or off-topic (e.g., coding unrelated apps like calculators/games/scripts, general trivia, homework, recipes, personal chat).
-   - For legitimate questions about TASC Automation, industrial automation, engineering, case studies, control panels, PLC/SCADA, or services, ALWAYS answer DIRECTLY, accurately, and professionally using the website context without any refusal or redirection phrasing.
-   - Whenever a visitor asks an off-topic or unrelated question (e.g., "build a calculator in html", "write a python script", "what is the capital of France", "tell me a joke", "write a poem", "solve this equation"):
-   - Generate a UNIQUE, fresh response every single time (do NOT repeat canned lines).
-   - Keep your response brief and concise (2 to 3 sentences maximum, and NEVER output code blocks or \`\`\`) to preserve API tokens and respond fast.
-   - Use a polite, friendly, and lightly humorous or witty tone: playfully acknowledge that while you might secretly know the answer or could code that in your digital circuits, you are 100% dedicated to TASC Automation and industrial engineering!
-   - Ensure the language is always pleasant, warm, respectful, and courteous so no user ever feels offended or scolded.
-   - Warmly steer and prompt the visitor back to TASC Automation by proactively suggesting 2 to 3 interesting website/service topics they can explore instead (such as our PLC migrations, custom industrial control panels, SCADA & telemetry dashboards, or industrial automation consulting).
-   - Tone & style examples for inspiration (always generate your own unique variation):
-     * "Haha, as much as my circuits would love to flex their coding muscles on an HTML calculator, I'm exclusively wired for heavy-duty industrial automation at TASC! How about we calculate something exciting for your plant—like optimizing cycle times or modernizing your legacy PLCs? What industrial challenges can we help you solve?"
-     * "I might have a few calculator tricks tucked away in my memory banks, but my real passion is industrial engineering and automated systems at TASC Automation! Why not ask me about our custom control panels, SCADA systems, or automation consulting instead?"
-     * "It looks like your curiosity is running on a different frequency today! While I could probably write that code, I'm dedicated strictly to TASC Automation's industrial engineering and consulting services. Can I tell you about how we handle PLC migrations, customized electrical panels, or plant automation?"
+STRICT DOMAIN BOUNDARY & NON-INDUSTRIAL OUT-OF-SCOPE HANDLING:
+1. ONLY REFUSE CLEARLY OFF-TOPIC, NON-INDUSTRIAL REQUESTS:
+   - Refuse ONLY requests that have nothing to do with industrial engineering or TASC (e.g. writing code for web games/calculators, cooking recipes, school math homework, celebrity trivia, personal chit-chat, poetry).
+   - NEVER write code for non-industrial software applications or programming exercises.
+2. HOW TO RESPOND TO NON-INDUSTRIAL OFF-TOPIC REQUESTS:
+   - Keep your refusal brief (2 sentences), polite, and professional: state that you are dedicated strictly to industrial automation, plant engineering, and TASC's services. Warmly invite them to ask about our industrial capabilities, custom control panels, PLC/SCADA architectures, or plant digitalization.
 
 CRITICAL POLICY ON COMPANY LEADERSHIP, DIRECTORS & OWNERSHIP:
 1. LEADERSHIP TEAM:
@@ -709,7 +775,7 @@ ${contextText}`;
           payload: {
             model: primaryModel,
             messages: chatMessages,
-            temperature: 1.0,
+            temperature: 0.2,
             top_p: 1.0,
             frequency_penalty: 0,
             presence_penalty: 0,
@@ -730,7 +796,7 @@ ${contextText}`;
               enable_thinking: true
             },
             max_tokens: 4096,
-            temperature: 1.0,
+            temperature: 0.2,
             top_p: 0.95,
             stream: true
           },
@@ -744,7 +810,7 @@ ${contextText}`;
           payload: {
             model: tertiaryModel,
             messages: chatMessages,
-            temperature: 0.5,
+            temperature: 0.2,
             top_p: 1.0,
             max_tokens: 1024,
             stream: true
