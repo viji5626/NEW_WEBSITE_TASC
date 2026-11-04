@@ -57,14 +57,14 @@ function PageTitleManager() {
 
   useEffect(() => {
     const titles: Record<string, string> = {
-      "/": "Tenacious Automation Solutions and Consulting #TASC | Industrial Automation & SCADA Solutions",
-      "/micro-services": "Micro Services | Tenacious Automation Solutions and Consulting #TASC",
-      "/consulting": "Consulting & Architecture | Tenacious Automation Solutions and Consulting #TASC",
-      "/faq": "FAQ & Technical Architecture | Tenacious Automation Solutions and Consulting #TASC",
-      "/download-profile": "Download Company Profile | Tenacious Automation Solutions and Consulting #TASC",
+      "/": "Tenacious Automation (TASC Automation) | Industrial Solutions & Consulting",
+      "/micro-services": "Micro Services | Tenacious Automation (TASC Automation)",
+      "/consulting": "Consulting & Architecture | Tenacious Automation (TASC Automation)",
+      "/faq": "FAQ & Architecture | Tenacious Automation (TASC Automation)",
+      "/download-profile": "Download Company Profile | Tenacious Automation (TASC Automation)",
     };
 
-    document.title = titles[pathname] || "Tenacious Automation Solutions and Consulting #TASC";
+    document.title = titles[pathname] || "Tenacious Automation (TASC Automation) | Industrial Solutions & Consulting";
   }, [pathname]);
 
   return null;
@@ -72,7 +72,7 @@ function PageTitleManager() {
 
 function App() {
   useEffect(() => {
-    document.title = "Tenacious Automation Solutions and Consulting #TASC | Industrial Automation & SCADA Solutions";
+    document.title = "Tenacious Automation (TASC Automation) | Industrial Solutions & Consulting";
     // Force scroll to top on mount/refresh
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";

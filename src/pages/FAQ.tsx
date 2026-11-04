@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const FAQS = [
   {
+    question: "What is Tenacious Automation (TASC Automation)?",
+    answer: "Tenacious Automation (officially registered as Tenacious Automation Solutions and Consulting, and widely known as TASC Automation) is a premier industrial automation systems integrator and power & control panel manufacturer. We deliver turnkey PLC programming, SCADA architecture, custom 7-tank pre-treated electrical control panels, and Industrial AI solutions for manufacturing enterprises globally."
+  },
+  {
     question: "How long does a typical control system integration or migration take?",
     answer: "Lead times depend on system scale and whether it is a greenfield build or a brownfield upgrade. A standard medium-scale PLC/SCADA migration typically spans 8 to 12 weeks—from footprint analysis and code conversion to Site Acceptance Testing (SAT) and final commissioning."
   },

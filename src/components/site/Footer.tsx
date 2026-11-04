@@ -155,11 +155,11 @@ export default function Footer() {
               draggable={false}
             />
             <div className="font-display text-lg md:text-xl font-bold text-tasc-text mb-5 leading-tight tracking-tight whitespace-nowrap">
-              Tenacious Automation<br/><span className="text-tasc-cyan">Solutions & Consulting</span>
+              Tenacious Automation<br/><span className="text-tasc-cyan">Solutions & Consulting (TASC)</span>
             </div>
             <p className="text-tasc-text/55 text-sm font-light leading-relaxed max-w-md">
-              Transforming Industrial Logix. Engineering intelligent, high-availability PLC,
-              SCADA, EMS, Digitalization, and IIoT solutions. We deliver complete plant-level digital transformation projects for mission-critical industrial operations.
+              Tenacious Automation (TASC Automation) engineers intelligent, high-availability PLC,
+              SCADA, custom power & control panels, and Industrial AI solutions for mission-critical manufacturing operations.
             </p>
 
             <div className="mt-8 flex items-center gap-4 font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-text/40">

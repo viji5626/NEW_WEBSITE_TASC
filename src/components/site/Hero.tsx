@@ -36,7 +36,7 @@ const Hero = () => {
           />
           
           <p className="text-lg md:text-xl text-soft-white/60 max-w-4xl mx-auto mb-10 font-light leading-relaxed">
-            Architecting the Industrial Nervous System. We engineer high-availability SCADA, PLC, and IIoT solutions, executing plant-level digital transformation(Digitalization) for the world's most demanding industries.
+            Tenacious Automation (TASC Automation) architects the Industrial Nervous System. We engineer high-availability SCADA, PLC programming, custom power & control panel manufacturing (7-tank process, CNC bending), and Industrial AI solutions for modern manufacturing plants.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-6">
