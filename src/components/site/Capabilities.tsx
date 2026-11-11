@@ -25,7 +25,7 @@ const CARDS = [
     title: "Power & Control Panel Manufacturing",
     highlight: "FABRICATION & ASSEMBLY",
     tags: ["7-Tank Process", "6+1 Axis CNC", "Rittal & nVent Hoffman"],
-    body: "Power and control panel manufacturing with in-house 7-tank process, laser welding, and 6+1 axis CNC bending, alongside premium pre-fabricated modular enclosures from Rittal and nVent Hoffman for heavy-duty PCC, MCC, VFD, and PLC automation.",
+    body: "Custom powder-coated panels manufactured in-house with 7-tank chemical pre-treatment, laser welding, and 6+1 axis CNC bending for heavy-duty fabricated bolted panels. On customer demand, we assemble and integrate pre-fabricated modular bolted enclosures from Rittal and nVent Hoffman for PCC, MCC, VFD, and PLC automation.",
   },
   {
     id: "net",

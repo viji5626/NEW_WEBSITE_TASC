@@ -26,7 +26,7 @@ const FAQS = [
   },
   {
     question: "Do you supply custom MCC, PCC, VFD, and PLC panels?",
-    answer: "Yes, we are a full-service power and control panel manufacturer offering both in-house custom fabrication (equipped with a 7-tank chemical pre-treatment process, precision laser welding, and 6+1 axis CNC bending) and premium pre-fabricated modular enclosures from Rittal and nVent Hoffman. Our team handles complete end-to-end manufacturing—from thermal calculations, component sizing, and CAD wiring schematics to precision assembly, rigorous Factory Acceptance Testing (FAT), and dispatch."
+    answer: "Yes, we are a full-service power and control panel builder and manufacturer. For custom powder-coated self-fabricated panels, we utilize our in-house 7-tank chemical pre-treatment process, precision fiber laser welding, and 6+1 axis CNC press-brake bending to produce heavy-duty fabricated bolted panels. When requested or demanded by the customer, we assemble and integrate pre-fabricated modular bolted enclosures from Rittal and nVent Hoffman (which are pre-fabricated modular bolted panels that do not require welding or chemical tank treatment). Our team handles complete end-to-end engineering—including thermal calculations, busbar sizing, CAD schematics, precision assembly, wiring, and rigorous Factory Acceptance Testing (FAT)."
   },
   {
     question: "How do you integrate Industrial AI into existing brownfield plants?",

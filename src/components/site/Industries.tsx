@@ -87,8 +87,8 @@ const VERTICALS = [
     id: "panel",
     code: "//04.10",
     name: "Panel Manufacturing",
-    body: "Complete power and control panel manufacturing and integration. We engineer heavy-duty MCC, PCC, VFD lineups, and PLC automation panels utilizing custom metalwork as well as pre-fabricated modular enclosures from Rittal and nVent Hoffman.",
-    items: ["PCC, MCC & PLC panels", "Rittal & nVent Hoffman modular", "Custom enclosure engineering", "VFD lineups & FAT testing"],
+    body: "Complete power and control panel manufacturing and assembly. We engineer heavy-duty MCC, PCC, VFD lineups, and PLC automation systems using custom-fabricated powder-coated panels, as well as pre-fabricated modular bolted enclosures from Rittal and nVent Hoffman on customer demand.",
+    items: ["PCC, MCC & PLC panels", "Rittal & nVent Hoffman modular bolted", "Custom powder-coated panels", "VFD lineups & FAT testing"],
     photo: "/brand/vert-panel.jpg",
   },
   {

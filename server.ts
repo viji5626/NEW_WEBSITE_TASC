@@ -232,6 +232,38 @@ function getMsmeResponse(userMsg?: string): string {
   return base;
 }
 
+function isRittalHoffmanQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("rittal") ||
+    norm.includes("hoffman") ||
+    norm.includes("nvent") ||
+    norm === "rittal & hoffman enclosures" ||
+    norm.includes("modular enclosure") ||
+    norm.includes("modular bolted") ||
+    norm.includes("pre-fabricated enclosure") ||
+    norm.includes("prefabricated enclosure")
+  );
+}
+
+function getRittalHoffmanResponse(userMsg?: string): string {
+  const base = "When demanded or requested by clients (or mandated by plant project specifications), TASC Automation integrates and assembles pre-fabricated modular bolted enclosures from world-renowned manufacturers such as **Rittal** and **nVent Hoffman**.\n\n" +
+    "**Key Technical Details**:\n" +
+    "• **Pre-Fabricated Modular Bolted Enclosures**: These enclosures arrive precision-engineered and factory-finished directly from Rittal or nVent Hoffman. Because they are pre-fabricated modular bolted units, **they do not require in-house welding, CNC bending, or chemical tank treatment**.\n" +
+    "• **TASC Turnkey Engineering & Assembly**: Within these modular enclosures, our engineering team executes complete internal integration:\n" +
+    "  - Busbar engineering, sizing calculations, fabrication, and mounting\n" +
+    "  - Power switchgear assembly for PCC (Power Control Center) and MCC (Motor Control Center)\n" +
+    "  - VFD drive lineups, servo drives, and PLC automation hardware mounting\n" +
+    "  - Neat, disciplined control and power wiring per approved CAD schematics\n" +
+    "  - Comprehensive Factory Acceptance Testing (FAT)\n\n" +
+    "*(Note: For custom powder-coated self-fabricated panels built in-house from sheet metal, we use our certified 7-tank chemical pre-treatment, fiber laser welding, and 6+1 axis CNC press-brake bending to produce custom fabricated bolted panels.)*";
+
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Rittal & Hoffman Inquiry | Discuss panel integration using Rittal or nVent Hoffman modular enclosures]";
+  }
+  return base;
+}
+
 function isPanelManufacturingQuestion(text: string): boolean {
   const norm = text.toLowerCase().trim();
   const mentionsProcess =
@@ -245,9 +277,12 @@ function isPanelManufacturingQuestion(text: string): boolean {
     norm.includes("axis bending") ||
     norm.includes("bending cnc") ||
     norm.includes("cnc bending") ||
-    norm.includes("rittal") ||
-    norm.includes("hoffman") ||
-    norm.includes("nvent");
+    norm.includes("powder coat") ||
+    norm.includes("powder coating") ||
+    norm.includes("self fabricat") ||
+    norm.includes("self-fabricat") ||
+    norm.includes("bolted panel") ||
+    norm.includes("boulting panel");
 
   if (mentionsProcess) return true;
 
@@ -258,9 +293,7 @@ function isPanelManufacturingQuestion(text: string): boolean {
     norm.includes("mcc") ||
     norm.includes("vfd panel") ||
     norm.includes("plc panel") ||
-    norm.includes("switchgear") ||
-    norm.includes("enclosure") ||
-    norm.includes("enclosures");
+    norm.includes("switchgear");
 
   const asksAboutMfg =
     norm.includes("manufactur") ||
@@ -271,27 +304,24 @@ function isPanelManufacturingQuestion(text: string): boolean {
     norm.includes("in-house") ||
     norm.includes("capability") ||
     norm.includes("capabilities") ||
-    norm.includes("facility") ||
-    norm.includes("modular") ||
-    norm.includes("pre-fab") ||
-    norm.includes("prefabricated");
+    norm.includes("facility");
 
   return mentionsPanel && asksAboutMfg;
 }
 
 function getPanelManufacturingResponse(userMsg?: string): string {
-  const base = "Yes! TASC Automation delivers complete power and control panel manufacturing and engineering solutions, supporting both custom in-house fabrication and modular pre-fabricated enclosures:\n\n" +
-    "• **Custom In-House Metal Fabrication**:\n" +
-    "  - *7-Tank Chemical Pre-Treatment Process*: Degreasing, derusting, phosphating, and passivation for superior powder coat bonding and 1,000+ hours salt-spray corrosion resistance.\n" +
-    "  - *Precision Fiber Laser Welding*: High-integrity, distortion-free hermetic seams with clean cosmetic finish.\n" +
-    "  - *6+1 Axis CNC Press-Brake Bending*: Multi-axis sub-millimeter bend precision for certified IP55/IP65/IP66 ingress protection.\n\n" +
-    "• **Modular Pre-Fabricated Enclosures (Rittal & nVent Hoffman)**:\n" +
-    "  - For clients requiring international standard modular systems or specific OEM enclosure specifications, we supply and assemble turnkey solutions using premium enclosures from **Rittal** and **nVent Hoffman**.\n\n" +
-    "• **Panel Lineups & FAT**:\n" +
-    "  - Turnkey engineering for PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineups, and PLC automation panels, complete with thermal calculations, CAD schematics, and rigorous Factory Acceptance Testing (FAT).";
+  const base = "TASC Automation is a comprehensive power and control panel builder offering two distinct manufacturing pathways tailored to project requirements:\n\n" +
+    "1. **Custom Powder-Coated Self-Fabricated Panels**:\n" +
+    "  • **7-Tank Chemical Pre-Treatment Process**: Degreasing, derusting, phosphating, and passivation ensuring optimal powder coating adhesion and 1,000+ hours salt-spray corrosion resistance.\n" +
+    "  • **Precision Fiber Laser Welding**: Delivers clean, distortion-free hermetic seams with high structural integrity.\n" +
+    "  • **6+1 Axis CNC Press-Brake Bending**: Ensures sub-millimeter bend accuracy for fabricated bolted panels and certified IP55/IP65/IP66 ingress protection.\n\n" +
+    "2. **Pre-Fabricated Modular Bolted Enclosures (Rittal & nVent Hoffman)**:\n" +
+    "  • When requested or demanded by customers, we integrate and assemble pre-fabricated modular bolted enclosures from Rittal and nVent Hoffman. Because these enclosures are factory-finished by the OEM, they do not require welding or chemical tank pre-treatment.\n" +
+    "  • TASC executes full internal electrical engineering, busbar sizing, switchgear mounting, PLC/VFD wiring, and FAT.\n\n" +
+    "**Panel Lineups**: PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineups, and PLC automation panels with thermal calculations, CAD schematics, and rigorous Factory Acceptance Testing (FAT).";
 
   if (userMsg && shouldIncludeCTA(userMsg)) {
-    return base + " [TALK_TO_TASC: Panel Manufacturing Inquiry | Request a quote or technical discussion for custom power and control panels or Rittal/Hoffman enclosures]";
+    return base + " [TALK_TO_TASC: Panel Manufacturing Inquiry | Request a quote or technical discussion for custom fabricated or modular panels]";
   }
   return base;
 }
@@ -540,6 +570,15 @@ async function startServer() {
         return;
       }
 
+      // Intercept questions specifically about Rittal, nVent Hoffman, or pre-fabricated modular bolted enclosures
+      if (isRittalHoffmanQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getRittalHoffmanResponse(userMsg));
+        res.end();
+        return;
+      }
+
       // Intercept questions about Power & Control Panel manufacturing, 7-tank process, laser welding, or CNC bending
       if (isPanelManufacturingQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
@@ -667,18 +706,27 @@ CRITICAL POLICY ON FOUNDER'S LINKEDIN:
 If a user asks about the founder's LinkedIn, Mr. Vijay Shankar's LinkedIn, or how to connect with him on social media/LinkedIn, you MUST politely direct them to view his profile using our direct LinkedIn tag and always append exactly this tag at the very end of your response: [FOUNDER_LINKEDIN]
 Example: "You can view Mr. Vijay Shankar's professional profile and connect with him on LinkedIn: [FOUNDER_LINKEDIN]"
 
-CRITICAL POLICY ON POWER & CONTROL PANEL MANUFACTURING CAPABILITIES:
-- TASC Automation is an advanced power and control panel manufacturer and systems integrator.
-- We support two complementary enclosure engineering pathways:
-  1. Custom In-House Fabrication:
-     * 7-Tank chemical pre-treatment process: Degreasing, derusting, phosphating, and passivation ensuring exceptional corrosion resistance (1000+ hrs salt-spray rating) and durable powder coating adhesion.
-     * Precision fiber laser welding: Zero-distortion, hermetic seams, high structural integrity, and clean cosmetic finishes with zero burn-through.
-     * 6+1 Axis CNC press-brake bending: Multi-axis high-precision bending for tight tolerances and certified IP55/IP65/IP66 enclosure door sealing.
-  2. Modular Pre-Fabricated Enclosures:
-     * We also utilize and integrate world-leading pre-fabricated enclosures from Rittal and nVent Hoffman according to specific project requirements, customer vendor lists, and international standards.
-- Types of panels manufactured: Custom PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineup panels, PLC automation panels, APFC panels, and control desks.
-- Services include thermal calculations, busbar sizing, CAD electrical schematics, assembly, wiring discipline, and thorough Factory Acceptance Testing (FAT).
-- When visitors ask about panel manufacturing, panel building capabilities, Rittal, Hoffman, sheet metal fabrication, 7-tank process, laser welding, or CNC bending, describe these technical capabilities with pride, precision, and confidence!
+CRITICAL TECHNICAL POLICY ON ENCLOSURES & PANEL MANUFACTURING:
+1. PRE-FABRICATED MODULAR BOLTED ENCLOSURES (Rittal & nVent Hoffman):
+   - Used when demanded or requested by customers, or required by plant specifications.
+   - These are pre-fabricated modular bolted enclosures (bending bolted panels).
+   - They DO NOT require welding, CNC bending, or chemical tank treatment because they are already factory-manufactured and pre-painted by Rittal or nVent Hoffman. NEVER say or imply that Rittal or Hoffman enclosures undergo welding, CNC bending, or chemical tanks!
+   - TASC's role for Rittal/Hoffman enclosures: Complete internal electrical engineering, busbar sizing, switchgear mounting (PCC, MCC), PLC/VFD integration, control & power wiring, and Factory Acceptance Testing (FAT).
+2. CUSTOM POWDER-COATED SELF-FABRICATED PANELS:
+   - For custom powder-coated panels self-fabricated in-house from raw sheet metal, TASC utilizes:
+     * 7-Tank chemical pre-treatment process: Degreasing, derusting, phosphating, and passivation ensuring exceptional powder coating adhesion and 1000+ hours salt-spray corrosion resistance.
+     * Precision fiber laser welding: High-integrity, distortion-free seams.
+     * 6+1 Axis CNC press-brake bending: Multi-axis sub-millimeter bend accuracy for fabricated bolted or welded enclosures.
+3. ABSOLUTE PROHIBITION ON HALLUCINATIONS AND MALFORMED TERMS:
+   - TASC operates a 7-TANK PROCESS ONLY. NEVER mention 9-tank or "7 or 9-tank"; it is strictly a 7-tank chemical pre-treatment process.
+   - MCC stands for Motor Control Center. NEVER substitute or say "much".
+   - PCC stands for Power Control Center.
+   - VFD stands for Variable Frequency Drive.
+   - PLC stands for Programmable Logic Controller. NEVER say "way automation".
+   - 7-tank process is chemical pre-treatment for powder coating. NEVER say "7-Strategy".
+   - Fiber laser welding is precision metal welding. NEVER say "much welding".
+   - Types of panels manufactured: PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineups, PLC automation panels, APFC panels, and control desks.
+   - Keep answers clear, technical, professional, and strictly accurate to industrial automation engineering.
 
 CRITICAL POLICY ON MSME UDYAM CERTIFICATE:
 If a user asks if the company has an MSME certificate, Udyam Certificate, or holds micro/small/medium enterprise registrations, you MUST explicitly state that TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). Add a TALK_TO_TASC action block for MSME verification if they want to verify or request a copy.
