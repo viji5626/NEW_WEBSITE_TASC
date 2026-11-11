@@ -23,7 +23,7 @@ export default function Chatbot() {
       console.warn("Failed to retrieve chat history:", e);
     }
     return [
-      { role: "assistant", content: "Hello! I am the TASC AI Assistant. Ask me anything about our industrial automation services, power & control panel manufacturing (7-tank process, laser welding & 6+1 axis CNC bending), consulting, or technologies." }
+      { role: "assistant", content: "Hello! I am the TASC AI Assistant. Ask me anything about our industrial automation services, power & control panel manufacturing, consulting, or technologies." }
     ];
   });
   const [input, setInput] = useState("");
@@ -523,7 +523,7 @@ export default function Chatbot() {
                   <div className="flex flex-wrap gap-1.5">
                     {[
                       "Power & Control Panel Manufacturing",
-                      "7-Tank Process & CNC Bending",
+                      "Rittal & Hoffman Enclosures",
                       "Automation & PLC Systems",
                       "Industrial AI & SCADA"
                     ].map((promptText) => (

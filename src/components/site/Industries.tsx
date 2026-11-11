@@ -87,8 +87,8 @@ const VERTICALS = [
     id: "panel",
     code: "//04.10",
     name: "Panel Manufacturing",
-    body: "Custom power and control panel manufacturer equipped with certified 7-tank chemical process, laser welding, and 6+1 axis bending CNC for heavy-duty MCC, PCC, and PLC systems.",
-    items: ["7-tank process & laser welding", "6+1 axis CNC bending", "MCC, PCC & PLC panels", "VFD lineups & FAT testing"],
+    body: "Complete power and control panel manufacturing and integration. We engineer heavy-duty MCC, PCC, VFD lineups, and PLC automation panels utilizing custom metalwork as well as pre-fabricated modular enclosures from Rittal and nVent Hoffman.",
+    items: ["PCC, MCC & PLC panels", "Rittal & nVent Hoffman modular", "Custom enclosure engineering", "VFD lineups & FAT testing"],
     photo: "/brand/vert-panel.jpg",
   },
   {

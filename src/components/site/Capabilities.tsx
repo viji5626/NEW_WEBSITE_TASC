@@ -23,9 +23,9 @@ const CARDS = [
     code: "//02.03",
     icon: Factory,
     title: "Power & Control Panel Manufacturing",
-    highlight: "IN-HOUSE MFG",
-    tags: ["7-Tank Process", "Laser Welding", "6+1 Axis CNC"],
-    body: "Leading power and control panel manufacturer equipped with 7 tank process chemical pre-treatment, precision laser welding, and 6+1 axis bending CNC for heavy-duty PCC, MCC, VFD and PLC automation enclosures.",
+    highlight: "FABRICATION & ASSEMBLY",
+    tags: ["7-Tank Process", "6+1 Axis CNC", "Rittal & nVent Hoffman"],
+    body: "Power and control panel manufacturing with in-house 7-tank process, laser welding, and 6+1 axis CNC bending, alongside premium pre-fabricated modular enclosures from Rittal and nVent Hoffman for heavy-duty PCC, MCC, VFD, and PLC automation.",
   },
   {
     id: "net",
@@ -101,6 +101,9 @@ export default function Capabilities() {
     >
       <div className="mx-auto max-w-[1440px] px-6 md:px-10 lg:px-16">
         <SectionHeader code="// 02" kicker="THE ARSENAL" title="Core Capabilities" />
+        <p className="mt-4 text-tasc-text/60 max-w-3xl text-sm md:text-base font-light">
+          Tenacious Automation (TASC Automation) delivers 12 core industrial engineering capabilities—from multi-brand PLC programming and enterprise SCADA architectures to certified power and control panel manufacturing and secure Edge Industrial AI.
+        </p>
 
         <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-tasc-border/60 border border-tasc-border">
           {CARDS.map((c, i) => (

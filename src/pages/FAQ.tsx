@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 const FAQS = [
   {
     question: "What is Tenacious Automation (TASC Automation)?",
-    answer: "Tenacious Automation (officially registered as Tenacious Automation Solutions and Consulting, and widely known as TASC Automation) is a premier industrial automation systems integrator and power & control panel manufacturer. We deliver turnkey PLC programming, SCADA architecture, custom 7-tank pre-treated electrical control panels, and Industrial AI solutions for manufacturing enterprises globally."
+    answer: "Tenacious Automation (officially registered as Tenacious Automation Solutions and Consulting, and widely known as TASC Automation) is a premier industrial automation systems integrator and power & control panel manufacturer. We deliver turnkey PLC programming, SCADA architecture, power & control panel manufacturing (custom-built and modular enclosures like Rittal & nVent Hoffman), and Industrial AI solutions for manufacturing enterprises globally."
+  },
+  {
+    question: "What are the key capabilities and features of Tenacious Automation?",
+    answer: "Key capabilities and features of Tenacious Automation (TASC Automation) include: 1) Turnkey Automation & PLC Systems (Siemens SIMATIC S7-1500/400H hot-redundant, Mitsubishi MELSEC iQ-R/iQ-F, Schneider, ABB); 2) SCADA & Industrial Visualization (ICONICS GENESIS64, Siemens WinCC Unified, PCS 7); 3) Power & Control Panel Manufacturing with custom 7-tank chemical pre-treatment, laser welding, and 6+1 axis CNC bending, alongside pre-fabricated modular enclosures from Rittal and nVent Hoffman for PCC, MCC, and VFD lineups; 4) Industrial AI & Predictive Maintenance on secure on-premise edge gateways; 5) LT Switchgear up to 6300A; and 6) 24/7 SLA Annual Maintenance Contracts (AMC)."
   },
   {
     question: "How long does a typical control system integration or migration take?",
@@ -22,7 +26,7 @@ const FAQS = [
   },
   {
     question: "Do you supply custom MCC, PCC, VFD, and PLC panels?",
-    answer: "Yes, we are a full-service power and control panel manufacturer equipped with a 7-tank chemical pre-treatment process, precision laser welding, and 6+1 axis bending CNC. Our team handles complete end-to-end manufacturing—from thermal calculations, component sizing, and CAD wiring schematics to precision fabrication, assembly, rigorous Factory Acceptance Testing (FAT), and dispatch."
+    answer: "Yes, we are a full-service power and control panel manufacturer offering both in-house custom fabrication (equipped with a 7-tank chemical pre-treatment process, precision laser welding, and 6+1 axis CNC bending) and premium pre-fabricated modular enclosures from Rittal and nVent Hoffman. Our team handles complete end-to-end manufacturing—from thermal calculations, component sizing, and CAD wiring schematics to precision assembly, rigorous Factory Acceptance Testing (FAT), and dispatch."
   },
   {
     question: "How do you integrate Industrial AI into existing brownfield plants?",
