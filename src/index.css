@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(html:not(.light) *, html:not(.light)));
+@custom-variant light (&:where(.light, .light *));
+
 @theme {
   --color-tasc-bg: var(--tasc-bg);
+  --color-tasc-surface: var(--tasc-surface);
   --color-tasc-border: var(--tasc-border);
   --color-tasc-text: var(--tasc-text);
   --color-tasc-cyan: var(--tasc-cyan);
@@ -24,6 +28,7 @@
 @layer base {
     :root {
         --tasc-bg: #070a0f;
+        --tasc-surface: #0b111b;
         --tasc-border: #2b313a;
         --tasc-text: #ffffff;
         --tasc-text-dim: rgba(255, 255, 255, 0.8);
@@ -34,6 +39,7 @@
 
     .light {
         --tasc-bg: #ffffff;
+        --tasc-surface: #ffffff;
         --tasc-border: #9ca3af;
         --tasc-text: #000000;
         --tasc-text-dim: #1f2937;

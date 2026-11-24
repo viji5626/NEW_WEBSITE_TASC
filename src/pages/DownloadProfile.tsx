@@ -80,7 +80,7 @@ export default function DownloadProfile() {
           return (
             <ScrollReveal key={doc.id} delay={idx * 0.1}>
               <div 
-                className="group relative border border-tasc-border bg-slate-950/40 p-8 sm:p-10 flex flex-col h-full transition-all duration-300 hover:border-tasc-cyan/40 hover:bg-slate-950/70"
+                className="group relative border border-tasc-border bg-tasc-surface p-8 sm:p-10 flex flex-col h-full transition-all duration-300 hover:border-tasc-cyan/40 hover:bg-sky-50 dark:hover:bg-slate-900/90"
               >
                 {/* Subtle visual accent line */}
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-tasc-border group-hover:bg-tasc-cyan transition-colors" />
@@ -94,7 +94,7 @@ export default function DownloadProfile() {
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-display font-light text-white mb-4 group-hover:text-tasc-cyan transition-colors">
+                <h3 className="text-2xl font-display font-light text-tasc-text mb-4 group-hover:text-tasc-cyan transition-colors">
                   {doc.name}
                 </h3>
 

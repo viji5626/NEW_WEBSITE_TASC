@@ -11,6 +11,7 @@ const COLS = [
     links: [
       ["Automation & PLC", "the-arsenal"],
       ["SCADA & Visualization", "the-arsenal"],
+      ["TASC IIoT Studio (v2.4)", "products/tasc-iiot-studio"],
       ["OT Networking", "the-arsenal"],
       ["EMS", "the-arsenal"],
       ["Digitalization & IIoT", "the-arsenal"],
@@ -125,6 +126,10 @@ export default function Footer() {
       navigate('/consulting');
       return;
     }
+    if (id === "products/tasc-iiot-studio" || id === "product") {
+      navigate('/products/tasc-iiot-studio');
+      return;
+    }
     if (id === "faq") {
       navigate('/faq');
       return;
@@ -219,10 +224,10 @@ export default function Footer() {
             © {new Date().getFullYear()} TASC AUTOMATION · ALL SYSTEMS RIGHTS RESERVED
           </div>
           
-          <div className="flex items-center gap-2.5 border border-tasc-border bg-slate-950/80 px-3 py-1.5 rounded text-[9px] tracking-[0.2em] font-[Orbitron] text-tasc-cyan">
+          <div className="flex items-center gap-2.5 border border-tasc-border bg-slate-100 dark:bg-slate-950/80 px-3 py-1.5 rounded text-[9px] tracking-[0.2em] font-[Orbitron] text-tasc-cyan">
             <span className="w-1.5 h-1.5 rounded-full bg-tasc-cyan animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.6)]" />
             <span>VISIT TELEMETRY:</span>
-            <span className="text-white font-mono text-[11px] font-bold tracking-widest bg-tasc-bg/80 px-2 py-0.5 border border-tasc-cyan/20 rounded">
+            <span className="text-tasc-text font-mono text-[11px] font-bold tracking-widest bg-tasc-surface px-2 py-0.5 border border-tasc-cyan/20 rounded">
               {visitorCount !== null ? String(visitorCount).padStart(6, "0") : "------"}
             </span>
           </div>

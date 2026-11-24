@@ -39,6 +39,10 @@ const FAQS = [
   {
     question: "Does the company have an MSME Udyam Certificate?",
     answer: "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate as a registered enterprise under the Ministry of Micro, Small and Medium Enterprises (MSME)."
+  },
+  {
+    question: "What is TASC IIoT Studio and how does it connect to plant controllers?",
+    answer: "TASC IIoT Studio (V2.4 Enterprise & Thick Client) is our commercial SCADA and telemetry platform, live at app.tascautomation.com and available as a 2.5 GB standalone offline installer on request for Industrial Grade PCs (IPCs). Featuring zero middleware requirements (no Kepware or Takebishi needed), it communicates natively with Siemens, Mitsubishi, Rockwell, Schneider, and Omron controllers via Profinet, IEC 61850, Melsec/SLMP, EtherNet/IP, Modbus, and OPC UA/DA. It features long-term historian & archiving, an integrated offline GGUF AI text model, cloud BYOK support, AI-powered diagnostics & decision models, automated shift reports, a huge graphics library, and a 3D model importer straight into the SCADA canvas."
   }
 ];
 

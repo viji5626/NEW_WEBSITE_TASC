@@ -16,6 +16,10 @@ export function Breadcrumbs() {
         return "Consulting";
       case "faq":
         return "FAQ";
+      case "products":
+        return "Products";
+      case "tasc-iiot-studio":
+        return "TASC IIoT Studio";
       default:
         return path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " ");
     }

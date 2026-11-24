@@ -490,9 +490,9 @@ ${contextText}`;
       return await withTimeout(responsePromise, timeoutMs, "Connection Timeout");
     };
 
-    const primaryModel = process.env.NVIDIA_PRIMARY_MODEL || "meta/llama-3.2-11b-vision-instruct";
-    const standbyModel = process.env.NVIDIA_STANDBY_MODEL || "google/diffusiongemma-26b-a4b-it";
-    const tertiaryModel = process.env.NVIDIA_TERTIARY_MODEL || "nvidia/nemotron-3-super-120b-a12b";
+    const primaryModel = process.env.NVIDIA_PRIMARY_MODEL || "z-ai/glm-5.3-flash";
+    const standbyModel = process.env.NVIDIA_STANDBY_MODEL || process.env.NVIDIA_SECONDARY_MODEL || "google/gemma-4-31b-it";
+    const tertiaryModel = process.env.NVIDIA_TERTIARY_MODEL || "nvidia/nemotron-3.5-bolt-e4b";
 
     // Tier configurations
     const tiers = [

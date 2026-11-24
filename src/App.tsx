@@ -17,6 +17,7 @@ const MicroServices = lazy(() => import("@/pages/MicroServices"));
 const Consulting = lazy(() => import("@/pages/Consulting"));
 const FAQ = lazy(() => import("@/pages/FAQ"));
 const DownloadProfile = lazy(() => import("@/pages/DownloadProfile"));
+const ProductIIoTStudio = lazy(() => import("@/pages/ProductIIoTStudio"));
 
 import { scrollToId, scrollToTop } from "@/lib/scrollTo";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -62,6 +63,8 @@ function PageTitleManager() {
       "/consulting": "Consulting & Architecture | Tenacious Automation (TASC Automation)",
       "/faq": "FAQ & Architecture | Tenacious Automation (TASC Automation)",
       "/download-profile": "Download Company Profile | Tenacious Automation (TASC Automation)",
+      "/products": "Products | Tenacious Automation (TASC Automation)",
+      "/products/tasc-iiot-studio": "TASC IIoT Studio | Web SCADA & Telemetry | Tenacious Automation",
     };
 
     document.title = titles[pathname] || "Tenacious Automation (TASC Automation) | Industrial Solutions & Consulting";
@@ -162,6 +165,8 @@ function App() {
               <Route path="/consulting" element={<Consulting />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/download-profile" element={<DownloadProfile />} />
+              <Route path="/products" element={<ProductIIoTStudio />} />
+              <Route path="/products/tasc-iiot-studio" element={<ProductIIoTStudio />} />
             </Routes>
           </Suspense>
 

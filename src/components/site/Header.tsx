@@ -1,28 +1,37 @@
 import { useEffect, useState } from "react";
 import { scrollToId, scrollToTop } from "@/lib/scrollTo";
-import { Sun, Moon, LogOut, User as UserIcon } from "lucide-react";
+import { Sun, Moon, LogOut, User as UserIcon, ChevronDown, ExternalLink, ArrowRight } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { auth, logout } from '@/lib/firebase';
 import { User } from 'firebase/auth';
 import { safeLocalStorage } from "@/lib/safeStorage";
 
-const NAV = [
+interface NavItem {
+  code: string;
+  label: string;
+  id: string;
+  hasDropdown?: boolean;
+}
+
+const NAV: NavItem[] = [
   { code: "//01", label: "HOME", id: "command-center" },
-  { code: "//02", label: "CAPABILITIES", id: "the-arsenal" },
-  { code: "//03", label: "STACK", id: "technical-stack" },
-  { code: "//04", label: "INDUSTRIES", id: "rugged-reliability" },
-  { code: "//05", label: "CASES", id: "case-studies" },
-  { code: "//06", label: "METHOD", id: "how-we-build" },
-  { code: "//07", label: "AMC", id: "amc-model" },
-  { code: "//08", label: "CONSULTING", id: "we-consult" },
-  { code: "//09", label: "ABOUT", id: "tenacious-by-design" },
-  { code: "//10", label: "CONTACT", id: "terminal-interface" },
-  { code: "//11", label: "MICRO SERVICES", id: "micro-services" },
-  { code: "//12", label: "DOWNLOAD PROFILE", id: "download-profile" },
+  { code: "//02", label: "PRODUCT", id: "product", hasDropdown: true },
+  { code: "//03", label: "CAPABILITIES", id: "the-arsenal" },
+  { code: "//04", label: "STACK", id: "technical-stack" },
+  { code: "//05", label: "INDUSTRIES", id: "rugged-reliability" },
+  { code: "//06", label: "CASES", id: "case-studies" },
+  { code: "//07", label: "METHOD", id: "how-we-build" },
+  { code: "//08", label: "AMC", id: "amc-model" },
+  { code: "//09", label: "CONSULTING", id: "we-consult" },
+  { code: "//10", label: "ABOUT", id: "tenacious-by-design" },
+  { code: "//11", label: "CONTACT", id: "terminal-interface" },
+  { code: "//12", label: "MICRO SERVICES", id: "micro-services" },
+  { code: "//13", label: "DOWNLOAD PROFILE", id: "download-profile" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [productDropdownOpen, setProductDropdownOpen] = useState(false);
   const [time, setTime] = useState("");
   const [isLightMode, setIsLightMode] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -90,6 +99,12 @@ export default function Header() {
   }, []);
 
   const handleNavClick = (n: typeof NAV[0]) => {
+    if (n.label === "PRODUCT") {
+      navigate('/products/tasc-iiot-studio');
+      setProductDropdownOpen(false);
+      return;
+    }
+
     if (n.label === "MICRO SERVICES") {
       navigate('/micro-services');
       return;
@@ -157,18 +172,104 @@ export default function Header() {
           </div>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex flex-1 items-center justify-center lg:gap-0 xl:gap-1 2xl:gap-2">
-            {NAV.map((n) => (
-              <button
-                key={n.id}
-                data-testid={`nav-${n.label.toLowerCase()}`}
-                onClick={() => handleNavClick(n)}
-                className="px-1.5 xl:px-2 py-2 font-[Orbitron] text-[8px] lg:text-[9px] xl:text-[10px] tracking-[0.1em] xl:tracking-[0.15em] text-tasc-text/70 hover:text-tasc-cyan transition-colors whitespace-nowrap"
-                title={`${n.code} · ${n.label}`}
-              >
-                {n.label}
-              </button>
-            ))}
+          <nav className="hidden lg:flex flex-1 items-center justify-center lg:gap-0 xl:gap-0.5 2xl:gap-1.5">
+            {NAV.map((n) => {
+              if (n.hasDropdown) {
+                return (
+                  <div
+                    key={n.id}
+                    className="relative"
+                    onMouseEnter={() => setProductDropdownOpen(true)}
+                    onMouseLeave={() => setProductDropdownOpen(false)}
+                  >
+                    <button
+                      data-testid={`nav-${n.label.toLowerCase()}`}
+                      onClick={() => handleNavClick(n)}
+                      className={`px-1.5 xl:px-2 py-2 font-[Orbitron] text-[8px] lg:text-[8.5px] xl:text-[9.5px] 2xl:text-[10px] tracking-[0.1em] xl:tracking-[0.15em] transition-colors whitespace-nowrap flex items-center gap-1 ${
+                        location.pathname.startsWith('/product')
+                          ? 'text-tasc-cyan font-bold'
+                          : 'text-tasc-text/70 hover:text-tasc-cyan'
+                      }`}
+                      title={`${n.code} · ${n.label}`}
+                    >
+                      <span>{n.label}</span>
+                      <ChevronDown size={11} className={`transition-transform duration-200 ${productDropdownOpen ? 'rotate-180 text-tasc-cyan' : ''}`} />
+                    </button>
+
+                    {/* Line-wise Product Dropdown */}
+                    {productDropdownOpen && (
+                      <div
+                        className="absolute top-full left-0 w-80 bg-tasc-surface border border-tasc-cyan/40 shadow-2xl p-3 z-[120] text-left"
+                        data-testid="products-dropdown-menu"
+                      >
+                        <div className="font-[Orbitron] text-[8.5px] tracking-[0.2em] text-tasc-text/60 uppercase pb-2 mb-2 border-b border-tasc-border flex items-center justify-between">
+                          <span>COMMERCIAL SOFTWARE</span>
+                          <span className="text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
+                            LIVE SUITE
+                          </span>
+                        </div>
+
+                        {/* Line 1: TASC IIoT Studio */}
+                        <button
+                          onClick={() => {
+                            navigate('/products/tasc-iiot-studio');
+                            setProductDropdownOpen(false);
+                          }}
+                          className="w-full text-left p-3 bg-slate-50 dark:bg-slate-900/90 hover:bg-sky-50 dark:hover:bg-slate-800 border border-tasc-border/70 hover:border-tasc-cyan transition-all group block"
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="font-[Orbitron] text-xs font-bold text-tasc-text group-hover:text-tasc-cyan transition-colors">
+                              TASC IIoT Studio
+                            </span>
+                            <span className="font-[Orbitron] text-[8px] px-1.5 py-0.5 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-semibold">
+                              V2.4 ENTERPRISE
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-tasc-text/70 font-light leading-snug">
+                            Web SCADA, 3D Canvas &amp; Standalone IPC. Native Multivendor Driver Engine (no 3rd-party OPC server required).
+                          </p>
+                          <div className="mt-2 flex items-center justify-between font-[Orbitron] text-[9px]">
+                            <span className="text-tasc-cyan flex items-center gap-1 font-semibold">
+                              SPECS &amp; OFFLINE INSTALLER <ArrowRight size={10} />
+                            </span>
+                            <span className="text-emerald-700 dark:text-emerald-400 font-semibold">BUILT-IN DRIVERS</span>
+                          </div>
+                        </button>
+
+                        {/* Direct App Link */}
+                        <div className="mt-2 pt-2 border-t border-tasc-border flex items-center justify-between text-[10px] font-[Orbitron]">
+                          <a
+                            href="https://app.tascautomation.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setProductDropdownOpen(false)}
+                            className="text-tasc-cyan hover:underline flex items-center gap-1.5 py-1 font-semibold"
+                          >
+                            <span>LAUNCH APP.TASCAUTOMATION.COM</span>
+                            <ExternalLink size={11} />
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={n.id}
+                  data-testid={`nav-${n.label.toLowerCase()}`}
+                  onClick={() => handleNavClick(n)}
+                  className={`px-1.5 xl:px-2 py-2 font-[Orbitron] text-[8px] lg:text-[8.5px] xl:text-[9.5px] 2xl:text-[10px] tracking-[0.1em] xl:tracking-[0.15em] transition-colors whitespace-nowrap ${
+                    location.pathname === '/' && n.label === 'HOME' ? 'text-tasc-cyan' : 'text-tasc-text/70 hover:text-tasc-cyan'
+                  }`}
+                  title={`${n.code} · ${n.label}`}
+                >
+                  {n.label}
+                </button>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-2 xl:gap-4 shrink-0">
@@ -216,21 +317,60 @@ export default function Header() {
         </div>
 
         {open && (
-           <div className="lg:hidden border-t border-tasc-border py-4 grid grid-cols-2 gap-2 bg-tasc-bg" data-testid="mobile-nav-panel">
-            {NAV.map((n) => (
-              <button
-                key={n.id}
-                data-testid={`nav-mobile-${n.label.toLowerCase()}`}
-                onClick={() => {
-                  handleNavClick(n);
-                  setOpen(false);
-                }}
-                className="text-left px-3 py-2 font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-text/70 hover:text-tasc-cyan"
-              >
-                <span className="text-tasc-border mr-2">{n.code}</span>
-                {n.label}
-              </button>
-            ))}
+           <div className="lg:hidden border-t border-tasc-border py-4 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-tasc-bg" data-testid="mobile-nav-panel">
+            {NAV.map((n) => {
+              if (n.hasDropdown) {
+                return (
+                  <div key={n.id} className="border border-tasc-border/60 p-2.5 bg-tasc-surface col-span-1 sm:col-span-2">
+                    <button
+                      onClick={() => {
+                        handleNavClick(n);
+                        setOpen(false);
+                      }}
+                      className="w-full text-left font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-cyan font-bold flex items-center justify-between mb-1"
+                    >
+                      <span><span className="text-tasc-border mr-2">{n.code}</span>{n.label}</span>
+                      <span className="text-[9px] text-emerald-700 dark:text-emerald-400">● LIVE PRODUCT</span>
+                    </button>
+                    <div className="pl-4 space-y-1.5 pt-1">
+                      <button
+                        onClick={() => {
+                          navigate('/products/tasc-iiot-studio');
+                          setOpen(false);
+                        }}
+                        className="block w-full text-left font-[Montserrat] text-xs text-tasc-text/90 hover:text-tasc-cyan py-1"
+                      >
+                        → TASC IIoT Studio (v2.4 Enterprise &amp; Community)
+                      </button>
+                      <a
+                        href="https://app.tascautomation.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 font-[Montserrat] text-[11px] text-tasc-cyan hover:underline py-0.5"
+                      >
+                        <span>↗ Launch app.tascautomation.com</span>
+                        <ExternalLink size={11} />
+                      </a>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <button
+                  key={n.id}
+                  data-testid={`nav-mobile-${n.label.toLowerCase()}`}
+                  onClick={() => {
+                    handleNavClick(n);
+                    setOpen(false);
+                  }}
+                  className="text-left px-3 py-2 font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-text/70 hover:text-tasc-cyan"
+                >
+                  <span className="text-tasc-border mr-2">{n.code}</span>
+                  {n.label}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>

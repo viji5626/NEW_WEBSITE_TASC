@@ -326,6 +326,67 @@ function getPanelManufacturingResponse(userMsg?: string): string {
   return base;
 }
 
+function isIiotStudioQuestion(text: string): boolean {
+  const norm = text.toLowerCase().trim();
+  return (
+    norm.includes("iiot studio") ||
+    norm.includes("tasc iiot") ||
+    norm.includes("tasc studio") ||
+    norm.includes("app.tascautomation.com") ||
+    norm.includes("tasc bridge") ||
+    norm.includes("commercial product") ||
+    norm.includes("your product") ||
+    norm.includes("software product") ||
+    norm.includes("what products") ||
+    norm.includes("what product") ||
+    norm.includes("1 lac tag") ||
+    norm.includes("100,000 tag") ||
+    norm.includes("100000 tag") ||
+    norm.includes("headless mqtt") ||
+    norm.includes("web hmi canvas") ||
+    norm.includes("3d scada") ||
+    norm.includes("community edition") ||
+    norm.includes("engineering studio") ||
+    norm.includes("thick client") ||
+    norm.includes("2.5 gb") ||
+    norm.includes("2.5gb") ||
+    norm.includes("standalone installer") ||
+    norm.includes("offline installer") ||
+    norm.includes("gguf") ||
+    norm.includes("byok") ||
+    norm.includes("decision model") ||
+    norm.includes("as simple as hammer") ||
+    norm.includes("simple as hammer") ||
+    norm.includes("easy like hammer") ||
+    norm.includes("takebishi") ||
+    norm.includes("kepware") ||
+    norm.includes("graphics library") ||
+    norm.includes("3d importer") ||
+    ((norm.includes("report") || norm.includes("reporting") || norm.includes("historian") || norm.includes("archiving")) && (norm.includes("scada") || norm.includes("studio") || norm.includes("software") || norm.includes("tasc")))
+  );
+}
+
+function getIiotStudioResponse(userMsg?: string): string {
+  const base = "TASC Automation's flagship commercial software product is **TASC IIoT Studio (V2.4 Enterprise & Thick Client)**, available live at **https://app.tascautomation.com** and as a **Standalone Offline Installer** on request for Industrial Grade PCs (IPCs).\n\n" +
+    "**Core Architecture & Capabilities**:\n" +
+    "• **Native Multivendor Drivers (No 3rd-Party OPC Server Needed)**: Eliminates extra middleware licenses (such as Kepware or Takebishi) with an extensive built-in driver library communicating directly to PLCs via **Profinet, IEC 61850, Mitsubishi Melsec & SLMP, EtherNet/IP, Modbus TCP/IP, and OPC UA/DA**.\n" +
+    "• **TASC Bridge Portable Agent**: A lightweight, portable small installer that acts as the real-time link between the Web client and the physical OT layer (PLCs/fieldbus). It empowers the browser-based Web client to work and respond with the speed and reliability of a Thick client SCADA.\n" +
+    "• **Standalone IPC Installer (Thick Client)**: Heavy-duty offline runtime (~2.5 GB installer package) for Industrial Grade PCs with local persistence, zero internet dependency, and embedded **Long-Term Historian & Deep Archiving** for multi-year trends and alarms.\n" +
+    "• **Dual Industrial AI Stack**: A lightweight text-based **GGUF model** is integrated inside the offline installer for 100% on-premise air-gapped diagnostics, plus **BYOK (Bring Your Own Key)** support for connecting enterprise cloud LLMs.\n" +
+    "• **AI Diagnostics & Decision Model**: Machine learning telemetry anomaly detection with structured industrial decision trees delivering immediate troubleshooting guidance to operators.\n" +
+    "• **Manual & AI-Generated Reporting**: Automated shift handovers, daily plant throughput summaries, batch tracking, and OEE reports exported directly to PDF, CSV, and Excel.\n" +
+    "• **Huge Graphics Library & 3D Importer**: Massive industrial SVG symbol library (pumps, valves, pipes with flow animation, tanks, switchgear) plus a 3D SCADA Studio with an integrated **3D model importer (GLTF/GLB/OBJ)** straight onto the SCADA canvas.\n" +
+    "• **\"As simple as Hammer\" Philosophy**: Rugged, intuitive, and immediate — designed for controls engineers and technicians with zero web development friction.\n" +
+    "• **1 Lac (100,000) Tag Scale**: High-throughput telemetry pipeline streaming up to 1,00,000 live active tags simultaneously.\n" +
+    "• **Multi-Zone Alarming**: Real-time threshold monitoring (LOW, MID, HIGH) with audible notifications, operator acknowledgment workflows, and instant **SMS & Email alerts**.\n\n" +
+    "Explore the platform live at **https://app.tascautomation.com** or visit our dedicated product orchestrator page at **/products/tasc-iiot-studio**.";
+
+  if (userMsg && shouldIncludeCTA(userMsg)) {
+    return base + " [TALK_TO_TASC: Offline SCADA Installer | Request the standalone offline installer for IPCs or an enterprise plant deployment]";
+  }
+  return base;
+}
+
 function isIndustrialAiScadaQuestion(text: string): boolean {
   const norm = text.toLowerCase().trim();
   return (
@@ -570,6 +631,15 @@ async function startServer() {
         return;
       }
 
+      // Intercept questions about TASC IIoT Studio, commercial product, or app.tascautomation.com
+      if (isIiotStudioQuestion(userMsg)) {
+        res.setHeader("Content-Type", "text/plain");
+        res.setHeader("Transfer-Encoding", "chunked");
+        res.write(getIiotStudioResponse(userMsg));
+        res.end();
+        return;
+      }
+
       // Intercept questions specifically about Rittal, nVent Hoffman, or pre-fabricated modular bolted enclosures
       if (isRittalHoffmanQuestion(userMsg)) {
         res.setHeader("Content-Type", "text/plain");
@@ -728,6 +798,23 @@ CRITICAL TECHNICAL POLICY ON ENCLOSURES & PANEL MANUFACTURING:
    - Types of panels manufactured: PCC (Power Control Center), MCC (Motor Control Center), VFD drive lineups, PLC automation panels, APFC panels, and control desks.
    - Keep answers clear, technical, professional, and strictly accurate to industrial automation engineering.
 
+CRITICAL POLICY ON COMMERCIAL PRODUCT — TASC IIOT STUDIO:
+- TASC Automation has developed and launched its flagship commercial software product: **TASC IIoT Studio (V2.4 Enterprise & Thick Client)**, live and hosted at **https://app.tascautomation.com**, and available as a **Standalone Offline Installer (Thick Client)** on request for Industrial Grade PCs (IPCs).
+- Website Product Page: Dedicated orchestrator page at **/products/tasc-iiot-studio** (accessible via the "PRODUCT" dropdown in the navbar).
+- Core Technology:
+  * Native Multivendor Driver Engine: Eliminates the need for separate 3rd-party OPC servers or extra middleware software (such as Kepware or Takebishi) by integrating native drivers for Profinet, IEC 61850, Mitsubishi Melsec & SLMP, EtherNet/IP, Modbus TCP/IP, OPC UA, and OPC DA directly into the platform.
+  * TASC Bridge Portable Agent: A portable, lightweight small installer that acts as the real-time link between the Web client and the physical OT layer (PLCs/fieldbus), empowering the browser-based Web client to work and respond with the speed and reliability of a Thick client SCADA.
+  * Standalone IPC Installer (Thick Client): Offline installer (~2.5 GB package) with embedded Long-Term Historian and deep archiving for multi-year trends and alarms on air-gapped industrial PCs.
+  * Dual Industrial AI Stack: Integrated offline lightweight GGUF text model for on-premise air-gapped diagnostics + BYOK (Bring Your Own Key) for enterprise cloud LLMs.
+  * AI Diagnostics & Industrial Decision Model: Machine learning anomaly detection with operator troubleshooting decision trees.
+  * Manual & AI-Generated Reporting: Automated shift handovers, daily plant summaries, and OEE batch audits exported to PDF, CSV, and Excel.
+  * Huge Graphics Library & 3D Canvas: Extensive industrial SVG symbols (pumps, valves, pipes with flow animation) plus 3D SCADA Studio with integrated 3D model importer (GLTF/GLB/OBJ) directly onto the SCADA canvas.
+  * "As simple as Hammer" Philosophy: Rugged, intuitive, and immediate for plant technicians without complicated web scripting.
+  * Massive Scale: Engineered to stream and process up to 1 Lac (100,000) tags simultaneously with low latency.
+  * Multi-Zone Alarming: LOW, MID, HIGH threshold monitors with visual drawers, operator acknowledgment, and automated SMS & Email alert dispatch.
+  * Four Execution Modes: Community Edition (Free self-serve web), Client Edition (locked operator touchscreen kiosk), Engineering Studio (full multi-screen engineering suite), and Standalone Thick Client (offline installer for IPCs).
+- When visitors ask about our commercial software products, SCADA apps, IoT platforms, thick client installer, or TASC IIoT Studio, warmly explain these technical capabilities and provide the direct link: https://app.tascautomation.com!
+
 CRITICAL POLICY ON MSME UDYAM CERTIFICATE:
 If a user asks if the company has an MSME certificate, Udyam Certificate, or holds micro/small/medium enterprise registrations, you MUST explicitly state that TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). Add a TALK_TO_TASC action block for MSME verification if they want to verify or request a copy.
 Example: "Yes, TASC Automation holds a valid MSME Udyam Registration Certificate under the Ministry of Micro, Small and Medium Enterprises (MSME). For any specific copy or verification, please contact our team. [TALK_TO_TASC: MSME Verification | Please share the MSME Udyam Certificate copy or registration details]"
@@ -825,9 +912,9 @@ ${contextText}`;
         return await withTimeout(responsePromise, timeoutMs, "Connection Timeout");
       };
 
-      const primaryModel = process.env.NVIDIA_PRIMARY_MODEL || "meta/llama-3.2-11b-vision-instruct";
-      const standbyModel = process.env.NVIDIA_STANDBY_MODEL || "google/diffusiongemma-26b-a4b-it";
-      const tertiaryModel = process.env.NVIDIA_TERTIARY_MODEL || "nvidia/nemotron-3-super-120b-a12b";
+      const primaryModel = process.env.NVIDIA_PRIMARY_MODEL || "z-ai/glm-5.3-flash";
+      const standbyModel = process.env.NVIDIA_STANDBY_MODEL || process.env.NVIDIA_SECONDARY_MODEL || "google/gemma-4-31b-it";
+      const tertiaryModel = process.env.NVIDIA_TERTIARY_MODEL || "nvidia/nemotron-3.5-bolt-e4b";
 
       // Tier configurations
       const tiers = [

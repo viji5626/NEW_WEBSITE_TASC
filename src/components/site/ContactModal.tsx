@@ -9,6 +9,7 @@ export default function ContactModal() {
   const [form, setForm] = useState({ name: "", email: "", organization: "", project_scope: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<boolean | string>(false);
+  const [submittedEmail, setSubmittedEmail] = useState<string>("");
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -49,15 +50,19 @@ export default function ContactModal() {
 
   const onChange = (k: string) => (e: any) => setForm({ ...form, [k]: e.target.value });
 
-  const buildMailto = (data = form) => {
-    const subject = `[TASC] New Consultation — ${data.organization || "Inquiry"}`;
+  const buildMailto = (data = form, reqId = "") => {
+    const subject = `[${reqId || "TASC-REQ"}] New Request — ${data.organization || "Inquiry"}`;
     const body = [
+      `OFFICIAL REQUEST ID: ${reqId}`,
       `Name: ${data.name}`,
       `Email: ${data.email}`,
       `Organization: ${data.organization}`,
       "",
-      "Project Scope:",
+      "Project Scope / Requirements:",
       data.project_scope,
+      "",
+      "---------------------------------------------",
+      "Notice: Download link will be shared to this email address soon after our engineering team reviews the request."
     ].join("\n");
     return `mailto:info@tascautomation.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
@@ -71,17 +76,20 @@ export default function ContactModal() {
 
     setSubmitting(true);
     
-    const ticketId = `TASC-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    const reqId = `TASC-REQ-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    const userEmail = form.email;
+    setSubmittedEmail(userEmail);
 
     try {
       const formData = new FormData();
       formData.append("access_key", "cc7c2810-6da6-4d9b-b2cc-f3ebc28759d0");
-      formData.append("subject", `TASC - Form - ${form.organization || form.name}`);
+      formData.append("subject", `[${reqId}] TASC Request - ${form.organization || form.name}`);
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("organization", form.organization || "N/A");
-      formData.append("project_scope", form.project_scope);
-      formData.append("ticket_id", ticketId);
+      formData.append("request_id", reqId);
+      formData.append("ticket_id", reqId);
+      formData.append("project_scope", `OFFICIAL REQUEST ID: ${reqId}\n\n${form.project_scope}\n\n[Note: Download link will be shared to ${userEmail} following engineering review]`);
 
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
@@ -94,18 +102,18 @@ export default function ContactModal() {
         throw new Error(data.message || "Email submission failed");
       }
 
-      setSubmitted(ticketId);
-      toast.success("[ TRANSMISSION ACKNOWLEDGED ]");
+      setSubmitted(reqId);
+      toast.success(`[ TRANSMISSION ACKNOWLEDGED · REQ: ${reqId} ]`);
       setForm({ name: "", email: "", organization: "", project_scope: "" });
     } catch (err) {
       console.error(err);
-      toast.success("[ TRANSMITTING VIA EMAIL CLIENT ]");
+      toast.success(`[ TRANSMITTING VIA EMAIL CLIENT · REQ: ${reqId} ]`);
       try {
-        window.location.href = buildMailto(form);
+        window.location.href = buildMailto(form, reqId);
       } catch (_) {
         /* noop */
       }
-      setSubmitted(ticketId);
+      setSubmitted(reqId);
       setForm({ name: "", email: "", organization: "", project_scope: "" });
     } finally {
       setSubmitting(false);
@@ -119,11 +127,11 @@ export default function ContactModal() {
   if (typeof window === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-[#0a0a0b]/35 backdrop-blur-lg transition-all duration-300">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-[#0a0a0b]/40 backdrop-blur-lg transition-all duration-300">
       <div 
         className="w-full max-w-3xl bg-tasc-bg border border-tasc-border shadow-2xl relative z-[99999]"
       >
-        <div className="flex items-center justify-between px-5 py-3 border-b border-tasc-border">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-tasc-border bg-slate-100 dark:bg-slate-950/80">
             <div className="flex items-center gap-3">
               <span className="w-1.5 h-1.5 rounded-full bg-tasc-cyan shadow-[0_0_8px_var(--tasc-glow)] animate-pulse" />
               <span className="font-[Orbitron] text-[10px] max-w-[200px] md:max-w-none truncate tracking-[0.25em] text-tasc-text/60 uppercase">
@@ -139,27 +147,68 @@ export default function ContactModal() {
         </div>
 
         {submitted ? (
-          <div className="p-10">
-            <div className="font-[Orbitron] text-xs tracking-[0.3em] text-tasc-cyan mb-4">
-              [ ACK · 200 OK ]
+          <div className="p-6 md:p-10 space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-tasc-border">
+              <div className="font-[Orbitron] text-xs tracking-[0.25em] text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-ping" />
+                <span>[ TRANSMISSION ACKNOWLEDGED · REQUEST LOGGED ]</span>
+              </div>
+              <span className="font-[Orbitron] text-[10px] text-tasc-text/50">200 OK</span>
             </div>
-            <h3 className="font-[Montserrat] text-2xl text-tasc-text">Transmission received.</h3>
-            <p className="mt-3 text-tasc-text/60 text-sm font-light max-w-md leading-relaxed">
-              A TASC engineer will respond within one business day. For urgent operations,
-              reference your packet ID <strong className="text-tasc-cyan">{typeof submitted === "string" ? `#${submitted}` : "in the follow-up"}</strong>.
-            </p>
-            <div className="flex gap-4 mt-8">
+
+            {/* Request ID Display Card */}
+            <div className="p-5 border border-tasc-cyan/40 bg-tasc-cyan/5">
+              <div className="font-[Orbitron] text-[10px] tracking-[0.25em] text-tasc-cyan uppercase mb-1">
+                Official Request Tracking Identifier
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="font-mono text-xl sm:text-2xl font-bold tracking-wider text-tasc-text select-all">
+                  {typeof submitted === "string" ? submitted : "TASC-REQ-CONFIRMED"}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof submitted === "string") {
+                      navigator.clipboard.writeText(submitted);
+                      toast.success("[ REQUEST ID COPIED TO CLIPBOARD ]");
+                    }
+                  }}
+                  className="font-[Orbitron] text-[10px] tracking-wider px-3.5 py-1.5 border border-tasc-cyan/50 text-tasc-cyan hover:bg-tasc-cyan hover:text-slate-900 transition-colors uppercase font-semibold"
+                >
+                  Copy Request ID
+                </button>
+              </div>
+            </div>
+
+            {/* Explanatory Message */}
+            <div className="space-y-3">
+              <h3 className="font-[Montserrat] text-xl sm:text-2xl font-medium text-tasc-text">
+                Your request has been registered with our engineering desk.
+              </h3>
+              <div className="p-4 border border-tasc-border bg-slate-50 dark:bg-slate-950/60 space-y-3 text-xs sm:text-sm text-tasc-text/80 font-light leading-relaxed">
+                <p className="flex items-start gap-2">
+                  <span className="text-emerald-700 dark:text-emerald-400 font-bold">✓</span>
+                  <span><strong>Dispatched with Email:</strong> This exact Request ID <strong className="text-tasc-cyan font-mono">({typeof submitted === "string" ? submitted : ""})</strong> has been attached to your dispatch transmission to our engineering team and recorded in our system.</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-tasc-cyan font-bold">●</span>
+                  <span><strong>Download Link Delivery:</strong> The secure software installer download link will be shared with you soon after our engineering team reviews your plant and driver specifications at <strong className="text-tasc-text font-mono">{submittedEmail || "your email address"}</strong>.</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4 pt-4 border-t border-tasc-border">
               <button
-                className="font-[Orbitron] text-[11px] tracking-[0.25em] border border-tasc-border px-5 py-3 hover:border-tasc-cyan hover:text-tasc-cyan transition-colors text-tasc-text"
+                className="font-[Orbitron] text-[11px] tracking-[0.2em] border border-tasc-border px-6 py-3 hover:border-tasc-cyan hover:text-tasc-cyan transition-colors text-tasc-text"
                 onClick={() => setSubmitted(false)}
               >
-                [ SEND ANOTHER ]
+                [ SUBMIT ANOTHER INQUIRY ]
               </button>
               <button
-                className="font-[Orbitron] text-[11px] tracking-[0.25em] bg-tasc-cyan text-slate-900 border border-tasc-cyan px-5 py-3 hover:bg-transparent hover:text-tasc-cyan transition-colors"
+                className="font-[Orbitron] text-[11px] tracking-[0.2em] bg-tasc-cyan text-slate-900 border border-tasc-cyan px-6 py-3 font-semibold hover:bg-tasc-cyan/80 transition-colors"
                 onClick={close}
               >
-                [ CLOSE TERMINAL ]
+                [ CLOSE CONFIRMATION ]
               </button>
             </div>
           </div>
